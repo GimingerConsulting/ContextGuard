@@ -49,3 +49,11 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Measured estimate: RAW 664,211 tokens vs ContextGuard 4,417 tokens, saving 659,794 tokens or 99.34%.
 - Local harness time: RAW 0.7779s, ContextGuard 1.5808s, meaning ContextGuard was slower locally because of init/capture overhead.
 - Projected model-processing time at 3,000 tokens/s: RAW 222.1815s total vs ContextGuard 3.0532s total, a projected 98.63% time reduction.
+
+## 2026-06-09 Hardest Returns Benchmark
+
+- Ran a harder valid RAW-vs-ContextGuard simulation for resilient returns and refund orchestration.
+- Result: both workflows passed the same 53 tests and produced identical sample return output.
+- Measured estimate: RAW 1,319,139 tokens vs ContextGuard 4,263 tokens, saving 1,314,876 tokens or 99.68%.
+- Local harness time: RAW 0.8120s, ContextGuard 1.5270s, meaning ContextGuard was slower locally because of init/capture overhead.
+- Projected model-processing time at 3,000 tokens/s: RAW 440.5250s total vs ContextGuard 2.9480s total, a projected 99.33% time reduction.

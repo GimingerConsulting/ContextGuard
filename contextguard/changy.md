@@ -151,3 +151,27 @@
 
 - Problem: the first run's temporary `sample()` helper expected an obsolete tuple return shape from the benchmark runner.
   Solution: updated the temporary helper to read the current result dictionary shape and reran successfully.
+
+## 2026-06-09 Hardest Returns Benchmark
+
+### RAW-vs-ContextGuard Scenario
+
+- Simulated a larger temporary Python retail project with orders, catalog, money helpers, risk, returns, 95 unrelated reporting helpers, 45 legacy tests, a 15,000-line returns audit log, a 5,500-record JSON fixture and long returns policy documentation.
+- Task: implement resilient returns and refund orchestration with order-state validation, line quantity caps, product return windows, final-sale rules, damage exceptions, region rules, captured-payment validation, partial returns, tax refunds, restocking fees, fraud-aware shipping refunds and audit entries.
+- RAW workflow used broad project context, full file contents and raw test output.
+- ContextGuard workflow used project init, a task capsule, targeted search, selected relevant files and captured test output.
+- Both workflows used the same implementation strategy, passed the same 53 tests and produced identical sample output: `approved 36.00 ['shipping-refund:6.00']`.
+
+### Results
+
+- Estimated context use: RAW 1,319,139 tokens, ContextGuard 4,263 tokens.
+- Estimated savings: 1,314,876 tokens, 99.68% reduction, 309.44x lower context volume.
+- Local harness time: RAW 0.8120 seconds, ContextGuard 1.5270 seconds. ContextGuard was slower locally because init, indexing and capture add tool overhead.
+- Projected model-processing time at 1,000 tokens per second: RAW 1,319.9510 seconds total, ContextGuard 5.7900 seconds total, 99.56% faster.
+- Projected model-processing time at 3,000 tokens per second: RAW 440.5250 seconds total, ContextGuard 2.9480 seconds total, 99.33% faster.
+- Projected model-processing time at 6,000 tokens per second: RAW 220.6685 seconds total, ContextGuard 2.2375 seconds total, 98.99% faster.
+
+### Problems And Solutions
+
+- Problem: the first version of the temporary benchmark had inconsistent expectations for line-level tax and damage-exception returns, so both RAW and ContextGuard failed final tests.
+  Solution: treated the run as invalid, corrected the temporary benchmark fixture to use consistent line-tax and damage-exception semantics, and reran until both workflows passed.
