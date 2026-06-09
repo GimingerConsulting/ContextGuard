@@ -1,6 +1,6 @@
 ---
 name: contextguard-status
-description: Show whether ContextGuard is active and summarize current local optimization status. Invoke explicitly with $contextguard-status.
+description: Show whether ContextGuard is active, verify hooks/index/output protection and summarize local savings estimates. Invoke explicitly with $contextguard-status.
 ---
 
 # ContextGuard Status

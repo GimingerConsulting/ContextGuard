@@ -1,9 +1,9 @@
 {
   "name": "contextguard",
   "version": "0.1.0",
-  "description": "Autonomously reduce unnecessary Codex context usage through targeted repository retrieval, large-output protection, persistent local project intelligence and automatic context escalation.",
+  "description": "Autonomously reduce wasted Codex context with local project intelligence, focused retrieval, large-output protection and automatic context escalation.",
   "author": {
-    "name": "Geminger Consulting",
+    "name": "Giminger Consulting",
     "url": "https://github.com/BurliNYC"
   },
   "homepage": "https://github.com/BurliNYC/ContextGuard",
@@ -19,15 +19,14 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "ContextGuard",
-    "shortDescription": "Local context and output optimization for Codex.",
-    "longDescription": "ContextGuard helps Codex complete the same work with less wasted context by using targeted repository retrieval, large-output protection, local project intelligence and automatic context escalation.",
-    "developerName": "Geminger Consulting",
-    "category": "Productivity",
+    "shortDescription": "Autonomous context savings for Codex projects.",
+    "longDescription": "ContextGuard helps Codex complete the same work with less wasted context. It initializes local project intelligence, injects compact task capsules, protects against oversized command output, tracks estimated savings, and automatically encourages context escalation when correctness requires it. Repository content stays local and no external API or cloud service is required.",
+    "developerName": "Giminger Consulting",
+    "category": "Developer Tools",
     "capabilities": [
-      "Local indexing",
-      "Lifecycle hooks",
-      "Command output capture",
-      "Project guidance"
+      "Interactive",
+      "Read",
+      "Write"
     ],
     "websiteURL": "https://github.com/BurliNYC/ContextGuard",
     "privacyPolicyURL": "https://github.com/BurliNYC/ContextGuard/blob/main/SECURITY.md",
@@ -35,13 +34,13 @@
     "defaultPrompt": [
       "Initialize ContextGuard for this project.",
       "Show my ContextGuard savings report.",
-      "Refresh the ContextGuard project index."
+      "Check whether ContextGuard is working correctly."
     ],
-    "brandColor": "#2563EB",
+    "brandColor": "#14B8A6",
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/logo.png",
     "screenshots": [
-      "./assets/screenshot-placeholder.png"
+      "./assets/screenshot-contextguard.png"
     ]
   }
 }

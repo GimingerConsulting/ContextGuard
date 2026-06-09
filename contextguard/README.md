@@ -2,6 +2,8 @@
 
 ContextGuard helps Codex complete the same work with less wasted context.
 
+Developer: Giminger Consulting
+
 It is designed to reduce unnecessary repository exploration, repeated file reads, oversized command output and raw-data ingestion while automatically expanding context when correctness requires it.
 
 ## What It Does

@@ -1,9 +1,9 @@
 interface:
-  display_name: ContextGuard Refresh
-  short_description: Refresh local index and managed guidance.
+  display_name: Refresh Index
+  short_description: Incrementally update local project intelligence.
   icon_small: assets/icon.png
   icon_large: assets/logo.png
-  brand_color: "#2563EB"
+  brand_color: "#14B8A6"
   default_prompt: Refresh the ContextGuard project index.
 policy:
   allow_implicit_invocation: false

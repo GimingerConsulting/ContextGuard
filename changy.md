@@ -21,3 +21,9 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Added visible lifetime savings estimates in status/report.
 - Expanded tests to 34 cases.
 - Realistic A/B improved to 81.64% estimated token savings with identical patch and passing tests.
+
+## 2026-06-09 Marketplace Presentation
+
+- Updated marketplace-facing plugin metadata and visuals.
+- Corrected developer name to Giminger Consulting.
+- Added branded PNG icon, logo and screenshot assets.

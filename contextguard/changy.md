@@ -71,3 +71,13 @@
 - Full test suite: 34 passed.
 - Plugin validation: passed.
 - Realistic subscription-preview A/B after improvements: same patch, both workflows passed 17 tests, ContextGuard reduced estimated tokens from 6,779 to 1,244, saving 5,535 estimated tokens or 81.64%.
+
+## 2026-06-09 Marketplace Presentation
+
+### Changes
+
+- Updated plugin marketplace metadata for a professional Codex plugin detail page.
+- Corrected developer branding to `Giminger Consulting`.
+- Changed category to `Developer Tools`.
+- Replaced placeholder imagery with branded PNG icon, logo and screenshot assets.
+- Refined skill display metadata and starter prompts for install-page presentation.
