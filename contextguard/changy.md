@@ -175,3 +175,28 @@
 
 - Problem: the first version of the temporary benchmark had inconsistent expectations for line-level tax and damage-exception returns, so both RAW and ContextGuard failed final tests.
   Solution: treated the run as invalid, corrected the temporary benchmark fixture to use consistent line-tax and damage-exception semantics, and reran until both workflows passed.
+
+## 2026-06-09 Ultimate Dispute Benchmark
+
+### RAW-vs-ContextGuard Scenario
+
+- Simulated a larger temporary Python payments project with ledger, transaction, dispute, risk, jurisdiction, money and fee services, 140 unrelated reporting helpers, 80 legacy tests, a 26,000-line dispute audit log, a 9,000-record JSON fixture and long dispute operations documentation.
+- Task: implement cross-module dispute resolution with transaction-state validation, payment capture checks, customer risk, chargeback history, jurisdiction rules, evidence freshness, duplicate dispute cooldowns, recoverable amount caps, provisional credits, fee exposure, escalation levels and audit trails.
+- RAW workflow used broad project context, full file contents and raw test output.
+- ContextGuard workflow used project init, a task capsule, targeted search, selected relevant files and captured test output.
+- Both workflows used the same implementation strategy, passed the same 87 tests and produced identical sample output: `approved 400.00 150.00 10.00 ['cap:400.00', 'auto-credit:150.00', 'fee:10.00']`.
+
+### Results
+
+- Estimated context use: RAW 2,439,341 tokens, ContextGuard 4,178 tokens.
+- Estimated savings: 2,435,163 tokens, 99.83% reduction, 583.85x lower context volume.
+- Local harness time: RAW 1.0024 seconds, ContextGuard 1.6836 seconds. Local tool time remains less important than model processing time for this benchmark.
+- Projected model-processing time at 1,000 tokens per second: RAW 2,440.3434 seconds total, ContextGuard 5.8616 seconds total, 99.76% faster.
+- Projected model-processing time at 3,000 tokens per second: RAW 814.1161 seconds total, ContextGuard 3.0763 seconds total, 99.62% faster.
+- Projected model-processing time at 6,000 tokens per second: RAW 407.5593 seconds total, ContextGuard 2.3799 seconds total, 99.42% faster.
+- Projected model-processing time at 12,000 tokens per second: RAW 204.2809 seconds total, ContextGuard 2.0318 seconds total, 99.01% faster.
+
+### Cost And Usage Projection
+
+- Using the user's observed 640,000,000 raw tokens and $450 equivalent monthly usage as a rough input, this benchmark's ratio would project to about 1,096,165 ContextGuard tokens and about $0.77 equivalent usage cost for the same class of work.
+- This is a benchmark projection, not a guaranteed billing result, because real Codex behavior depends on task shape, model routing, hidden context, tool calls and how much context the agent chooses to load.

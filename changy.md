@@ -57,3 +57,11 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Measured estimate: RAW 1,319,139 tokens vs ContextGuard 4,263 tokens, saving 1,314,876 tokens or 99.68%.
 - Local harness time: RAW 0.8120s, ContextGuard 1.5270s, meaning ContextGuard was slower locally because of init/capture overhead.
 - Projected model-processing time at 3,000 tokens/s: RAW 440.5250s total vs ContextGuard 2.9480s total, a projected 99.33% time reduction.
+
+## 2026-06-09 Ultimate Dispute Benchmark
+
+- Ran the final valid RAW-vs-ContextGuard simulation for a NovaPay dispute-resolution engine.
+- Result: both workflows passed the same 87 tests and produced identical dispute decision output.
+- Measured estimate: RAW 2,439,341 tokens vs ContextGuard 4,178 tokens, saving 2,435,163 tokens or 99.83%.
+- Projected model-processing time at 3,000 tokens/s: RAW 814.1161s total vs ContextGuard 3.0763s total, a projected 99.62% time reduction.
+- Projection from 640M raw monthly tokens at $450: same reduction ratio would be about 1.096M ContextGuard tokens and about $0.77 equivalent usage cost.
