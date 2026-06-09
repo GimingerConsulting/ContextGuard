@@ -12,5 +12,5 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 ## 2026-06-09 Readiness Pass
 
 - Strengthened ContextGuard internals for real use before manual testing.
-- Expanded tests to 27 cases.
+- Expanded tests to 29 cases.
 - Added benchmark harness and richer metrics.

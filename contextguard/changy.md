@@ -45,7 +45,7 @@
 - Added measured metrics for compact output bytes and index refresh duration.
 - Added targeted large-file filters for match context and selected line ranges.
 - Added an executable local benchmark harness.
-- Expanded tests from 19 to 27 cases covering CLI flows, repeated init, paths with spaces, non-zero capture preservation, large output hook storage and runtime network-import absence.
+- Expanded tests from 19 to 29 cases covering CLI flows, repeated init, paths with spaces, non-zero capture preservation, large output hook storage and runtime network-import absence.
 - Fixed benchmark harness import handling so fixture subprocesses can run ContextGuard from temporary project directories.
 - Fixed output compaction for one-line large files so compact summaries cap individual lines instead of echoing huge JSON/log records.
 
