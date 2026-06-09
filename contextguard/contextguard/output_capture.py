@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -44,11 +45,18 @@ def capture(root: Path, argv: list[str]) -> int:
     increment(conn, "raw_output_bytes", summary["stdout_bytes"] + summary["stderr_bytes"])
     increment(conn, "compact_output_bytes", len(json.dumps(summary).encode()))
     conn.commit()
+    raw_bytes = summary["stdout_bytes"] + summary["stderr_bytes"]
+    if raw_bytes <= 4096:
+        if proc.stdout:
+            print(proc.stdout, end="")
+        if proc.stderr:
+            print(proc.stderr, end="", file=sys.stderr)
+        return proc.returncode
     print("ContextGuard capture summary")
     print(f"command: {' '.join(argv)}")
     print(f"exit_code: {proc.returncode}")
     print(f"duration_ms: {duration_ms}")
-    print(f"raw_bytes: {summary['stdout_bytes'] + summary['stderr_bytes']}")
+    print(f"raw_bytes: {raw_bytes}")
     for line in summary["summary_lines"]:
         print(line)
     print(f"full_output: {summary_path}")

@@ -48,6 +48,7 @@
 - Expanded tests from 19 to 29 cases covering CLI flows, repeated init, paths with spaces, non-zero capture preservation, large output hook storage and runtime network-import absence.
 - Fixed benchmark harness import handling so fixture subprocesses can run ContextGuard from temporary project directories.
 - Fixed output compaction for one-line large files so compact summaries cap individual lines instead of echoing huge JSON/log records.
+- Tuned token-saving behavior from A/B testing: small captured outputs now pass through unchanged, and task capsules are shorter.
 
 ### Remaining Limitations
 

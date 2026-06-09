@@ -34,7 +34,7 @@ def test_init_repeated_status_and_paths_with_spaces(tmp_path: Path):
 def test_capture_preserves_non_zero_exit_code(tmp_path: Path):
     result = run_cli(["capture", "--", sys.executable, "-c", "print('bad'); raise SystemExit(7)"], tmp_path)
     assert result.returncode == 7
-    assert "exit_code: 7" in result.stdout
+    assert result.stdout == "bad\n"
     assert list((tmp_path / ".contextguard" / "tmp").glob("*.summary.json"))
 
 

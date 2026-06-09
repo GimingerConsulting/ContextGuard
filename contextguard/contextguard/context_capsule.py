@@ -14,20 +14,19 @@ def build_capsule(root: Path, prompt: str, token_limit: int = 400) -> str:
             "Start with targeted search, symbol/range inspection and automatic context escalation when needed."
         )
     else:
-        files = "\n".join(f"- {path}" for path in result["likely_files"])
-        symbols = "\n".join(
-            f"- {item['name']} ({item['kind']}) in {item['path']}:{item['line']}"
-            for item in result.get("likely_symbols", [])
-        )
-        tests = "\n".join(f"- {path}" for path in result.get("relevant_tests", []))
+        files = ", ".join(result["likely_files"][:6]) or "none"
+        symbols = ", ".join(
+            f"{item['name']}@{item['path']}:{item['line']}"
+            for item in result.get("likely_symbols", [])[:4]
+        ) or "none"
+        tests = ", ".join(result.get("relevant_tests", [])[:4]) or "none"
         text = (
-            "ContextGuard task capsule\n"
-            f"confidence: {result['confidence']}\n"
-            "likely relevant files:\n"
-            f"{files}\n"
-            f"likely symbols:\n{symbols or '- none indexed'}\n"
-            f"relevant tests:\n{tests or '- none indexed'}\n"
-            "recommended initial scope: metadata, search hits and focused ranges first."
+            "ContextGuard task capsule: "
+            f"confidence={result['confidence']}; "
+            f"files={files}; "
+            f"symbols={symbols}; "
+            f"tests={tests}; "
+            "start with metadata/search/ranges, expand if evidence is insufficient."
         )
     while estimate_tokens(text) > token_limit and "\n-" in text:
         text = "\n".join(text.splitlines()[:-1])
