@@ -128,3 +128,26 @@
 
 - Problem: the simulated tests initially asserted `line.unit_price`, but invoice lines are serialized as dictionaries.
   Solution: corrected the temporary test fixture to assert `line["unit_price"]`, then reran until both workflows passed.
+
+## 2026-06-09 Harder Time And Token Test
+
+### RAW-vs-ContextGuard Scenario
+
+- Simulated a larger feature task in a temporary Python commerce project with checkout pricing, inventory allocation, risk/fraud modules, 65 unrelated analytics helpers, 25 legacy tests, a 9,000-line fulfillment audit log, a 3,200-record JSON fixture and long system-design documentation.
+- Task: implement risk-aware order fulfillment with customer risk profiles, fraud thresholds, blocked shipping zones, partial inventory allocation, high-risk surcharges and compact audit trails.
+- RAW workflow used broad project context, full file contents and raw test output.
+- ContextGuard workflow used project init, a task capsule, targeted search, selected relevant files and captured test output.
+- Both workflows used the same implementation strategy, passed the same 31 tests and produced identical sample output: `ready 12.00 ['fulfillable:mouse:2', 'surcharge:12.00']`.
+
+### Results
+
+- Estimated context use: RAW 664,211 tokens, ContextGuard 4,417 tokens.
+- Estimated savings: 659,794 tokens, 99.34% reduction, 150.38x lower context volume.
+- Local harness time: RAW 0.7779 seconds, ContextGuard 1.5808 seconds. ContextGuard was slower locally because init, indexing and capture add tool overhead.
+- Projected model-processing time at 3,000 tokens per second: RAW 222.1815 seconds total, ContextGuard 3.0532 seconds total.
+- Projected model-time savings: 219.1284 seconds, 98.63% faster end-to-end under that token-throughput assumption.
+
+### Problems And Solutions
+
+- Problem: the first run's temporary `sample()` helper expected an obsolete tuple return shape from the benchmark runner.
+  Solution: updated the temporary helper to read the current result dictionary shape and reran successfully.

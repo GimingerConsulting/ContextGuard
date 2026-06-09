@@ -41,3 +41,11 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Ran a complex RAW-vs-ContextGuard feature simulation for temporary billing price override windows.
 - Result: both workflows passed the same 6 feature tests with identical invoice output.
 - Measured estimate: RAW 219,896 tokens vs ContextGuard 3,138 tokens, saving 216,758 tokens or 98.57%.
+
+## 2026-06-09 Harder Time And Token Test
+
+- Ran a harder RAW-vs-ContextGuard simulation for risk-aware order fulfillment with holds, partial inventory allocation, fraud signals, shipping-zone blocks, surcharges and audit trails.
+- Result: both workflows passed the same 31 tests and produced identical sample fulfillment output.
+- Measured estimate: RAW 664,211 tokens vs ContextGuard 4,417 tokens, saving 659,794 tokens or 99.34%.
+- Local harness time: RAW 0.7779s, ContextGuard 1.5808s, meaning ContextGuard was slower locally because of init/capture overhead.
+- Projected model-processing time at 3,000 tokens/s: RAW 222.1815s total vs ContextGuard 3.0532s total, a projected 98.63% time reduction.
