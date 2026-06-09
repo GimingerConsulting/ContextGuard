@@ -1,0 +1,9 @@
+interface:
+  display_name: ContextGuard Uninstall Project
+  short_description: Explain and remove project-local ContextGuard state.
+  icon_small: assets/icon.png
+  icon_large: assets/logo.png
+  brand_color: "#2563EB"
+  default_prompt: Explain ContextGuard project removal.
+policy:
+  allow_implicit_invocation: false

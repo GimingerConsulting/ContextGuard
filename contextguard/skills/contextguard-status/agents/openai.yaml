@@ -1,0 +1,9 @@
+interface:
+  display_name: ContextGuard Status
+  short_description: Show local ContextGuard state and estimated savings.
+  icon_small: assets/icon.png
+  icon_large: assets/logo.png
+  brand_color: "#2563EB"
+  default_prompt: Check whether ContextGuard is working correctly.
+policy:
+  allow_implicit_invocation: false

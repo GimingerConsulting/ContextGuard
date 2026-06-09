@@ -1,0 +1,47 @@
+{
+  "name": "contextguard",
+  "version": "0.1.0",
+  "description": "Autonomously reduce unnecessary Codex context usage through targeted repository retrieval, large-output protection, persistent local project intelligence and automatic context escalation.",
+  "author": {
+    "name": "Geminger Consulting",
+    "url": "https://github.com/BurliNYC"
+  },
+  "homepage": "https://github.com/BurliNYC/ContextGuard",
+  "repository": "https://github.com/BurliNYC/ContextGuard",
+  "license": "MIT",
+  "keywords": [
+    "context",
+    "codex",
+    "optimization",
+    "hooks",
+    "local-first"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ContextGuard",
+    "shortDescription": "Local context and output optimization for Codex.",
+    "longDescription": "ContextGuard helps Codex complete the same work with less wasted context by using targeted repository retrieval, large-output protection, local project intelligence and automatic context escalation.",
+    "developerName": "Geminger Consulting",
+    "category": "Productivity",
+    "capabilities": [
+      "Local indexing",
+      "Lifecycle hooks",
+      "Command output capture",
+      "Project guidance"
+    ],
+    "websiteURL": "https://github.com/BurliNYC/ContextGuard",
+    "privacyPolicyURL": "https://github.com/BurliNYC/ContextGuard/blob/main/SECURITY.md",
+    "termsOfServiceURL": "https://github.com/BurliNYC/ContextGuard/blob/main/LICENSE",
+    "defaultPrompt": [
+      "Initialize ContextGuard for this project.",
+      "Show my ContextGuard savings report.",
+      "Refresh the ContextGuard project index."
+    ],
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": [
+      "./assets/screenshot-placeholder.png"
+    ]
+  }
+}

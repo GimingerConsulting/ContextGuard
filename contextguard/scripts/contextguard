@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+PLUGIN_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+PYTHONPATH="$PLUGIN_ROOT${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m contextguard.cli "$@"

@@ -1,0 +1,20 @@
+{
+  "name": "contextguard",
+  "interface": {
+    "displayName": "ContextGuard"
+  },
+  "plugins": [
+    {
+      "name": "contextguard",
+      "source": {
+        "source": "local",
+        "path": "./contextguard"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

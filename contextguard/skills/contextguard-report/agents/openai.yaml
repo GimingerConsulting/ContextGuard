@@ -1,0 +1,9 @@
+interface:
+  display_name: ContextGuard Report
+  short_description: Show local ContextGuard savings estimates.
+  icon_small: assets/icon.png
+  icon_large: assets/logo.png
+  brand_color: "#2563EB"
+  default_prompt: Show my ContextGuard savings report.
+policy:
+  allow_implicit_invocation: false
