@@ -32,3 +32,24 @@
 
 - Problem: skill agent asset paths must resolve inside the plugin archive from the plugin root.
   Solution: copied placeholder icons into each skill's `assets/` directory and changed skill metadata icons to `assets/icon.png` and `assets/logo.png`, matching validator rules.
+
+## 2026-06-09 Readiness Pass
+
+### Changes
+
+- Added richer SQLite metadata for symbols, imports, package scripts and tests.
+- Improved task capsules with indexed symbols, relevant tests and `ripgrep`-backed content path matching with Python fallback.
+- Changed hook command rewrites to use the bundled `scripts/contextguard` path, preserving paths with spaces and avoiding reliance on shell `PATH`.
+- Made `PostToolUse` store full large tool output under `.contextguard/tmp/` before returning a compact replacement.
+- Persisted `.contextguard/repo_map.json` during init and refresh.
+- Added measured metrics for compact output bytes and index refresh duration.
+- Added targeted large-file filters for match context and selected line ranges.
+- Added an executable local benchmark harness.
+- Expanded tests from 19 to 27 cases covering CLI flows, repeated init, paths with spaces, non-zero capture preservation, large output hook storage and runtime network-import absence.
+- Fixed benchmark harness import handling so fixture subprocesses can run ContextGuard from temporary project directories.
+- Fixed output compaction for one-line large files so compact summaries cap individual lines instead of echoing huge JSON/log records.
+
+### Remaining Limitations
+
+- Current local plugin validation rejects top-level `hooks` in `plugin.json`; hook files are included and documented, but actual hook activation must be confirmed in the target Codex surface after plugin installation.
+- Token savings remain conservative local estimates, not verified Codex server-side usage numbers.

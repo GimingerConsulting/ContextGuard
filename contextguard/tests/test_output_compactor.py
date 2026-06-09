@@ -6,3 +6,9 @@ def test_repeated_log_error_deduplication():
     compact = compact_output(output, "")
     assert len(compact["errors"]) == 1
     assert compact["line_count"] == 3
+
+
+def test_one_line_large_output_is_clipped():
+    compact = compact_output("x" * 10_000, "")
+    assert len(compact["summary_lines"][0]) < 600
+    assert "truncated" in compact["summary_lines"][0]

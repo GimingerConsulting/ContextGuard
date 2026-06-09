@@ -33,6 +33,29 @@ create table if not exists metrics (
   key text primary key,
   value integer not null default 0
 );
+create table if not exists symbols (
+  path text not null,
+  name text not null,
+  kind text not null,
+  line integer not null,
+  primary key(path, name, kind, line)
+);
+create table if not exists imports (
+  path text not null,
+  target text not null,
+  line integer not null,
+  primary key(path, target, line)
+);
+create table if not exists package_scripts (
+  manager text not null,
+  name text not null,
+  command text not null,
+  primary key(manager, name)
+);
+create table if not exists tests (
+  path text primary key,
+  kind text not null
+);
 """
 
 

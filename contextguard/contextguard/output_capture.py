@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import state_dir
-from .database import connect
+from .database import connect, increment
 from .output_compactor import compact_output
 
 
@@ -40,6 +40,9 @@ def capture(root: Path, argv: list[str]) -> int:
         "insert into commands(command, exit_code, duration_ms, stdout_bytes, stderr_bytes, output_path) values(?,?,?,?,?,?)",
         (" ".join(argv), proc.returncode, duration_ms, summary["stdout_bytes"], summary["stderr_bytes"], summary_path.as_posix()),
     )
+    increment(conn, "commands_intercepted", 1)
+    increment(conn, "raw_output_bytes", summary["stdout_bytes"] + summary["stderr_bytes"])
+    increment(conn, "compact_output_bytes", len(json.dumps(summary).encode()))
     conn.commit()
     print("ContextGuard capture summary")
     print(f"command: {' '.join(argv)}")

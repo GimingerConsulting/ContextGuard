@@ -1,6 +1,12 @@
 # ContextGuard Benchmark Harness
 
-Create temporary fixture projects for:
+Run the local benchmark harness:
+
+```bash
+PYTHONPATH=. python3 benchmarks/run_benchmarks.py
+```
+
+It creates temporary fixture projects for:
 
 - small web project
 - medium Node project
@@ -10,7 +16,7 @@ Create temporary fixture projects for:
 - repeated log errors
 - existing undocumented repository
 
-For each fixture, run the raw command and then:
+For each fixture, it runs the raw command and then:
 
 ```bash
 contextguard capture -- <command>

@@ -8,3 +8,9 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Added repository-root marketplace metadata for GitHub source installation.
 - Verified tests with `python3 -m pytest`: 19 passed.
 - Verified plugin schema with `plugin-creator/scripts/validate_plugin.py`: passed.
+
+## 2026-06-09 Readiness Pass
+
+- Strengthened ContextGuard internals for real use before manual testing.
+- Expanded tests to 27 cases.
+- Added benchmark harness and richer metrics.

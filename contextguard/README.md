@@ -76,7 +76,7 @@ Codex hook support varies by surface. The plugin includes `hooks/hooks.json`, bu
 
 ## Benchmarks
 
-Use `benchmarks/README.md` to create local fixture projects and compare raw bytes, compact bytes, overhead, execution time and retained error information. Do not treat these as exact Codex usage numbers.
+Use `benchmarks/run_benchmarks.py` to create local fixture projects and compare raw bytes, compact bytes, overhead, execution time and retained error information. Do not treat these as exact Codex usage numbers.
 
 ## Uninstall
 

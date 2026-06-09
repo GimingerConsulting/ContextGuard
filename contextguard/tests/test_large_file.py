@@ -18,3 +18,11 @@ def test_large_csv_summarization(tmp_path: Path):
     result = summarize_large_file(path)
     assert result["records"] == 2
     assert result["null_counts"]["value"] == 1
+
+
+def test_targeted_line_and_match_context(tmp_path: Path):
+    path = tmp_path / "app.log"
+    path.write_text("one\ntwo\nERROR bad\nfour\n")
+    result = summarize_large_file(path, contains="ERROR", before=1, after=1, lines="2:3")
+    assert result["matches"][0]["context"] == ["two", "ERROR bad", "four"]
+    assert [line["line"] for line in result["selected_lines"]] == [2, 3]

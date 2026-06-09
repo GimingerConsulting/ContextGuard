@@ -4,6 +4,7 @@ import hashlib
 import os
 import re
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Iterable
 
@@ -83,3 +84,43 @@ def extract_error_lines(text: str, limit: int = 20) -> list[str]:
         if len(result) >= limit:
             break
     return result
+
+
+def search_paths_for_terms(root: Path, terms: set[str], limit: int = 30) -> list[str]:
+    if not terms:
+        return []
+    results: list[str] = []
+    rg = find_executable("rg")
+    if rg:
+        for term in sorted(terms):
+            try:
+                proc = subprocess.run(
+                    [rg, "--files-with-matches", "--fixed-strings", "--ignore-case", "--", term],
+                    cwd=root,
+                    text=True,
+                    capture_output=True,
+                    timeout=2,
+                )
+            except Exception:
+                continue
+            for line in proc.stdout.splitlines():
+                path = line.strip()
+                if path and path not in results:
+                    results.append(path)
+                    if len(results) >= limit:
+                        return results
+        return results
+    lowered = {term.lower() for term in terms}
+    for path in iter_project_files(root):
+        if path.stat().st_size > 256_000 or is_binary(path):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace").lower()
+        except OSError:
+            continue
+        if any(term in text for term in lowered):
+            rel = safe_relpath(path, root)
+            results.append(rel)
+            if len(results) >= limit:
+                break
+    return results

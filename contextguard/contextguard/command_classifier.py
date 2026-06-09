@@ -34,6 +34,12 @@ def classify_command(command: str) -> CommandDecision:
         return CommandDecision("capture", "Verbose git log can be compacted.")
     if first in {"pytest", "ruff", "mypy", "npm", "pnpm", "yarn", "make"}:
         return CommandDecision("capture", "Validation command output is captured to preserve complete logs.")
+    if first in {"grep", "rg"} and any(flag in parts for flag in ("-r", "-R", "--recursive")):
+        return CommandDecision("capture", "Recursive search output can be large.")
+    if first in {"tar", "unzip", "zipinfo"}:
+        return CommandDecision("capture", "Archive listings can be large.")
+    if any(part.endswith((".json", ".jsonl", ".csv", ".tsv", ".log", ".sql")) for part in parts[1:]):
+        return CommandDecision("capture", "Structured or log output can be summarized compactly.")
     if any(part in joined for part in ("node_modules", "dist/", "build/", "coverage/")):
         return CommandDecision("guide", "Command targets generated or dependency output.")
     return CommandDecision("allow", "Command appears small or already scoped.")
