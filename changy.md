@@ -27,3 +27,9 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Updated marketplace-facing plugin metadata and visuals.
 - Corrected developer name to Giminger Consulting.
 - Added branded PNG icon, logo and screenshot assets.
+
+## 2026-06-09 Marketplace Manifest Alignment
+
+- Aligned `plugin.json` interface metadata with the new ContextGuard marketplace copy.
+- Removed screenshot metadata so the plugin page relies on `icon.png` and `logo.png`.
+- Changed plugin category metadata to `Productivity`.

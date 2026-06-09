@@ -1,7 +1,7 @@
 {
   "name": "contextguard",
   "version": "0.1.0",
-  "description": "Autonomously reduce wasted Codex context with local project intelligence, focused retrieval, large-output protection and automatic context escalation.",
+  "description": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
   "author": {
     "name": "Giminger Consulting",
     "url": "https://github.com/BurliNYC"
@@ -19,10 +19,10 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "ContextGuard",
-    "shortDescription": "Autonomous context savings for Codex projects.",
-    "longDescription": "ContextGuard helps Codex complete the same work with less wasted context. It initializes local project intelligence, injects compact task capsules, protects against oversized command output, tracks estimated savings, and automatically encourages context escalation when correctness requires it. Repository content stays local and no external API or cloud service is required.",
+    "shortDescription": "Autonomous context savings for Codex projects",
+    "longDescription": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
     "developerName": "Giminger Consulting",
-    "category": "Developer Tools",
+    "category": "Productivity",
     "capabilities": [
       "Interactive",
       "Read",
@@ -33,14 +33,10 @@
     "termsOfServiceURL": "https://github.com/BurliNYC/ContextGuard/blob/main/LICENSE",
     "defaultPrompt": [
       "Initialize ContextGuard for this project.",
-      "Show my ContextGuard savings report.",
-      "Check whether ContextGuard is working correctly."
+      "Show my ContextGuard savings report."
     ],
-    "brandColor": "#14B8A6",
+    "brandColor": "#C9A24A",
     "composerIcon": "./assets/icon.png",
-    "logo": "./assets/logo.png",
-    "screenshots": [
-      "./assets/screenshot-contextguard.png"
-    ]
+    "logo": "./assets/logo.png"
   }
 }

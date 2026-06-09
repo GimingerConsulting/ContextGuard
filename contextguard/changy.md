@@ -81,3 +81,20 @@
 - Changed category to `Developer Tools`.
 - Replaced placeholder imagery with branded PNG icon, logo and screenshot assets.
 - Refined skill display metadata and starter prompts for install-page presentation.
+
+## 2026-06-09 Marketplace Manifest Alignment
+
+### Changes
+
+- Updated `.codex-plugin/plugin.json` interface metadata to use the requested ContextGuard display name, short description, long description, developer name, `Productivity` category, gold brand color, icon, logo and two default prompts.
+- Removed screenshot references from plugin metadata because Codex marketplace presentation only needs `assets/icon.png` and `assets/logo.png` for this plugin.
+- Updated both marketplace catalog files to keep their category aligned with the manifest.
+- Removed the local macOS `.DS_Store` asset file from the plugin package.
+
+### Problems And Solutions
+
+- Problem: the official Codex plugin package uses `.codex-plugin/plugin.json`, while `.agents/plugins/marketplace.json` is the repository marketplace catalog that points Codex at the installable plugin folder.
+  Solution: keep both files, use `plugin.json` for the plugin's display metadata, and use the marketplace catalog only to expose `./contextguard` from the GitHub repository.
+
+- Problem: the requested interface block did not include `capabilities`, but current local plugin validation requires `interface.capabilities`.
+  Solution: keep `Interactive`, `Read` and `Write` capabilities in the manifest while matching the requested user-facing copy and assets.
