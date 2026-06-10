@@ -1,16 +1,18 @@
 # ContextGuard
 
-ContextGuard helps Codex complete the same work with less wasted context.
+ContextGuard helps Codex produce the same correct result with less wasted input, less unnecessary output and faster task completion.
 
 Developer: Giminger Consulting
 
-It is designed to reduce unnecessary repository exploration, repeated file reads, oversized command output and raw-data ingestion while automatically expanding context when correctness requires it.
+It optimizes repository input context, repeated session context, terminal and test output, large structured data, model-generated explanations, final responses, and repeated code or diff output. It automatically expands context when correctness requires it.
 
 ## What It Does
 
 ContextGuard is a local-first Codex plugin with explicit skills, lifecycle hooks and deterministic Python tooling. It indexes repository metadata locally, writes compact project guidance, captures large command output to disk, summarizes large data files, and injects small task capsules when there is enough evidence to help Codex start with targeted inspection.
 
-It uses one policy: **Adaptive Maximum Savings**. The policy starts with metadata, search hits and focused ranges, then escalates to larger context whenever correctness requires it.
+It uses one policy: **Adaptive Maximum Efficiency**. The policy starts with metadata, symbol locations and focused ranges, reuses verified unchanged facts, and escalates through complete symbols, dependencies, files and wider repository context whenever evidence is insufficient.
+
+The output-efficiency engine suppresses routine narration, request restatement, source echo, full diffs and unrelated closing suggestions by default. Completed-task responses retain changed files, validation results and any real blocker, limitation or unverified assumption. Explicit requests for detailed explanations still take precedence.
 
 ## Privacy
 
@@ -57,18 +59,18 @@ contextguard large-file data.json --contains error --limit 10
 contextguard uninstall-project
 ```
 
-`status` and `report` show project-local lifetime estimates, including measured raw output bytes, compact output bytes, estimated tokens saved and estimated reduction percentage. These are local estimates, not exact Codex server-side usage numbers.
+`status` and `report` show measured raw and compact output bytes, managed-policy and capsule overhead, cache reuse, and estimated token reduction. Token values are local estimates, not exact Codex server-side usage numbers.
 
 ## Architecture
 
 - Skills provide explicit user commands.
 - Hooks provide normal runtime behavior with compact context and output protection.
 - The Python package performs project detection, indexing, documentation updates, command classification, output capture, large-file summaries and local metrics.
-- SQLite stores metadata, command executions and conservative savings estimates.
+- SQLite stores metadata, hashes, symbols, command executions, cache reuse and conservative savings estimates.
 
 ## Quality Guard
 
-ContextGuard never blocks legitimate inspection just to preserve a token estimate. It encourages escalation from metadata to symbols, snippets, functions/classes, callers, complete files and wider repository context when evidence is insufficient.
+ContextGuard never blocks legitimate inspection or skips relevant validation to preserve a token estimate. It does not hide failures, warnings, security concerns or data-integrity risks. Complete command output, stderr, exit code and duration are stored under `.contextguard/tmp/`; Codex receives unique errors, warnings, failed tests and paths for targeted follow-up inspection.
 
 ## Supported Platforms
 
@@ -80,7 +82,7 @@ Codex hook support varies by surface. The plugin includes `hooks/hooks.json`, bu
 
 ## Benchmarks
 
-Use `benchmarks/run_benchmarks.py` to create local fixture projects and compare raw bytes, compact bytes, overhead, execution time and retained error information. Do not treat these as exact Codex usage numbers.
+Use `benchmarks/run_benchmarks.py` to compare baseline and optimized runs from equivalent starting states. A scenario succeeds only when exit codes and repository-state hashes match. Output bytes and duration are measured; token reduction is estimated and labeled as such. The harness does not claim universal savings or exact Codex server-side usage.
 
 ## Uninstall
 
@@ -95,11 +97,9 @@ The first command explains project-local files. The second removes `.contextguar
 
 ## Roadmap
 
-- Richer symbol extraction.
-- Better package-script and test detection.
-- HTML report export.
+- Richer cross-language caller extraction.
+- Real Codex A/B runs with server-reported token usage where available.
 - More hook-surface compatibility tests.
-- A/B procedures based on real completed tasks per Codex usage window.
 
 ## Disclaimer
 

@@ -27,7 +27,9 @@ if isinstance(output, str) and len(output.encode()) > 64_000:
         {
             "replacementOutput": (
                 "ContextGuard compacted large tool output:\n"
-                + "\n".join(compact["summary_lines"])
+                + (f"tests: {compact['test_summary']}\n" if compact.get("test_summary") else "")
+                + "\n".join(compact["errors"] + compact["warnings"])
+                + (f"\nstack_trace:\n{compact['stack_traces'][0]}" if compact.get("stack_traces") else "")
                 + f"\nfull_output: {output_path}\nsummary: {summary_path}"
             )
         }

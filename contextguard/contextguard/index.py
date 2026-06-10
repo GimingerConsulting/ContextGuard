@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .config import database_path, state_dir
 from .database import connect
+from .database import increment
 from .utils import is_binary, iter_project_files, safe_relpath, sha256_file
 
 
@@ -103,10 +104,13 @@ def refresh_index(root: Path) -> dict[str, int]:
         total += 1
         is_large = stat.st_size > 512_000
         large += int(is_large)
-        digest = sha256_file(path) if stat.st_size <= 20_000_000 else f"large:{stat.st_size}:{stat.st_mtime}"
         existing = conn.execute("select size, mtime, sha256 from files where path = ?", (rel,)).fetchone()
-        if existing == (stat.st_size, stat.st_mtime, digest):
+        if existing and existing[:2] == (stat.st_size, stat.st_mtime):
+            increment(conn, "cache_hits", 1)
+            increment(conn, "repeated_reads_avoided", 1)
             continue
+        digest = sha256_file(path) if stat.st_size <= 20_000_000 else f"large:{stat.st_size}:{stat.st_mtime}"
+        increment(conn, "cache_misses", 1)
         language = LANG_BY_SUFFIX.get(path.suffix.lower())
         changed += 1
         conn.execute(
@@ -127,6 +131,13 @@ def refresh_index(root: Path) -> dict[str, int]:
             conn.execute("insert or replace into tests(path, kind) values(?, ?)", (rel, "test"))
         _index_text_metadata(conn, root, path, rel, language)
     _index_package_metadata(conn, root)
+    current_paths = {safe_relpath(path, root) for path in iter_project_files(root)}
+    for (stored_path,) in conn.execute("select path from files").fetchall():
+        if stored_path not in current_paths:
+            conn.execute("delete from files where path = ?", (stored_path,))
+            conn.execute("delete from symbols where path = ?", (stored_path,))
+            conn.execute("delete from imports where path = ?", (stored_path,))
+            conn.execute("delete from tests where path = ?", (stored_path,))
     duration_ms = int((time.time() - started) * 1000)
     conn.execute("insert or replace into project(key,value) values('last_refresh', datetime('now'))")
     conn.execute(

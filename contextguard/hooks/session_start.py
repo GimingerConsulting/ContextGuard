@@ -9,11 +9,7 @@ from contextguard.project import detect_project
 event = read_event()
 info = detect_project()
 if (state_dir(info.root) / "manifest.json").exists():
-    message = (
-        "ContextGuard active. Use targeted symbol and range inspection first. "
-        "Large output protection is active. Optimization: Adaptive Maximum Savings. "
-        "Automatically expand context when evidence is insufficient."
-    )
+    write_event({})
 else:
     message = "ContextGuard available but this project is not initialized. Run `$contextguard-init` once to enable local indexing."
-write_event({"additionalContext": message, "event": event.get("hook_event_name", "SessionStart")})
+    write_event({"additionalContext": message, "event": event.get("hook_event_name", "SessionStart")})

@@ -200,3 +200,11 @@
 
 - Using the user's observed 640,000,000 raw tokens and $450 equivalent monthly usage as a rough input, this benchmark's ratio would project to about 1,096,165 ContextGuard tokens and about $0.77 equivalent usage cost for the same class of work.
 - This is a benchmark projection, not a guaranteed billing result, because real Codex behavior depends on task shape, model routing, hidden context, tool calls and how much context the agent chooses to load.
+# 2026-06-10 Adaptive Maximum Efficiency
+
+- Audit baseline: 34 tests passed; representative policy and capsule overhead was about 250 estimated tokens.
+- Identified stale duplicated policy text, noisy startup context, weak relevance scoring, incomplete command summaries, and byte-only benchmarks.
+- Planned a centralized output policy, structured tool-output summaries, progressive cached context, same-result benchmarks, bounded overhead metrics, and documentation updates.
+- Implemented the policy, compact session reuse, typed output summaries, true unchanged-file read avoidance, expanded metrics and ten same-result benchmark scenarios.
+- Validation: 47 tests passed; all benchmark scenarios matched exit codes and repository hashes.
+- Limitation: small commands retain capture-process latency, and token values remain estimated pending a real Codex A/B run.

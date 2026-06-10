@@ -1,3 +1,3 @@
 # Architecture
 
-ContextGuard writes factual, component-oriented architecture notes from deterministic repository inspection.
+ContextGuard writes factual architecture notes from deterministic repository inspection and expands context progressively when evidence requires it.

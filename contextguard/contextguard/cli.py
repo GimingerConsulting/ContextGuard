@@ -7,11 +7,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import database_path, state_dir
-from .documentation import write_managed_docs
+from .documentation import render_agents, write_managed_docs
 from .index import refresh_index
 from .large_file import summarize_large_file
 from .metrics import report as metrics_report
 from .output_capture import capture
+from .output_policy import POLICY_NAME
 from .project import detect_project
 from .repo_map import detect_repo_facts
 from .database import connect, increment
@@ -27,11 +28,17 @@ def init_project(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
     changed_docs = write_managed_docs(info)
+    conn = connect(database_path(info.root))
+    conn.execute(
+        "insert or replace into metrics(key, value) values('managed_policy_bytes', ?)",
+        (len(render_agents(info).encode()),),
+    )
+    conn.commit()
     manifest = {
         "initialized_at": datetime.now(timezone.utc).isoformat(),
         "project_root": info.root.as_posix(),
         "project_kind": info.kind,
-        "policy": "Adaptive Maximum Savings",
+        "policy": POLICY_NAME,
         "database": database_path(info.root).as_posix(),
     }
     (state_dir(info.root) / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -49,7 +56,7 @@ def status(args: argparse.Namespace) -> int:
     metrics = metrics_report(info.root) if initialized else {}
     print(f"ContextGuard: {'active' if initialized else 'inactive'}")
     print(f"Project: {'initialized' if initialized else 'not initialized'}")
-    print("Optimization: Adaptive Maximum Savings")
+    print(f"Optimization: {POLICY_NAME}")
     print("Quality guard: enabled")
     print(f"Index: {'current' if initialized else 'missing'}")
     print(f"Large output protection: {'active' if initialized else 'inactive'}")
@@ -70,6 +77,12 @@ def refresh(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
     docs = write_managed_docs(info)
+    conn = connect(database_path(info.root))
+    conn.execute(
+        "insert or replace into metrics(key, value) values('managed_policy_bytes', ?)",
+        (len(render_agents(info).encode()),),
+    )
+    conn.commit()
     print("ContextGuard refresh complete")
     print(json.dumps({"index": stats, "managed_docs_changed": docs}, indent=2))
     return 0

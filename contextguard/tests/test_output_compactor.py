@@ -18,3 +18,20 @@ def test_compact_output_records_shown_bytes():
     compact = compact_output("ERROR one\nERROR two\n")
     assert compact["compact_bytes"] > 0
     assert compact["raw_bytes"] > compact["compact_bytes"]
+
+
+def test_compact_output_separates_unique_failures_warnings_and_tests():
+    output = """FAILED tests/test_index.py::test_cache - AssertionError: bad hash
+FAILED tests/test_index.py::test_cache - AssertionError: bad hash 2
+WARNING deprecated option
+Traceback (most recent call last):
+  File \"app.py\", line 12, in run
+ValueError: broken
+2 failed, 4 passed in 1.20s
+"""
+    compact = compact_output(output)
+    assert compact["failed_tests"] == ["tests/test_index.py::test_cache"]
+    assert compact["warnings"] == ["WARNING deprecated option"]
+    assert len(compact["errors"]) == 2
+    assert compact["test_summary"] == "2 failed, 4 passed in 1.20s"
+    assert compact["stack_traces"]

@@ -16,5 +16,9 @@ def test_benchmark_harness_runs():
         check=True,
     )
     payload = json.loads(proc.stdout)
-    assert len(payload) == 7
+    assert len(payload) >= 10
     assert all(item["raw_exit"] == item["contextguard_exit"] for item in payload)
+    assert all(item["same_result"] for item in payload)
+    assert all(item["output_quality"] for item in payload)
+    assert all("result_hash" in item for item in payload)
+    assert all("net_estimated_reduction" in item for item in payload)

@@ -16,7 +16,9 @@ def report(root: Path) -> dict:
     compact = int(metrics.get("compact_output_bytes", 0))
     saved_bytes = max(0, raw - compact)
     reduction = round((saved_bytes / raw) * 100, 2) if raw else 0.0
-    estimated_overhead = int(metrics.get("context_bytes_added", 0))
+    policy_bytes = int(metrics.get("managed_policy_bytes", 0))
+    capsule_bytes = int(metrics.get("context_bytes_added", 0))
+    estimated_overhead = policy_bytes + capsule_bytes
     return {
         "files_indexed": files,
         "last_refresh": project.get("last_refresh", "unknown"),
@@ -28,6 +30,9 @@ def report(root: Path) -> dict:
         "large_files_summarized": int(metrics.get("large_files_summarized", 0)),
         "cache_hits": int(metrics.get("cache_hits", 0)),
         "cache_misses": int(metrics.get("cache_misses", 0)),
+        "repeated_reads_avoided": int(metrics.get("repeated_reads_avoided", 0)),
+        "files_inspected": files,
+        "tool_calls": int(commands[0] or 0),
         "full_file_reads_avoided": int(metrics.get("full_file_reads_avoided", 0)),
         "focused_tests_used": int(metrics.get("focused_tests_used", 0)),
         "index_refresh_duration_ms": int(metrics.get("index_refresh_duration_ms", 0)),
@@ -35,4 +40,7 @@ def report(root: Path) -> dict:
         "estimated_tokens_saved": saved_bytes // 4,
         "estimated_reduction_percent": reduction,
         "estimated_contextguard_overhead_tokens": estimated_overhead // 4,
+        "managed_policy_bytes": policy_bytes,
+        "injected_capsule_bytes": capsule_bytes,
+        "net_estimated_reduction_tokens": max(0, saved_bytes // 4 - estimated_overhead // 4),
     }

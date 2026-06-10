@@ -65,3 +65,37 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Measured estimate: RAW 2,439,341 tokens vs ContextGuard 4,178 tokens, saving 2,435,163 tokens or 99.83%.
 - Projected model-processing time at 3,000 tokens/s: RAW 814.1161s total vs ContextGuard 3.0763s total, a projected 99.62% time reduction.
 - Projection from 640M raw monthly tokens at $450: same reduction ratio would be about 1.096M ContextGuard tokens and about $0.77 equivalent usage cost.
+# 2026-06-10 Adaptive Maximum Efficiency
+
+## Audit
+
+- Baseline: 34 tests passed in 3.82 seconds.
+- Existing components: lifecycle hooks, SQLite index, task classifier/capsule, command rewriting/capture, output compactor, large-file summaries, metrics, and a seven-fixture benchmark.
+- Problems: duplicated policy wording, visible initialized-session status, stale `Adaptive Maximum Savings` naming, weak task relevance scoring, byte-only benchmarks, incomplete structured failure summaries, and no first-class final-response quality policy.
+- Measured overhead: managed instructions plus a representative capsule used about 250 estimated tokens; the representative capsule recommended unrelated test files.
+
+## Planned Solution
+
+- Centralize output and final-response policy.
+- Structure and deduplicate captured failures, warnings, tests, and traces while preserving complete local logs and exit codes.
+- Tighten progressive context retrieval and reuse verified session state.
+- Measure ContextGuard overhead and require same-result benchmark equivalence.
+- Update tests and documentation, then run the complete suite before pushing `main`.
+
+## Implemented
+
+- Added a single `Adaptive Maximum Efficiency` output policy with task complexity and final-response semantic checks.
+- Made initialized session startup silent and reduced managed policy text below 700 bytes.
+- Added compact verified session capsules, progressive retrieval metadata, automatic escalation reasons, and true unchanged-file read avoidance.
+- Added structured unique errors, warnings, failed tests, test summaries and stack traces while preserving complete stdout/stderr, exit codes and durations locally.
+- Added managed-policy, capsule, cache, tool-call and net-reduction metrics.
+- Rebuilt the benchmark around ten baseline/optimized scenarios with equivalent exit-code and repository-hash acceptance.
+- Updated README, architecture templates, benchmark documentation and changelog.
+
+## Validation and Limitations
+
+- Complete suite: 47 tests passed in 4.38 seconds.
+- Benchmark: all 10 scenarios produced the same exit code and repository hash.
+- Measured exposed-output reductions included 18,104 bytes for verbose tests, 28,228 bytes for large JSON, 12,921 bytes for repeated errors and 4,364 bytes for a 300-file listing.
+- Small-output scenarios intentionally showed no byte reduction; the capture subprocess added roughly 60-125 ms in this local benchmark.
+- Token reductions remain estimates until a controlled real Codex A/B run exposes server-side usage measurements.

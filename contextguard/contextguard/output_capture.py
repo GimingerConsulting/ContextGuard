@@ -30,10 +30,20 @@ def _render_summary(argv: list[str], summary: dict) -> str:
         "ContextGuard capture summary",
         f"command: {' '.join(argv)}",
         f"exit_code: {summary['exit_code']}",
-        f"duration_ms: {summary['duration_ms']}",
+        f"duration: {summary['duration_ms']} ms",
+        f"total_output_bytes: {summary['raw_bytes']}",
         f"raw_bytes: {summary['raw_bytes']}",
     ]
-    lines.extend(summary["summary_lines"])
+    if summary.get("test_summary"):
+        lines.append(f"tests: {summary['test_summary']}")
+    for title, key in (("unique_errors", "errors"), ("unique_warnings", "warnings"), ("failed_tests", "failed_tests")):
+        values = summary.get(key) or []
+        if values:
+            lines.append(f"{title}:")
+            lines.extend(f"- {value}" for value in values)
+    if summary.get("stack_traces"):
+        lines.append("stack_trace:")
+        lines.append(summary["stack_traces"][0])
     lines.append(f"full_output: {summary['summary_path']}")
     return "\n".join(lines) + "\n"
 

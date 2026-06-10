@@ -1,3 +1,3 @@
 # Project Instructions
 
-ContextGuard-managed guidance is inserted between managed markers. User-authored content outside those markers is preserved.
+ContextGuard inserts the compact Adaptive Maximum Efficiency policy between managed markers. User-authored content outside those markers is preserved.

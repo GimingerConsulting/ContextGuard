@@ -24,3 +24,11 @@ def test_symbol_classification_from_index(tmp_path: Path):
     result = classify_task(tmp_path, "PaymentGateway bug")
     assert result["confidence"] == "high"
     assert result["likely_symbols"][0]["name"] == "PaymentGateway"
+
+
+def test_classifier_describes_progressive_retrieval_and_escalation(tmp_path: Path):
+    (tmp_path / "service.py").write_text("class PaymentGateway:\n    pass\n")
+    result = classify_task(tmp_path, "PaymentGateway persistence bug")
+    assert result["retrieval_levels"][0] == "metadata"
+    assert result["retrieval_levels"][-1] == "wider_repository"
+    assert "security_or_persistence" in result["escalate_when"]

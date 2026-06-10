@@ -33,6 +33,15 @@ def test_init_repeated_status_and_paths_with_spaces(tmp_path: Path):
     assert (project / ".contextguard" / "index.sqlite").exists()
 
 
+def test_refresh_reuses_unchanged_index_entries(tmp_path: Path):
+    (tmp_path / "app.py").write_text("print('ok')\n")
+    run_cli(["init"], tmp_path)
+    run_cli(["refresh"], tmp_path)
+    report = run_cli(["report"], tmp_path)
+    assert "cache_hits:" in report.stdout
+    assert "repeated_reads_avoided:" in report.stdout
+
+
 def test_capture_preserves_non_zero_exit_code(tmp_path: Path):
     result = run_cli(["capture", "--", sys.executable, "-c", "print('bad'); raise SystemExit(7)"], tmp_path)
     assert result.returncode == 7

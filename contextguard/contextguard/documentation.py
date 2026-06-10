@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import MANAGED_BEGIN, MANAGED_END
+from .output_policy import render_policy
 from .project import ProjectInfo
 from .repo_map import detect_repo_facts
 
@@ -56,19 +57,7 @@ def update_gitignore(root: Path) -> bool:
 
 
 def render_agents(info: ProjectInfo) -> str:
-    return f"""ContextGuard policy: Adaptive Maximum Savings.
-
-- Search before reading complete files; inspect symbols and line ranges first.
-- Avoid generated, vendor and dependency directories unless correctness requires them.
-- Preserve complete command output locally and prefer compact summaries before raw data.
-- Expand context automatically when evidence is insufficient, tests contradict a hypothesis, or module boundaries are involved.
-- Avoid unrelated refactoring and keep changes scoped to the user request.
-- Run focused validation first, then broaden when risk justifies it.
-- Never claim tests passed unless the exact validation command executed successfully.
-- Keep final responses concise and do not paste complete files unless requested.
-
-Project classification: {info.kind}.
-"""
+    return render_policy(info.kind)
 
 
 def render_architecture(root: Path) -> str:
@@ -120,7 +109,7 @@ def render_current_state(info: ProjectInfo) -> str:
     return f"""- Current objective: keep Codex context focused while preserving correctness.
 - Verified current state: project classified as `{info.kind}`.
 - Relevant files: AGENTS.md, docs/ARCHITECTURE.md, docs/CURRENT_STATE.md, .contextguard/manifest.json.
-- Active decisions: use Adaptive Maximum Savings with automatic context escalation.
+- Active decisions: use Adaptive Maximum Efficiency with automatic context escalation.
 - Known blockers: none recorded.
 - Completed validation: ContextGuard initialization completed locally.
 - Next concrete action: use focused search and targeted file inspection for the next task.

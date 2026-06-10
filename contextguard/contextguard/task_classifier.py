@@ -8,8 +8,18 @@ from .config import database_path
 from .utils import iter_project_files, safe_relpath, search_paths_for_terms
 
 
+STOP_TERMS = {
+    "add", "and", "change", "code", "create", "efficiency", "feature", "file", "fix",
+    "implement", "improve", "output", "project", "test", "tests", "update", "with",
+}
+
+
 def classify_task(root: Path, prompt: str) -> dict:
-    terms = {t.lower() for t in re.findall(r"[A-Za-z_][A-Za-z0-9_.-]{2,}", prompt)}
+    terms = {
+        t.lower()
+        for t in re.findall(r"[A-Za-z_][A-Za-z0-9_.-]{2,}", prompt)
+        if t.lower() not in STOP_TERMS
+    }
     candidates = []
     tests = []
     symbols = []
@@ -49,4 +59,13 @@ def classify_task(root: Path, prompt: str) -> dict:
         "likely_symbols": symbols[:12] if confidence != "low" else [],
         "relevant_tests": tests[:8] if confidence != "low" else [],
         "recommended_scope": "Use metadata and symbol/range inspection first; expand only when evidence is insufficient.",
+        "retrieval_levels": [
+            "metadata", "symbol_location", "relevant_lines", "complete_symbol",
+            "callers_and_dependencies", "complete_file", "wider_repository",
+        ],
+        "escalate_when": [
+            "ambiguous_root_cause", "missing_types_or_imports", "contradicting_test",
+            "module_boundary", "security_or_persistence", "insufficient_confidence",
+            "architectural_change",
+        ],
     }

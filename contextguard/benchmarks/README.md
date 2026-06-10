@@ -1,26 +1,13 @@
 # ContextGuard Benchmark Harness
 
-Run the local benchmark harness:
+Run:
 
 ```bash
 PYTHONPATH=. python3 benchmarks/run_benchmarks.py
 ```
 
-It creates temporary fixture projects for:
+The harness creates separate baseline and optimized copies for ten scenarios: a trivial change, medium feature, complex failure, verbose test suite, large JSON analysis, repeated errors, long session, unchanged restart, partial-change restart, and large repository.
 
-- small web project
-- medium Node project
-- Python data project
-- verbose test output
-- large JSON
-- repeated log errors
-- existing undocumented repository
+Each pair uses the same command and starting content. Success requires the same exit code and repository-state hash, excluding ContextGuard's local `.contextguard/` state. The JSON records measured output bytes and duration, estimated token reduction, ContextGuard overhead, and semantic final-response quality.
 
-For each fixture, it runs the raw command and then:
-
-```bash
-contextguard capture -- <command>
-contextguard report
-```
-
-Record raw bytes, compact bytes, ContextGuard overhead, execution time, information retained and error detection accuracy. Treat token numbers as estimates only. The main future metric is successfully completed coding tasks per Codex usage window.
+This is deterministic local tooling, not a complete Codex usage measurement. Token values use a labeled four-bytes-per-token estimate. Real-world claims require controlled Codex A/B runs with the same prompt, model, reasoning level, environment, tools and validation criteria.
