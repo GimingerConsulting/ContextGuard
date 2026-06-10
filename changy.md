@@ -137,3 +137,13 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - ContextGuard saved 20,107 visible tokens, a 97.37% reduction, at 42.5 ms median additional processing time across eleven samples.
 - The complete archived output remained byte-identical, and the visible compact output retained the total failure summary, 20 failed-test names and representative root failures.
 - Full suite: 61 tests passed.
+
+## 2026-06-10 Isolated Installation Acceptance
+
+- Added a deterministic pre-install acceptance test using an isolated copy of the publishable plugin.
+- Confirmed one-time initialization works for an empty project and an existing Git project while preserving user-authored instructions.
+- Confirmed SessionStart, UserPromptSubmit, PreToolUse and PostToolUse logic works automatically in the simulated lifecycle.
+- Confirmed byte-identical archived full output and preserved failure information.
+- Measured 14,581 RAW tokens versus 528 ContextGuard-visible tokens: 14,053 saved, or 96.38%, with 49.9 ms median hook time across fifteen samples.
+- Guarantee applies to the packaged ContextGuard logic; Codex host hook dispatch and stochastic model output remain outside the deterministic guarantee.
+- Full suite: 62 tests passed.

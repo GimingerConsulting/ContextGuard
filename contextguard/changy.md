@@ -240,3 +240,14 @@
 - Savings: 20,107 visible tool-output tokens, 97.37% reduction. Median ContextGuard processing overhead across eleven samples: 42.5 ms.
 - Information check passed: the complete archived output SHA-256 matched RAW, while the compact response retained `130 failed`, 20 failed-test names and representative conversion, cap, canonical-scenario and duplicate-reporting failures.
 - Final validation: 61 tests passed.
+
+## 2026-06-10 Isolated Installation Acceptance
+
+- Added `benchmarks/install_acceptance.py`, which copies the publishable plugin into an isolated installation directory and runs all checks against that copy.
+- Required one-time initialization for a truly empty project and an existing Git project with multiple source/config/test files.
+- Verified existing user-authored `AGENTS.md` content was preserved while the managed ContextGuard section was added.
+- Simulated the automatic lifecycle in order and verified SessionStart, UserPromptSubmit, PreToolUse command rewriting and PostToolUse output compaction.
+- Verified the archived full 130-failure output was byte-identical by SHA-256 and that the visible response retained the summary and concrete failed-test names.
+- Measured 14,581 RAW tokens versus 528 ContextGuard-visible tokens using `o200k_base`: 14,053 tokens saved, or 96.38%, with 49.9 ms median hook time across fifteen samples.
+- Acceptance result: passed every deterministic package and hook-logic gate. Scope explicitly excludes Codex host hook dispatch and stochastic model behavior.
+- Final full suite: 62 tests passed.

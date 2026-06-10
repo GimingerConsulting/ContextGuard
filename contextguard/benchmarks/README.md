@@ -30,3 +30,9 @@ The June 10, 2026 result is stored in `benchmarks/results/real-codex-hard-ab-202
 Run `python3 benchmarks/output_ab.py` to compare the exact same hard 130-failure pytest output as fully visible RAW output and as the real ContextGuard PostToolUse response. The test counts visible bytes and `o200k_base` tokens, measures median processing time, verifies that the complete archived output is byte-identical, and requires the compact response to retain the test summary and concrete failed-test names.
 
 The June 10 result in `benchmarks/results/output-ab-2026-06-10.json` measured 20,650 RAW tokens versus 543 ContextGuard tokens, saving 20,107 tokens or 97.37%, with 42.5 ms median additional processing time across eleven samples.
+
+## Isolated Installation Acceptance
+
+Run `python3 benchmarks/install_acceptance.py` to copy the publishable plugin into an isolated installation directory and test only that copy. Acceptance requires successful one-time initialization of both an empty project and an existing Git project, preservation of user-authored instructions, successful SessionStart/UserPromptSubmit/PreToolUse/PostToolUse processing, byte-identical archived raw output, retained failure information, and positive visible-token savings.
+
+The June 10 acceptance result in `benchmarks/results/install-acceptance-2026-06-10.json` passed every gate. The hard 130-failure output used 14,581 RAW tokens versus 528 ContextGuard-visible tokens, saving 14,053 tokens or 96.38%. This deterministically guarantees the packaged ContextGuard logic under the simulated hook lifecycle; it does not guarantee that an external Codex host version dispatches hooks or that a stochastic model returns identical prose or code.
