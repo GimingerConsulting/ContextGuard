@@ -1,0 +1,56 @@
+{
+  "benchmark": "real-codex-hard-settlement-ab",
+  "date": "2026-06-10",
+  "model": "gpt-5.5",
+  "reasoning_effort": "medium",
+  "codex_cli": "codex-cli 0.128.0",
+  "tests_per_run": 130,
+  "equivalent_result": true,
+  "canonical_posted_minor": 9174,
+  "raw": {
+    "input_tokens": 255166,
+    "cached_input_tokens": 210688,
+    "uncached_input_tokens": 44478,
+    "output_tokens": 5516,
+    "reasoning_output_tokens": 1258,
+    "combined_generated_tokens": 6774,
+    "tool_output_bytes": 12304,
+    "command_executions": 20,
+    "elapsed_seconds": 124.423,
+    "final_response_bytes": 1126
+  },
+  "contextguard": {
+    "input_tokens": 328934,
+    "cached_input_tokens": 300800,
+    "uncached_input_tokens": 28134,
+    "output_tokens": 5023,
+    "reasoning_output_tokens": 1231,
+    "combined_generated_tokens": 6254,
+    "tool_output_bytes": 92353,
+    "command_executions": 18,
+    "elapsed_seconds": 124.711,
+    "final_response_bytes": 1297
+  },
+  "contextguard_change_percent": {
+    "input_tokens": 28.91,
+    "cached_input_tokens": 42.77,
+    "uncached_input_tokens": -36.75,
+    "output_tokens": -8.94,
+    "reasoning_output_tokens": -2.15,
+    "combined_generated_tokens": -7.68,
+    "tool_output_bytes": 650.59,
+    "command_executions": -10.0,
+    "elapsed_seconds": 0.23,
+    "final_response_bytes": 15.19,
+    "input_plus_generated_tokens": 27.96
+  },
+  "finding": "ContextGuard reduced uncached input and generated tokens, but total input and tool-output volume increased; elapsed time was effectively unchanged.",
+  "identified_problem": "On Codex CLI 0.128.0, the ContextGuard hook scripts executed, but PreToolUse updatedInput and PostToolUse replacementOutput were not applied. An 80,573-byte failing pytest output therefore reached the optimized agent.",
+  "required_solution": "Update and compatibility-test hook response envelopes against supported Codex CLI versions, then repeat the same A/B benchmark.",
+  "limitations": [
+    "Single controlled sample; model execution is stochastic.",
+    "Raw ran first and ContextGuard second.",
+    "Cached input is reported separately because it dominates total input in both runs.",
+    "The result measures the current plugin behavior, including the discovered hook compatibility defect."
+  ]
+}

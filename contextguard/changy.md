@@ -208,3 +208,10 @@
 - Implemented the policy, compact session reuse, typed output summaries, true unchanged-file read avoidance, expanded metrics and ten same-result benchmark scenarios.
 - Validation: 47 tests passed; all benchmark scenarios matched exit codes and repository hashes.
 - Limitation: small commands retain capture-process latency, and token values remain estimated pending a real Codex A/B run.
+
+## 2026-06-10 Real Codex Hard A/B
+
+- Added `benchmarks/real_codex_ab.py` with a difficult multi-module settlement fixture, 130 tests, exact Codex JSONL token parsing, isolated homes, result equivalence checks and preserved local artifacts.
+- Both raw and ContextGuard runs passed 130 tests and produced identical canonical output.
+- ContextGuard reduced uncached input 36.75% and generated tokens 7.68%, but increased total input 28.91% and tool output 650.59%; elapsed time was effectively equal.
+- Found a CLI 0.128.0 compatibility defect: hook scripts ran, but command and output replacement fields were ignored. Add version-compatible hook envelopes and integration coverage before rerunning the benchmark.

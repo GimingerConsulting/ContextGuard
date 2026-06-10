@@ -99,3 +99,16 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Measured exposed-output reductions included 18,104 bytes for verbose tests, 28,228 bytes for large JSON, 12,921 bytes for repeated errors and 4,364 bytes for a 300-file listing.
 - Small-output scenarios intentionally showed no byte reduction; the capture subprocess added roughly 60-125 ms in this local benchmark.
 - Token reductions remain estimates until a controlled real Codex A/B run exposes server-side usage measurements.
+
+## 2026-06-10 Real Codex Hard A/B
+
+- Built a reproducible real-Codex benchmark using two identical isolated settlement repositories, `gpt-5.5`, medium reasoning, the same prompt, 130 tests, canonical CLI validation, JSONL usage parsing and wall-clock measurement.
+- The first run used 129 tests and appeared favorable, but artifact review found that the ContextGuard implementation was not idempotent for a third duplicate event. That result was rejected, the validation suite was strengthened, and both trials were rerun from scratch.
+- Final quality result: raw and ContextGuard both passed all 130 tests and produced the same canonical settlement result (`posted_minor=9174`).
+- Raw: 255,166 input tokens, 44,478 uncached input tokens, 5,516 output tokens, 1,258 reasoning tokens, 12,304 tool-output bytes, 20 commands and 124.423 seconds.
+- ContextGuard: 328,934 input tokens, 28,134 uncached input tokens, 5,023 output tokens, 1,231 reasoning tokens, 92,353 tool-output bytes, 18 commands and 124.711 seconds.
+- ContextGuard reduced uncached input by 36.75%, combined generated tokens by 7.68% and commands by 10.0%.
+- ContextGuard increased total input by 28.91%, input plus generated tokens by 27.96%, tool-output bytes by 650.59% and final-response bytes by 15.19%. Time increased by 0.23%, effectively unchanged.
+- Problem: on Codex CLI 0.128.0, ContextGuard hooks executed but `PreToolUse.updatedInput` and `PostToolUse.replacementOutput` were not applied. The optimized agent's initial failing pytest run exposed 80,573 bytes instead of a compact summary.
+- Solution: update hook response envelopes for supported Codex CLI versions, add an integration test proving command replacement and output replacement, then rerun this exact A/B benchmark.
+- Result classification: mixed and currently negative on total token/tool-output efficiency; not a ContextGuard win.
