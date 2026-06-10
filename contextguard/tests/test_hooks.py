@@ -21,9 +21,21 @@ def run_hook(name: str, payload: dict, cwd: Path):
 
 def test_hook_json_input_output(tmp_path: Path):
     result = run_hook("pre_tool_use.py", {"tool_name": "Bash", "tool_input": {"command": "cat big.log"}}, tmp_path)
-    assert result["permissionDecision"] == "allow"
-    assert "updatedInput" in result
-    assert "/scripts/contextguard" in result["updatedInput"]["command"]
+    output = result["hookSpecificOutput"]
+    assert output["hookEventName"] == "PreToolUse"
+    assert output["permissionDecision"] == "allow"
+    assert "/scripts/contextguard" in output["updatedInput"]["command"]
+
+
+def test_python_module_pytest_pipeline_is_rewritten(tmp_path: Path):
+    result = run_hook(
+        "pre_tool_use.py",
+        {"tool_name": "Bash", "tool_input": {"command": "python3 -m pytest -q 2>&1 | tee /tmp/tests.log"}},
+        tmp_path,
+    )
+    command = result["hookSpecificOutput"]["updatedInput"]["command"]
+    assert "/scripts/contextguard" in command
+    assert "python3 -m pytest" in command
 
 
 def test_stop_hook_loop_prevention(tmp_path: Path):
@@ -33,7 +45,7 @@ def test_stop_hook_loop_prevention(tmp_path: Path):
 
 def test_session_start_uninitialized(tmp_path: Path):
     result = run_hook("session_start.py", {}, tmp_path)
-    assert "not initialized" in result["additionalContext"]
+    assert "not initialized" in result["hookSpecificOutput"]["additionalContext"]
 
 
 def test_session_start_initialized_is_silent(tmp_path: Path):
@@ -45,11 +57,22 @@ def test_session_start_initialized_is_silent(tmp_path: Path):
 
 
 def test_post_tool_use_stores_large_output(tmp_path: Path):
-    payload = {"output": "ERROR repeated failure\n" * 5000}
+    payload = {"tool_name": "Bash", "tool_response": "ERROR repeated failure\n" * 5000}
     result = run_hook("post_tool_use.py", payload, tmp_path)
-    assert "replacementOutput" in result
-    assert "full_output:" in result["replacementOutput"]
+    assert result["decision"] == "block"
+    assert "full_output:" in result["reason"]
+    assert result["hookSpecificOutput"]["hookEventName"] == "PostToolUse"
     assert list((tmp_path / ".contextguard" / "tmp").glob("tool-output-*.txt"))
+    metrics = tmp_path / ".contextguard" / "tmp" / "hook-output-metrics.jsonl"
+    record = json.loads(metrics.read_text().splitlines()[-1])
+    assert record["raw_bytes"] > record["model_visible_bytes"]
+
+
+def test_post_tool_use_compacts_noisy_medium_output(tmp_path: Path):
+    payload = {"tool_name": "Bash", "tool_response": "FAILED test_case file.py:12 error\n" * 80}
+    result = run_hook("post_tool_use.py", payload, tmp_path)
+    assert result["decision"] == "block"
+    assert len(result["reason"].encode()) < 2000
 
 
 def test_pre_compact_persists_compact_session_facts(tmp_path: Path):
@@ -62,3 +85,13 @@ def test_pre_compact_persists_compact_session_facts(tmp_path: Path):
     capsule = (tmp_path / ".contextguard" / "sessions" / "latest.json").read_text()
     assert "finish policy" in capsule
     assert "transcript" not in capsule
+
+
+def test_user_prompt_context_uses_codex_hook_envelope(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    result = run_hook("user_prompt_submit.py", {"prompt": "fix billing"}, tmp_path)
+    output = result["hookSpecificOutput"]
+    assert output["hookEventName"] == "UserPromptSubmit"
+    assert "ContextGuard" in output["additionalContext"]

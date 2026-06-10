@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -19,6 +20,7 @@ REPOSITORY_ROOT = PLUGIN_ROOT.parent
 PROMPT = """Implement the settlement reconciliation feature described in SPEC.md.
 
 Requirements:
+- before editing, run `python3 -m pytest -q` exactly once with no redirection, pipes, wrappers, or added arguments
 - preserve the public API and existing behavior
 - use Decimal-safe HALF_EVEN currency conversion
 - reject duplicate event IDs idempotently
@@ -196,6 +198,7 @@ def parse_codex_jsonl(text: str) -> dict:
     command_executions = 0
     file_changes = 0
     final_response = ""
+    commands = []
     for line in text.splitlines():
         try:
             event = json.loads(line)
@@ -209,6 +212,7 @@ def parse_codex_jsonl(text: str) -> dict:
         item_type = item.get("type")
         if item_type == "command_execution":
             command_executions += 1
+            commands.append(item.get("command") or "")
             output = item.get("aggregated_output") or item.get("output") or ""
             tool_output_bytes += len(str(output).encode())
         elif item_type == "file_change":
@@ -228,30 +232,48 @@ def parse_codex_jsonl(text: str) -> dict:
         "file_changes": file_changes,
         "final_response": final_response,
         "final_response_bytes": len(final_response.encode()),
+        "commands": commands,
     }
 
 
 def build_codex_command(project: Path, *, optimized: bool) -> list[str]:
-    command = [
-        "codex", "exec", "--json", "--ephemeral", "--ignore-rules",
+    command = shlex.split(os.environ.get("CONTEXTGUARD_CODEX_COMMAND", "codex"))
+    command.extend([
+        "exec", "--json", "--ephemeral", "--ignore-rules",
         "--model", "gpt-5.5", "-c", 'model_reasoning_effort="medium"',
         "--sandbox", "danger-full-access", "-c", 'approval_policy="never"', "-c", "features.plugins=false",
-    ]
+    ])
+    if optimized and os.environ.get("CONTEXTGUARD_BYPASS_HOOK_TRUST") == "1":
+        command.append("--dangerously-bypass-hook-trust")
     command.extend(["-C", str(project), PROMPT])
     return command
 
 
-def prepare_codex_home(home: Path, project: Path) -> None:
+def prepare_codex_home(home: Path, project: Path, *, optimized: bool = False) -> None:
     home.mkdir(parents=True, exist_ok=True)
     auth = Path.home() / ".codex" / "auth.json"
     if not auth.exists():
         raise RuntimeError("Codex authentication is unavailable at ~/.codex/auth.json")
     shutil.copy2(auth, home / "auth.json")
     os.chmod(home / "auth.json", 0o600)
-    (home / "config.toml").write_text(
-        f'[projects."{project.as_posix()}"]\ntrust_level = "trusted"\n',
-        encoding="utf-8",
-    )
+    canonical_project = Path(os.path.realpath(project))
+    config = f'[projects."{canonical_project.as_posix()}"]\ntrust_level = "trusted"\n'
+    if optimized:
+        hook_root = PLUGIN_ROOT / "hooks"
+        config += "\n[features]\nhooks = true\n"
+        for event, matcher, script in (
+            ("SessionStart", "startup|resume", "session_start.py"),
+            ("UserPromptSubmit", None, "user_prompt_submit.py"),
+            ("PreToolUse", ".*", "pre_tool_use.py"),
+            ("PostToolUse", ".*", "post_tool_use.py"),
+            ("PreCompact", "manual|auto", "pre_compact.py"),
+            ("Stop", None, "stop.py"),
+        ):
+            config += f"\n[[hooks.{event}]]\n"
+            if matcher:
+                config += f'matcher = "{matcher}"\n'
+            config += f"\n[[hooks.{event}.hooks]]\ntype = \"command\"\ncommand = \"python3 '{hook_root / script}'\"\n"
+    (home / "config.toml").write_text(config, encoding="utf-8")
 
 
 def prepare_optimized_project(project: Path) -> None:
@@ -270,24 +292,27 @@ def prepare_optimized_project(project: Path) -> None:
         "hooks": {
             "SessionStart": [{"matcher": "startup|resume", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'session_start.py'}"}]}],
             "UserPromptSubmit": [{"hooks": [{"type": "command", "command": f"python3 '{hook_root / 'user_prompt_submit.py'}"}]}],
-            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'pre_tool_use.py'}"}]}],
-            "PostToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'post_tool_use.py'}"}]}],
+            "PreToolUse": [{"matcher": ".*", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'pre_tool_use.py'}"}]}],
+            "PostToolUse": [{"matcher": ".*", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'post_tool_use.py'}"}]}],
             "PreCompact": [{"matcher": "manual|auto", "hooks": [{"type": "command", "command": f"python3 '{hook_root / 'pre_compact.py'}"}]}],
             "Stop": [{"hooks": [{"type": "command", "command": f"python3 '{hook_root / 'stop.py'}"}]}],
         }
     }
     codex_dir = project / ".codex"
     codex_dir.mkdir(exist_ok=True)
+    (codex_dir / "config.toml").write_text("[features]\nhooks = true\n", encoding="utf-8")
     (codex_dir / "hooks.json").write_text(json.dumps(hooks, indent=2) + "\n", encoding="utf-8")
 
 
 def run_trial(project: Path, codex_home: Path, artifact_dir: Path, *, optimized: bool, timeout: int) -> dict:
-    prepare_codex_home(codex_home, project)
+    prepare_codex_home(codex_home, project, optimized=optimized)
     if optimized:
         prepare_optimized_project(project)
     artifact_dir.mkdir(parents=True, exist_ok=True)
     environment = os.environ.copy()
     environment["CODEX_HOME"] = str(codex_home)
+    if optimized:
+        environment["CONTEXTGUARD_BENCHMARK_METRICS"] = "1"
     started = time.perf_counter()
     timed_out = False
     try:
@@ -311,6 +336,42 @@ def run_trial(project: Path, codex_home: Path, artifact_dir: Path, *, optimized:
         exit_code = 124
     elapsed = time.perf_counter() - started
     parsed = parse_codex_jsonl(stdout)
+    parsed["exact_baseline_command"] = any(
+        command.endswith("'python3 -m pytest -q'") or command == "python3 -m pytest -q"
+        for command in parsed["commands"]
+    )
+    compacted_raw_bytes = 0
+    compacted_visible_bytes = 0
+    compacted_output_count = 0
+    hook_metrics = project / ".contextguard" / "tmp" / "hook-output-metrics.jsonl"
+    if hook_metrics.exists():
+        for line in hook_metrics.read_text(encoding="utf-8").splitlines():
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            compacted_raw_bytes += int(record.get("raw_bytes", 0))
+            compacted_visible_bytes += int(record.get("model_visible_bytes", 0))
+            compacted_output_count += int(bool(record.get("compacted")))
+    hook_invocations = 0
+    rewrite_requests = 0
+    invocation_metrics = project / ".contextguard" / "tmp" / "hook-invocations.jsonl"
+    if invocation_metrics.exists():
+        for line in invocation_metrics.read_text(encoding="utf-8").splitlines():
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            hook_invocations += int(record.get("event") == "PreToolUse")
+            rewrite_requests += int(bool(record.get("rewrite_requested")))
+    parsed["raw_tool_output_bytes"] = parsed["tool_output_bytes"]
+    parsed["model_visible_tool_output_bytes"] = max(
+        0,
+        parsed["tool_output_bytes"] - compacted_raw_bytes + compacted_visible_bytes,
+    )
+    parsed["hook_invocations"] = hook_invocations
+    parsed["rewrite_requests"] = rewrite_requests
+    parsed["compacted_output_count"] = compacted_output_count
     validation = validate_fixture(project)
     diff = subprocess.run(["git", "diff", "--", ".", ":(exclude).codex", ":(exclude)AGENTS.md", ":(exclude)docs"], cwd=project, text=True, capture_output=True).stdout
     (artifact_dir / "events.jsonl").write_text(stdout, encoding="utf-8")
@@ -350,12 +411,18 @@ def execute_real_ab(output_dir: Path, *, timeout: int = 1200) -> dict:
             and optimized["validation"]["exit_code"] == 0
             and raw["validation"]["canonical_output"] == optimized["validation"]["canonical_output"]
             and raw["validation"]["passed_tests"] == optimized["validation"]["passed_tests"]
+            and raw["exact_baseline_command"]
+            and optimized["exact_baseline_command"]
+            and optimized["hook_invocations"] > 0
+            and optimized["compacted_output_count"] > 0
         )
         comparison = {}
         for key in (
             "input_tokens", "cached_input_tokens", "uncached_input_tokens", "output_tokens",
             "reasoning_output_tokens", "tool_output_bytes", "elapsed_seconds", "command_executions",
-            "file_changes", "final_response_bytes", "diff_bytes",
+            "raw_tool_output_bytes", "model_visible_tool_output_bytes", "file_changes",
+            "final_response_bytes", "diff_bytes",
+            "hook_invocations", "rewrite_requests", "compacted_output_count",
         ):
             comparison[key] = {
                 "raw": raw[key],
@@ -366,7 +433,11 @@ def execute_real_ab(output_dir: Path, *, timeout: int = 1200) -> dict:
             "benchmark": "real-codex-hard-settlement-ab",
             "model": "gpt-5.5",
             "reasoning_effort": "medium",
-            "codex_cli": subprocess.run(["codex", "--version"], text=True, capture_output=True).stdout.strip(),
+            "codex_cli": subprocess.run(
+                [*shlex.split(os.environ.get("CONTEXTGUARD_CODEX_COMMAND", "codex")), "--version"],
+                text=True,
+                capture_output=True,
+            ).stdout.strip(),
             "same_prompt": True,
             "equivalent_result": equivalent,
             "raw": raw,

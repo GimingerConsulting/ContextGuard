@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from benchmarks.real_codex_ab import (
+    PROMPT,
     apply_reference_solution,
     build_codex_command,
     create_fixture,
@@ -13,6 +14,12 @@ from benchmarks.real_codex_ab import (
     prepare_optimized_project,
     validate_fixture,
 )
+
+
+def test_prompt_forces_same_noisy_baseline_before_edits():
+    assert "before editing" in PROMPT
+    assert "python3 -m pytest -q" in PROMPT
+    assert "no redirection" in PROMPT
 
 
 def test_hard_fixture_fails_before_reference_and_passes_after(tmp_path: Path):
@@ -53,6 +60,7 @@ def test_parse_codex_jsonl_extracts_exact_usage_and_tool_output():
     assert parsed["command_executions"] == 1
     assert parsed["file_changes"] == 1
     assert parsed["final_response"] == "done"
+    assert parsed["commands"] == [""]
 
 
 def test_raw_and_optimized_commands_differ_only_by_hook_activation(tmp_path: Path):
@@ -66,10 +74,19 @@ def test_raw_and_optimized_commands_differ_only_by_hook_activation(tmp_path: Pat
     assert 'model_reasoning_effort="medium"' in raw
 
 
+def test_optimized_command_can_explicitly_bypass_hook_trust(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("CONTEXTGUARD_BYPASS_HOOK_TRUST", "1")
+    raw = build_codex_command(tmp_path / "raw", optimized=False)
+    optimized = build_codex_command(tmp_path / "optimized", optimized=True)
+    assert "--dangerously-bypass-hook-trust" not in raw
+    assert "--dangerously-bypass-hook-trust" in optimized
+
+
 def test_optimized_project_has_initialized_state_and_current_hook_schema(tmp_path: Path):
     project = create_fixture(tmp_path / "optimized")
     prepare_optimized_project(project)
     assert (project / ".contextguard/manifest.json").exists()
     hooks = json.loads((project / ".codex/hooks.json").read_text())
-    assert hooks["hooks"]["PreToolUse"][0]["matcher"] == "Bash"
+    assert hooks["hooks"]["PreToolUse"][0]["matcher"] == ".*"
     assert hooks["hooks"]["PreToolUse"][0]["hooks"][0]["type"] == "command"
+    assert (project / ".codex/config.toml").read_text() == "[features]\nhooks = true\n"

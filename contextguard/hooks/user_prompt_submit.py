@@ -16,6 +16,13 @@ if (state_dir(info.root) / "manifest.json").exists() and prompt:
     context = "\n".join(parts)
     conn = connect(state_dir(info.root) / "index.sqlite")
     increment(conn, "context_bytes_added", len(context.encode()))
-    write_event({"additionalContext": context})
+    write_event(
+        {
+            "hookSpecificOutput": {
+                "hookEventName": "UserPromptSubmit",
+                "additionalContext": context,
+            }
+        }
+    )
 else:
     write_event({})

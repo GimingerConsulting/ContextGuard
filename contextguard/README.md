@@ -78,7 +78,7 @@ macOS is the primary target. Linux is supported where Python 3 and shell semanti
 
 ## Known Hook Limitations
 
-Codex hook support varies by surface. The plugin includes `hooks/hooks.json`, but current local plugin validation rejects a top-level `hooks` field in `plugin.json`; this repository keeps the hook config in the official hook folder and documents that adjustment.
+Codex hook support varies by surface and CLI version. ContextGuard uses the current nested `hooks/hooks.json` schema and PostToolUse replacement feedback as a fallback when older CLIs execute hooks but do not apply PreToolUse input rewriting. As of Codex CLI 0.139.0, `codex exec` has an upstream regression that can skip lifecycle hooks entirely even with trust bypass enabled; ContextGuard cannot reduce model-visible command output in that surface until Codex dispatches the hooks. Complete output remains stored locally when hooks run.
 
 ## Benchmarks
 

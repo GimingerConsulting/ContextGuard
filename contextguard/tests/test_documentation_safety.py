@@ -22,3 +22,14 @@ def test_managed_section_replacement(tmp_path: Path):
     text = path.read_text()
     assert "second" in text
     assert "first" not in text
+
+
+def test_hooks_json_uses_current_codex_nested_schema():
+    import json
+
+    path = Path(__file__).resolve().parents[1] / "hooks" / "hooks.json"
+    hooks = json.loads(path.read_text())["hooks"]
+    handler = hooks["PreToolUse"][0]["hooks"][0]
+    assert hooks["PreToolUse"][0]["matcher"] == ".*"
+    assert handler["type"] == "command"
+    assert handler["command"] == 'python3 "$PLUGIN_ROOT/hooks/pre_tool_use.py"'

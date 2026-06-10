@@ -215,3 +215,18 @@
 - Both raw and ContextGuard runs passed 130 tests and produced identical canonical output.
 - ContextGuard reduced uncached input 36.75% and generated tokens 7.68%, but increased total input 28.91% and tool output 650.59%; elapsed time was effectively equal.
 - Found a CLI 0.128.0 compatibility defect: hook scripts ran, but command and output replacement fields were ignored. Add version-compatible hook envelopes and integration coverage before rerunning the benchmark.
+
+## 2026-06-10 Hook Compatibility Fix
+
+- Reproduced the hook protocol issue against Codex CLI 0.128.0 and verified the supported PostToolUse replacement path with a live 278,889-byte log probe.
+- Added current `hookSpecificOutput` envelopes, supported PostToolUse blocking feedback, noisy-medium fallback compaction, Python module validation classification, nested `hooks.json`, and model-visible tool-output accounting.
+- Validation: 56 tests passed. The unchanged hard A/B rerun is pending the external Codex usage reset at 4:13 PM Europe/Berlin.
+
+## 2026-06-10 Hard A/B Rerun And Upstream Blocker
+
+- Added exact-baseline-command enforcement, hook invocation counters, compaction counters, raw/model-visible output accounting and pinned Codex command support to the hard A/B harness.
+- Expanded shell hook matching and made PreToolUse payload-driven so command-bearing tool aliases remain compatible across Codex versions.
+- Rejected a CLI 0.128.0 sample and a pinned CLI 0.139.0 sample even though both sides passed all 130 tests with identical canonical output: both nominal ContextGuard trials recorded zero hook invocations and zero compacted outputs.
+- Reproduced the failure independently with project hooks, user hooks, inline TOML hooks, an installed ContextGuard plugin, trusted projects, `--dangerously-bypass-hook-trust`, and marker-only hooks. Neither PreToolUse nor Stop executed under `codex exec`.
+- Confirmed matching upstream Codex reports: issues 25875, 26383 and 26452. The published result is marked blocked and contains the rejected measurements for auditability; it does not claim token savings or regression from runs where ContextGuard never activated.
+- Validation after the implementation changes: 58 tests passed and the 130-test fixture self-check passed.

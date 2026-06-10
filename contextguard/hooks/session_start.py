@@ -12,4 +12,11 @@ if (state_dir(info.root) / "manifest.json").exists():
     write_event({})
 else:
     message = "ContextGuard available but this project is not initialized. Run `$contextguard-init` once to enable local indexing."
-    write_event({"additionalContext": message, "event": event.get("hook_event_name", "SessionStart")})
+    write_event(
+        {
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": message,
+            }
+        }
+    )

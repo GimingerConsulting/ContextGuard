@@ -22,6 +22,9 @@ def classify_command(command: str) -> CommandDecision:
     if any(joined.startswith(item) for item in destructive):
         return CommandDecision("allow", "Destructive or state-changing command is not rewritten.")
     first = parts[0]
+    python_module = None
+    if first.rsplit("/", 1)[-1] in {"python", "python3"} and len(parts) >= 3 and parts[1] == "-m":
+        python_module = parts[2]
     if first == "cat" and len(parts) >= 2:
         return CommandDecision("capture", "Raw cat output can be large.")
     if first == "find":
@@ -32,7 +35,7 @@ def classify_command(command: str) -> CommandDecision:
         return CommandDecision("capture", "git diff can emit large patches.")
     if parts[:2] == ["git", "log"] and not any(p.startswith("--oneline") for p in parts):
         return CommandDecision("capture", "Verbose git log can be compacted.")
-    if first in {"pytest", "ruff", "mypy", "npm", "pnpm", "yarn", "make"}:
+    if first in {"pytest", "ruff", "mypy", "npm", "pnpm", "yarn", "make"} or python_module in {"pytest", "ruff", "mypy"}:
         return CommandDecision("capture", "Validation command output is captured to preserve complete logs.")
     if first in {"grep", "rg"} and any(flag in parts for flag in ("-r", "-R", "--recursive")):
         return CommandDecision("capture", "Recursive search output can be large.")

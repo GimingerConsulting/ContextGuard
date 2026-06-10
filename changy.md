@@ -112,3 +112,20 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Problem: on Codex CLI 0.128.0, ContextGuard hooks executed but `PreToolUse.updatedInput` and `PostToolUse.replacementOutput` were not applied. The optimized agent's initial failing pytest run exposed 80,573 bytes instead of a compact summary.
 - Solution: update hook response envelopes for supported Codex CLI versions, add an integration test proving command replacement and output replacement, then rerun this exact A/B benchmark.
 - Result classification: mixed and currently negative on total token/tool-output efficiency; not a ContextGuard win.
+
+## 2026-06-10 Hook Compatibility Fix
+
+- Reproduced the failure on Codex CLI 0.128.0 with a 278,889-byte command result.
+- Root cause: ContextGuard emitted hook response fields at the top level, while Codex requires `hookSpecificOutput`; `PostToolUse.replacementOutput` is unsupported; and Python module validation commands such as `python3 -m pytest` bypassed command classification.
+- Confirmed that CLI 0.128.0 executes hooks but ignores `PreToolUse.updatedInput`, even with the current documented envelope.
+- Confirmed that CLI 0.128.0 supports PostToolUse replacement through `decision=block` and compact `reason` feedback; a live probe showed the model receiving the compact summary and local full-output path rather than the full log.
+- Fixed SessionStart, UserPromptSubmit and PreToolUse envelopes; changed PostToolUse to supported replacement feedback; added a PostToolUse fallback for noisy medium output; recognized `python -m pytest|ruff|mypy`; and migrated `hooks.json` to the current nested schema.
+- Added raw versus model-visible tool-output metrics to the real A/B harness because Codex JSON events retain raw command output even when hooks replace what the model sees.
+- Validation before A/B rerun: 56 tests passed. The exact A/B rerun was deferred only because the Codex account reported its usage limit until 4:13 PM Europe/Berlin.
+
+## 2026-06-10 Hard A/B Rerun And Upstream Blocker
+
+- Hardened the benchmark so a ContextGuard trial is invalid unless it runs the exact baseline command, records hook invocations and compacts at least one output.
+- Both CLI 0.128.0 and pinned CLI 0.139.0 reruns passed all 130 tests with identical canonical output, but were rejected because `codex exec` dispatched zero hooks.
+- Verified the problem with marker-only hooks and found matching upstream Codex issues 25875, 26383 and 26452.
+- Published the exact rejected token/time samples with `accepted_run: false`; no ContextGuard efficiency claim is made from those inactive trials.

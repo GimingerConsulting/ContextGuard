@@ -3,54 +3,82 @@
   "date": "2026-06-10",
   "model": "gpt-5.5",
   "reasoning_effort": "medium",
-  "codex_cli": "codex-cli 0.128.0",
   "tests_per_run": 130,
-  "equivalent_result": true,
-  "canonical_posted_minor": 9174,
-  "raw": {
-    "input_tokens": 255166,
-    "cached_input_tokens": 210688,
-    "uncached_input_tokens": 44478,
-    "output_tokens": 5516,
-    "reasoning_output_tokens": 1258,
-    "combined_generated_tokens": 6774,
-    "tool_output_bytes": 12304,
-    "command_executions": 20,
-    "elapsed_seconds": 124.423,
-    "final_response_bytes": 1126
+  "accepted_run": false,
+  "status": "blocked_by_codex_exec_hook_dispatch",
+  "finding": "No valid raw-versus-ContextGuard token comparison can be published because codex exec did not dispatch any configured lifecycle hooks.",
+  "validation": {
+    "raw_passed_tests": 130,
+    "contextguard_passed_tests": 130,
+    "canonical_outputs_equal": true,
+    "canonical_posted_minor": 9174,
+    "exact_baseline_command_in_both_runs": true
   },
-  "contextguard": {
-    "input_tokens": 328934,
-    "cached_input_tokens": 300800,
-    "uncached_input_tokens": 28134,
-    "output_tokens": 5023,
-    "reasoning_output_tokens": 1231,
-    "combined_generated_tokens": 6254,
-    "tool_output_bytes": 92353,
-    "command_executions": 18,
-    "elapsed_seconds": 124.711,
-    "final_response_bytes": 1297
+  "rejected_samples": [
+    {
+      "codex_cli": "codex-cli 0.128.0",
+      "reason": "The optimized trial recorded zero PreToolUse invocations and zero compacted outputs.",
+      "raw": {
+        "input_tokens": 245136,
+        "cached_input_tokens": 204928,
+        "uncached_input_tokens": 40208,
+        "output_tokens": 3675,
+        "reasoning_output_tokens": 544,
+        "tool_output_bytes": 91551,
+        "elapsed_seconds": 86.012
+      },
+      "nominal_contextguard": {
+        "input_tokens": 352206,
+        "cached_input_tokens": 310912,
+        "uncached_input_tokens": 41294,
+        "output_tokens": 4681,
+        "reasoning_output_tokens": 1003,
+        "tool_output_bytes": 1141134,
+        "elapsed_seconds": 106.357,
+        "hook_invocations": 0,
+        "compacted_output_count": 0
+      }
+    },
+    {
+      "codex_cli": "codex-cli 0.139.0",
+      "reason": "The current CLI accepted --dangerously-bypass-hook-trust but still recorded zero PreToolUse invocations and zero compacted outputs.",
+      "raw": {
+        "input_tokens": 185328,
+        "cached_input_tokens": 157696,
+        "uncached_input_tokens": 27632,
+        "output_tokens": 3423,
+        "reasoning_output_tokens": 748,
+        "tool_output_bytes": 93199,
+        "elapsed_seconds": 73.452
+      },
+      "nominal_contextguard": {
+        "input_tokens": 200301,
+        "cached_input_tokens": 147840,
+        "uncached_input_tokens": 52461,
+        "output_tokens": 4770,
+        "reasoning_output_tokens": 2000,
+        "tool_output_bytes": 87686,
+        "elapsed_seconds": 103.827,
+        "hook_invocations": 0,
+        "compacted_output_count": 0
+      }
+    }
+  ],
+  "independent_probe": {
+    "codex_cli": "codex-cli 0.139.0",
+    "configuration": "Trusted project, hooks feature enabled, valid hooks.json and inline TOML variants, installed ContextGuard plugin, and --dangerously-bypass-hook-trust.",
+    "result": "Neither marker-only PreToolUse nor Stop hooks executed during codex exec.",
+    "upstream_reports": [
+      "https://github.com/openai/codex/issues/25875",
+      "https://github.com/openai/codex/issues/26383",
+      "https://github.com/openai/codex/issues/26452"
+    ]
   },
-  "contextguard_change_percent": {
-    "input_tokens": 28.91,
-    "cached_input_tokens": 42.77,
-    "uncached_input_tokens": -36.75,
-    "output_tokens": -8.94,
-    "reasoning_output_tokens": -2.15,
-    "combined_generated_tokens": -7.68,
-    "tool_output_bytes": 650.59,
-    "command_executions": -10.0,
-    "elapsed_seconds": 0.23,
-    "final_response_bytes": 15.19,
-    "input_plus_generated_tokens": 27.96
-  },
-  "finding": "ContextGuard reduced uncached input and generated tokens, but total input and tool-output volume increased; elapsed time was effectively unchanged.",
-  "identified_problem": "On Codex CLI 0.128.0, the ContextGuard hook scripts executed, but PreToolUse updatedInput and PostToolUse replacementOutput were not applied. An 80,573-byte failing pytest output therefore reached the optimized agent.",
-  "required_solution": "Update and compatibility-test hook response envelopes against supported Codex CLI versions, then repeat the same A/B benchmark.",
-  "limitations": [
-    "Single controlled sample; model execution is stochastic.",
-    "Raw ran first and ContextGuard second.",
-    "Cached input is reported separately because it dominates total input in both runs.",
-    "The result measures the current plugin behavior, including the discovered hook compatibility defect."
+  "implemented_fixes": [
+    "Use current hookSpecificOutput envelopes.",
+    "Use PostToolUse decision=block feedback instead of unsupported replacementOutput.",
+    "Recognize python -m pytest, ruff, and mypy validation commands.",
+    "Use the current nested hook configuration schema.",
+    "Reject benchmark runs unless hooks are observed and at least one output is compacted."
   ]
 }
