@@ -18,39 +18,64 @@ The output-efficiency engine suppresses routine narration, request restatement, 
 
 ContextGuard sends no repository content or telemetry to external services. It uses Python 3 standard library modules and SQLite. Local state is stored under `.contextguard/` inside the project.
 
-## Install From GitHub Marketplace Source
+## Fast Setup From The Codex Marketplace
 
-Add the marketplace source:
+ContextGuard supports empty projects and existing repositories. It preserves user-authored content and only replaces sections marked as ContextGuard-managed.
+
+1. Add the GitHub marketplace source:
+
 
 ```bash
 codex plugin marketplace add BurliNYC/ContextGuard
 ```
 
-In the Codex app:
+   In the Codex app, the equivalent path is:
 
 ```text
 Plugins -> Add More -> Add Source -> GitHub
 ```
 
-After adding the source, install `contextguard` from the ContextGuard marketplace. Review the bundled hooks before trusting them. They are local Python scripts under `hooks/` and do not use a network API.
+2. Install `contextguard` from the ContextGuard marketplace and start a new thread in the project you want to use.
+
+3. When Codex reports that hooks need review, open `/hooks`. Review and trust the ContextGuard hooks once. They are local Python scripts under `hooks/`, use no network API, and Codex stores trust against their exact content hash.
+
+4. Start a new thread or resume the project after trust. The trusted `SessionStart` hook automatically initializes both new and existing projects. No manual init command is required during the normal path.
+
+5. Run `$contextguard-setup`. This idempotent fallback initializes the project if necessary and reports whether Codex hooks have actually been observed.
+
+## Smoke Test
+
+Run `$contextguard-setup`, then ask Codex to execute a command that produces substantial repeated output. Afterwards run `$contextguard-status` and `$contextguard-report`.
+
+A successful smoke test shows:
+
+- `Project: initialized`
+- `Hook status: observed` after a normal Codex tool command
+- `SessionStart`, followed by `PreToolUse` or `PostToolUse`, under observed hooks
+- at least one intercepted command after tool use
+- full large output archived under `.contextguard/tmp/` when compaction was needed
+
+If setup says `Hook status: not yet observed`, open `/hooks`, trust the ContextGuard hooks, and start a new thread. ContextGuard cannot safely approve its own command hooks because Codex intentionally requires user review for non-managed hooks.
 
 To update the marketplace, refresh the source in Codex. To update the plugin, pull the repository or update the marketplace source, then reinstall or refresh the plugin in Codex. To disable the plugin, disable it in Codex plugin settings. To remove the marketplace, remove the `BurliNYC/ContextGuard` source from Codex.
 
 ## Project Initialization
 
-Run once in a project:
+Normal initialization is automatic on the first trusted `SessionStart`. The explicit alternatives are:
 
 ```bash
+contextguard setup
 contextguard init
 ```
 
-or invoke `$contextguard-init` in Codex.
+or invoke `$contextguard-setup` or `$contextguard-init` in Codex. Prefer setup because it also checks whether hooks have been observed.
 
 Initialization creates `.contextguard/`, a local SQLite index, managed sections in `AGENTS.md`, `docs/ARCHITECTURE.md`, and `docs/CURRENT_STATE.md`, and backups before replacing existing managed sections. It never blindly overwrites user-authored content.
 
 ## Daily Commands
 
 ```bash
+contextguard setup
 contextguard status
 contextguard refresh
 contextguard report
@@ -79,6 +104,8 @@ macOS is the primary target. Linux is supported where Python 3 and shell semanti
 ## Known Hook Limitations
 
 Codex hook support varies by surface and CLI version. ContextGuard uses the current nested `hooks/hooks.json` schema and PostToolUse replacement feedback as a fallback when older CLIs execute hooks but do not apply PreToolUse input rewriting. As of Codex CLI 0.139.0, `codex exec` has an upstream regression that can skip lifecycle hooks entirely even with trust bypass enabled; ContextGuard cannot reduce model-visible command output in that surface until Codex dispatches the hooks. Complete output remains stored locally when hooks run.
+
+Hook commands are enabled by default in Codex but non-managed hooks require one explicit review in `/hooks`. This trust decision cannot and should not be automated by the plugin. ContextGuard automates project setup immediately after Codex dispatches the trusted `SessionStart` hook.
 
 ## Benchmarks
 

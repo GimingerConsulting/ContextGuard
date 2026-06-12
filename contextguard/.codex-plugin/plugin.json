@@ -1,6 +1,6 @@
 {
   "name": "contextguard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
   "author": {
     "name": "Giminger Consulting",
@@ -32,7 +32,7 @@
     "privacyPolicyURL": "https://github.com/BurliNYC/ContextGuard/blob/main/SECURITY.md",
     "termsOfServiceURL": "https://github.com/BurliNYC/ContextGuard/blob/main/LICENSE",
     "defaultPrompt": [
-      "Initialize ContextGuard for this project.",
+      "Run ContextGuard setup and verify this project.",
       "Show my ContextGuard savings report."
     ],
     "brandColor": "#C9A24A",

@@ -2,6 +2,16 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Hybrid Onboarding
+
+- Added automatic first-thread initialization for empty and existing projects after Codex hook trust.
+- Added `$contextguard-setup`, hook heartbeats and honest not-observed/partial/observed diagnostics.
+- Changed every bundled skill to use the plugin-local runner instead of requiring a global executable.
+- Added complete marketplace install, `/hooks` trust and smoke-test instructions.
+- Verified the packaged flow with 69 tests, plugin validation, isolated acceptance and a real Codex 0.139.0 marketplace installation.
+- Isolated hard-output result: 14,581 raw visible tokens versus 530 ContextGuard-visible tokens, saving 14,051 or 96.37% with byte-identical archived output.
+- Remaining upstream limitation: ContextGuard cannot approve its own non-managed hooks, and Codex surfaces that do not dispatch hooks cannot receive automatic output protection.
+
 ## 2026-06-09
 
 - Built the initial ContextGuard Codex plugin MVP under `contextguard/`.

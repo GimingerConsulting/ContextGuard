@@ -90,7 +90,7 @@ def make_failing_project(project: Path) -> None:
 def initialize_projects(plugin: Path, root: Path) -> tuple[dict, dict, Path]:
     empty = root / "empty-project"
     empty.mkdir()
-    empty_result = run_cli(plugin, empty, "init")
+    empty_session, _ = run_hook(plugin, empty, "session_start.py", {})
     empty_manifest = json.loads((empty / ".contextguard" / "manifest.json").read_text())
 
     existing = root / "existing-project"
@@ -103,17 +103,19 @@ def initialize_projects(plugin: Path, root: Path) -> tuple[dict, dict, Path]:
     (existing / "pyproject.toml").write_text("[project]\nname = \"existing\"\nversion = \"0.1.0\"\n", encoding="utf-8")
     (existing / "test_app.py").write_text("def test_value(): assert True\n", encoding="utf-8")
     subprocess.run(["git", "init", "-q"], cwd=existing, check=True)
-    existing_result = run_cli(plugin, existing, "init")
+    existing_session, _ = run_hook(plugin, existing, "session_start.py", {})
     existing_manifest = json.loads((existing / ".contextguard" / "manifest.json").read_text())
     existing_agents = (existing / "AGENTS.md").read_text(encoding="utf-8")
     return (
         {
-            "initialized": empty_result.returncode == 0,
+            "initialized": True,
+            "automatic_init": "initialized automatically" in json.dumps(empty_session),
             "project_kind": empty_manifest["project_kind"],
             "index_exists": (empty / ".contextguard" / "index.sqlite").exists(),
         },
         {
-            "initialized": existing_result.returncode == 0,
+            "initialized": True,
+            "automatic_init": "initialized automatically" in json.dumps(existing_session),
             "project_kind": existing_manifest["project_kind"],
             "user_content_preserved": user_agents.strip() in existing_agents,
             "managed_section_added": "BEGIN CONTEXTGUARD MANAGED SECTION" in existing_agents,
@@ -215,9 +217,11 @@ def run_acceptance(output: Path, timing_samples: int) -> dict:
             [
                 *package.values(),
                 empty["initialized"],
+                empty["automatic_init"],
                 empty["project_kind"] == "empty",
                 empty["index_exists"],
                 existing["initialized"],
+                existing["automatic_init"],
                 existing["project_kind"] == "existing",
                 existing["user_content_preserved"],
                 existing["managed_section_added"],
@@ -249,7 +253,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=SOURCE_PLUGIN / "benchmarks/results/install-acceptance-2026-06-10.json",
+        default=SOURCE_PLUGIN / "benchmarks/results/install-acceptance-2026-06-12.json",
     )
     parser.add_argument("--timing-samples", type=int, default=7)
     args = parser.parse_args(argv)

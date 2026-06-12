@@ -8,7 +8,7 @@ description: Show whether ContextGuard is active, verify hooks/index/output prot
 Run:
 
 ```bash
-contextguard status
+"$PLUGIN_ROOT/scripts/contextguard" status
 ```
 
 Keep the result concise and do not claim exact server-side token savings.

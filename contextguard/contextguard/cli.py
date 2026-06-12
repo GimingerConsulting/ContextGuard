@@ -3,50 +3,51 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import database_path, state_dir
 from .documentation import render_agents, write_managed_docs
+from .hook_diagnostics import hook_status, observed_hooks
 from .index import refresh_index
 from .large_file import summarize_large_file
 from .metrics import report as metrics_report
 from .output_capture import capture
 from .output_policy import POLICY_NAME
+from .onboarding import initialize_project
 from .project import detect_project
 from .repo_map import detect_repo_facts
 from .database import connect, increment
 
 
 def init_project(args: argparse.Namespace) -> int:
-    info = detect_project(Path(args.path).resolve() if args.path else None)
-    for name in ("cache", "sessions", "reports", "tmp"):
-        (state_dir(info.root) / name).mkdir(parents=True, exist_ok=True)
-    index_stats = refresh_index(info.root)
-    (state_dir(info.root) / "repo_map.json").write_text(
-        json.dumps(detect_repo_facts(info.root), indent=2) + "\n",
-        encoding="utf-8",
-    )
-    changed_docs = write_managed_docs(info)
-    conn = connect(database_path(info.root))
-    conn.execute(
-        "insert or replace into metrics(key, value) values('managed_policy_bytes', ?)",
-        (len(render_agents(info).encode()),),
-    )
-    conn.commit()
-    manifest = {
-        "initialized_at": datetime.now(timezone.utc).isoformat(),
-        "project_root": info.root.as_posix(),
-        "project_kind": info.kind,
-        "policy": POLICY_NAME,
-        "database": database_path(info.root).as_posix(),
-    }
-    (state_dir(info.root) / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    result = initialize_project(Path(args.path) if args.path else None)
     print("ContextGuard initialized")
-    print(f"project: {info.root}")
-    print(f"kind: {info.kind}")
-    print(f"files_indexed: {index_stats['files_indexed']}")
-    print(f"changed_docs: {', '.join(changed_docs) or 'none'}")
+    print(f"project: {result.project.root}")
+    print(f"kind: {result.project.kind}")
+    print(f"files_indexed: {result.files_indexed}")
+    print(f"changed_docs: {', '.join(result.changed_docs) or 'none'}")
+    return 0
+
+
+def setup(args: argparse.Namespace) -> int:
+    result = initialize_project(Path(args.path) if args.path else None)
+    hooks = observed_hooks(result.project.root)
+    readiness = hook_status(hooks)
+    print("ContextGuard setup complete")
+    print("Project: initialized")
+    print(f"Project kind: {result.project.kind}")
+    print(f"Files indexed: {result.files_indexed}")
+    if readiness == "observed":
+        print("Hook status: observed")
+        print(f"Observed hooks: {', '.join(sorted(hooks))}")
+        print("ContextGuard is ready for normal Codex use.")
+    elif hooks:
+        print("Hook status: partially observed")
+        print(f"Observed hooks: {', '.join(sorted(hooks))}")
+        print("Run one normal Codex tool command, then run $contextguard-status to verify tool hooks.")
+    else:
+        print("Hook status: not yet observed")
+        print("Open /hooks in Codex, review and trust the ContextGuard hooks, then start a new thread.")
     return 0
 
 
@@ -60,6 +61,10 @@ def status(args: argparse.Namespace) -> int:
     print("Quality guard: enabled")
     print(f"Index: {'current' if initialized else 'missing'}")
     print(f"Large output protection: {'active' if initialized else 'inactive'}")
+    hooks = observed_hooks(info.root) if initialized else {}
+    print(f"Hook status: {hook_status(hooks)}")
+    if hooks:
+        print(f"Observed hooks: {', '.join(sorted(hooks))}")
     print(f"Last refresh: {metrics.get('last_refresh', 'unknown')}")
     print(f"Current project files indexed: {metrics.get('files_indexed', 0)}")
     print(f"Current session commands intercepted: {metrics.get('commands_intercepted', 0)}")
@@ -135,7 +140,7 @@ def large_file(args: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="contextguard")
     sub = parser.add_subparsers(dest="command", required=True)
-    for name, fn in (("init", init_project), ("status", status), ("refresh", refresh), ("report", report)):
+    for name, fn in (("init", init_project), ("setup", setup), ("status", status), ("refresh", refresh), ("report", report)):
         p = sub.add_parser(name)
         p.add_argument("--path")
         p.set_defaults(func=fn)

@@ -1,0 +1,45 @@
+{
+  "accepted": true,
+  "automatic_hooks": {
+    "post_tool_use": true,
+    "pre_tool_use": true,
+    "session_start": true,
+    "user_prompt_submit": true
+  },
+  "benchmark": "isolated-plugin-install-acceptance",
+  "empty_project": {
+    "automatic_init": true,
+    "index_exists": true,
+    "initialized": true,
+    "project_kind": "empty"
+  },
+  "existing_project": {
+    "automatic_init": true,
+    "initialized": true,
+    "managed_section_added": true,
+    "project_kind": "existing",
+    "user_content_preserved": true
+  },
+  "guarantee_scope": "Deterministic ContextGuard package and hook logic; excludes Codex host hook dispatch and stochastic model behavior.",
+  "output_equivalence": {
+    "archived_raw_matches": true,
+    "archived_sha256": "b8a53eff14594129f61b44a5db9862702f42538798cc11dfa5758916a2b6850e",
+    "raw_exit_code": 1,
+    "raw_sha256": "b8a53eff14594129f61b44a5db9862702f42538798cc11dfa5758916a2b6850e",
+    "summary_and_failed_tests_preserved": true
+  },
+  "package": {
+    "hooks_match": true,
+    "installed_copy_used": true,
+    "manifest_matches": true
+  },
+  "tokens": {
+    "contextguard_visible": 530,
+    "hook_seconds_median": 0.054719,
+    "raw_visible": 14581,
+    "reduction_percent": 96.37,
+    "saved": 14051,
+    "timing_samples": 15,
+    "tokenizer": "o200k_base via tiktoken"
+  }
+}

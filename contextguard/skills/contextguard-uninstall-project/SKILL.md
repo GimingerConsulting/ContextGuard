@@ -8,7 +8,7 @@ description: Explain and optionally remove ContextGuard project-local state. Inv
 Run:
 
 ```bash
-contextguard uninstall-project
+"$PLUGIN_ROOT/scripts/contextguard" uninstall-project
 ```
 
 Only remove `.contextguard` after explicit confirmation with `--yes`. Preserve user-authored content and never uninstall the global plugin.

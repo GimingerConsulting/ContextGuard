@@ -26,8 +26,10 @@ def test_install_acceptance_covers_empty_existing_and_automatic_hooks(tmp_path):
     result = json.loads(output.read_text())
     assert result["accepted"] is True
     assert result["empty_project"]["initialized"] is True
+    assert result["empty_project"]["automatic_init"] is True
     assert result["empty_project"]["project_kind"] == "empty"
     assert result["existing_project"]["initialized"] is True
+    assert result["existing_project"]["automatic_init"] is True
     assert result["existing_project"]["project_kind"] == "existing"
     assert result["existing_project"]["user_content_preserved"] is True
     assert result["automatic_hooks"]["session_start"] is True

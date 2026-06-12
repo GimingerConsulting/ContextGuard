@@ -6,12 +6,16 @@ from datetime import datetime, timezone
 
 from _bootstrap import read_event, write_event
 from contextguard.config import state_dir
+from contextguard.hook_diagnostics import record_hook
 from contextguard.output_compactor import compact_output
 from contextguard.output_capture import NOISY_MEDIUM_BYTES, SMALL_PASSTHROUGH_BYTES
 from contextguard.project import detect_project
 
 
 event = read_event()
+info = detect_project()
+if (state_dir(info.root) / "manifest.json").exists():
+    record_hook(info.root, "PostToolUse")
 output = event.get("tool_response") or event.get("output") or event.get("result") or ""
 compact = compact_output(output, "") if isinstance(output, str) else {}
 raw_bytes = int(compact.get("raw_bytes", 0))
@@ -20,7 +24,6 @@ is_noisy_medium = (
     and (bool(compact.get("errors")) or int(compact.get("line_count", 0)) > 50)
 )
 if isinstance(output, str) and (raw_bytes > SMALL_PASSTHROUGH_BYTES or is_noisy_medium):
-    info = detect_project()
     tmp = state_dir(info.root) / "tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")

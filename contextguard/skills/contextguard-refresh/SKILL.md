@@ -8,7 +8,7 @@ description: Incrementally refresh ContextGuard's local index, repository map an
 Run:
 
 ```bash
-contextguard refresh
+"$PLUGIN_ROOT/scripts/contextguard" refresh
 ```
 
 Report exactly what changed. Preserve user-authored content outside ContextGuard markers.

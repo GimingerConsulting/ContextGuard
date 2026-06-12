@@ -8,7 +8,7 @@ description: Initialize ContextGuard local project intelligence, managed guidanc
 Run the bundled local command:
 
 ```bash
-contextguard init
+"$PLUGIN_ROOT/scripts/contextguard" init
 ```
 
 Use the completion summary to report the project root, project kind, indexed file count and managed documents changed. Do not invent architecture details for empty projects.

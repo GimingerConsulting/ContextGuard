@@ -33,6 +33,34 @@ def test_init_repeated_status_and_paths_with_spaces(tmp_path: Path):
     assert (project / ".contextguard" / "index.sqlite").exists()
 
 
+def test_setup_initializes_empty_project_and_explains_unverified_hooks(tmp_path: Path):
+    result = run_cli(["setup"], tmp_path)
+    second = run_cli(["setup"], tmp_path)
+
+    assert result.returncode == 0
+    assert second.returncode == 0
+    assert "ContextGuard setup complete" in result.stdout
+    assert "Project: initialized" in result.stdout
+    assert "Hook status: not yet observed" in result.stdout
+    assert "/hooks" in result.stdout
+    assert "Project kind: empty" in second.stdout
+    assert (tmp_path / ".contextguard" / "manifest.json").exists()
+
+
+def test_setup_preserves_existing_instructions_and_is_idempotent(tmp_path: Path):
+    agents = tmp_path / "AGENTS.md"
+    agents.write_text("# Existing\n\nKeep this rule.\n")
+    (tmp_path / "app.py").write_text("VALUE = 1\n")
+
+    first = run_cli(["setup"], tmp_path)
+    second = run_cli(["setup"], tmp_path)
+
+    assert first.returncode == 0
+    assert second.returncode == 0
+    assert "Keep this rule." in agents.read_text()
+    assert agents.read_text().count("BEGIN CONTEXTGUARD MANAGED SECTION") == 1
+
+
 def test_refresh_reuses_unchanged_index_entries(tmp_path: Path):
     (tmp_path / "app.py").write_text("print('ok')\n")
     run_cli(["init"], tmp_path)

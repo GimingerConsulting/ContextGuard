@@ -1,5 +1,42 @@
 # changy.md
 
+## 2026-06-12 Hybrid Onboarding
+
+### Changes
+
+- Extracted idempotent initialization into `contextguard/onboarding.py` for shared CLI and hook use.
+- Changed `SessionStart` to initialize uninitialized empty or existing projects automatically while preserving user-authored documentation outside managed markers.
+- Added local hook heartbeat diagnostics for `SessionStart`, `PreToolUse` and `PostToolUse`.
+- Added `contextguard setup` and `$contextguard-setup` with three truthful states: not observed, partially observed and observed after a tool hook runs.
+- Updated all command skills to execute the bundled `$PLUGIN_ROOT/scripts/contextguard` runner, removing the accidental global CLI dependency.
+- Updated marketplace-facing instructions with installation, new-thread activation, `/hooks` review and a concrete smoke test.
+- Bumped the plugin version to `0.2.0`.
+
+### Problems And Solutions
+
+- Problem: installing the plugin did not initialize projects automatically.
+  Solution: the trusted `SessionStart` hook now invokes the same reusable initialization service as the CLI.
+
+- Problem: ContextGuard could not distinguish successful initialization from actual Codex hook dispatch.
+  Solution: lifecycle hooks append local heartbeats and setup/status report readiness only after a tool hook is observed.
+
+- Problem: non-managed command hooks require explicit Codex trust and a plugin must not silently bypass that security decision.
+  Solution: setup gives the single required `/hooks` instruction when dispatch has not been observed; it never edits trust records.
+
+- Problem: bundled skills called `contextguard` as if the Python package had been installed globally.
+  Solution: all skills now invoke the executable runner shipped inside the installed plugin.
+
+### Validation
+
+- Full suite: 69 passed.
+- Plugin validator: passed.
+- Real Codex CLI 0.139.0 marketplace smoke test: source added, plugin 0.2.0 installed/enabled, bundled setup executed from the installed cache, existing instructions preserved and command rewriting requested.
+- Isolated acceptance: automatic initialization passed for empty and existing projects; 14,581 raw visible tokens versus 530 ContextGuard-visible tokens, saving 14,051 tokens or 96.37%; archived raw output matched byte-for-byte.
+
+### Remaining Limitation
+
+- Codex controls hook trust and hook dispatch. ContextGuard becomes automatic after the user trusts the hooks once, but cannot protect a Codex surface that does not dispatch them.
+
 ## 2026-06-09
 
 ### Changes

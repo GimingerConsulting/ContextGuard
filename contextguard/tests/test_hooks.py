@@ -43,9 +43,23 @@ def test_stop_hook_loop_prevention(tmp_path: Path):
     assert result == {}
 
 
-def test_session_start_uninitialized(tmp_path: Path):
+def test_session_start_automatically_initializes_empty_project(tmp_path: Path):
     result = run_hook("session_start.py", {}, tmp_path)
-    assert "not initialized" in result["hookSpecificOutput"]["additionalContext"]
+
+    assert "initialized automatically" in result["hookSpecificOutput"]["additionalContext"]
+    assert (tmp_path / ".contextguard" / "manifest.json").exists()
+    assert (tmp_path / ".contextguard" / "tmp" / "hook-heartbeats.jsonl").exists()
+
+
+def test_session_start_preserves_existing_project_content(tmp_path: Path):
+    agents = tmp_path / "AGENTS.md"
+    agents.write_text("# User instructions\n\nNever remove this.\n")
+    (tmp_path / "app.py").write_text("print('ok')\n")
+
+    run_hook("session_start.py", {}, tmp_path)
+
+    assert "Never remove this." in agents.read_text()
+    assert "BEGIN CONTEXTGUARD MANAGED SECTION" in agents.read_text()
 
 
 def test_session_start_initialized_is_silent(tmp_path: Path):
@@ -54,6 +68,33 @@ def test_session_start_initialized_is_silent(tmp_path: Path):
     (state / "manifest.json").write_text("{}")
     result = run_hook("session_start.py", {}, tmp_path)
     assert result == {}
+
+
+def test_status_reports_session_hook_as_partial_until_tool_hook_runs(tmp_path: Path):
+    run_hook("session_start.py", {}, tmp_path)
+    proc = subprocess.run(
+        [sys.executable, "-m", "contextguard.cli", "status"],
+        cwd=tmp_path,
+        env={"PYTHONPATH": str(ROOT)},
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert "Hook status: partially observed" in proc.stdout
+    assert "SessionStart" in proc.stdout
+
+    run_hook("pre_tool_use.py", {"tool_name": "Bash", "tool_input": {"command": "pytest -q"}}, tmp_path)
+    verified = subprocess.run(
+        [sys.executable, "-m", "contextguard.cli", "status"],
+        cwd=tmp_path,
+        env={"PYTHONPATH": str(ROOT)},
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert "Hook status: observed" in verified.stdout
+    assert "PreToolUse" in verified.stdout
 
 
 def test_post_tool_use_stores_large_output(tmp_path: Path):

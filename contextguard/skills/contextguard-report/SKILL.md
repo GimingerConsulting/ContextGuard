@@ -8,7 +8,7 @@ description: Show the local ContextGuard savings report with lifetime bytes, est
 Run:
 
 ```bash
-contextguard report
+"$PLUGIN_ROOT/scripts/contextguard" report
 ```
 
 Label token values as estimates and avoid claims about exact Codex server-side usage reduction.
