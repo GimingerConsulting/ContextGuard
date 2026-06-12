@@ -2,6 +2,16 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Small Post-Fix RAW vs ContextGuard Test
+
+- Ran the deterministic 130-failure output benchmark with three timing samples.
+- RAW exposed 80,573 bytes / 20,650 tokens; ContextGuard exposed 2,132 bytes / 545 tokens, saving 20,105 tokens or 97.36%.
+- Verified byte-identical archived output, retained failure details, and equivalent information.
+- Median ContextGuard processing was 56.916 ms, with 48.253 ms overhead beyond raw tokenization.
+- Passed the output A/B regression tests (`2 passed`) and the stale-hook plus documentation-safety tests (`8 passed`).
+- Assessment: the stale-hook fix works and prevents removed plugin versions from blocking threads. Compression remains effectively equal to the previous 97.37% result, so this is a reliability fix rather than a measurable compression improvement.
+- Result artifact: `.contextguard/reports/small-output-ab-2026-06-12.json` (local and ignored).
+
 ## 2026-06-12 ContextGuard Setup
 
 - Initialized ContextGuard for the existing project and indexed 131 files.
