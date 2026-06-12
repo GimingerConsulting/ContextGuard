@@ -186,3 +186,44 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Measured 14,581 RAW tokens versus 528 ContextGuard-visible tokens: 14,053 saved, or 96.38%, with 49.9 ms median hook time across fifteen samples.
 - Guarantee applies to the packaged ContextGuard logic; Codex host hook dispatch and stochastic model output remain outside the deterministic guarantee.
 - Full suite: 62 tests passed.
+
+## 2026-06-12 ContextGuard Live Plugin And Usage Audit
+
+### Version And Activation
+
+- Fetched `origin/main` and confirmed local `HEAD`, `origin/main`, and the installed plugin cache all use commit `696dbea18119fed9e934ad35cc5a8ff8dd1ff86d` (`feat: add host-independent capture runner`).
+- Confirmed the installed plugin is version `0.3.0`, is enabled as `contextguard@contextguard`, and all six configured hook definitions have trusted hashes.
+- Compared the complete committed plugin tree against `~/.codex/plugins/cache/contextguard/contextguard/0.3.0`; no file differences were found.
+- Confirmed live execution in this Codex thread: ContextGuard generated the task capsule, recorded SessionStart/PreToolUse/PostToolUse heartbeats, compacted tool responses, and archived complete outputs under `.contextguard/tmp/`.
+- Current live metrics at audit time: 327 hook heartbeats, 49 compacted outputs, 450,606 raw bytes reduced to 50,662 model-visible bytes across those compacted outputs.
+
+### Validation
+
+- Full test suite on Python 3.12: `76 passed in 9.77s`.
+- Ten-scenario benchmark: all scenarios preserved exit codes, result hashes, and output-quality checks.
+- Isolated publishable-plugin acceptance: passed automatic initialization, SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, runner usage, exit-code preservation, byte-identical archives, and retained failure details.
+- Direct hard-output A/B: 20,650 RAW visible tokens versus 543 ContextGuard-visible tokens, saving 20,107 tokens or 97.37%; median added processing time was 43.5 ms in this run.
+- Isolated hook acceptance A/B: 14,581 RAW visible tokens versus 530 ContextGuard-visible tokens, saving 14,051 tokens or 96.37%; median hook time was 45.5 ms.
+- Host-independent real Codex A/B on `codex-cli 0.139.0` and `gpt-5.5`: both sides executed exactly one command and returned the identical required response. Tool output fell from 38,490 to 1,899 bytes, a 95.07% reduction.
+
+### End-To-End Usage And Time
+
+- The fresh real Codex sample used 22,938 RAW versus 22,631 ContextGuard total input tokens, a 1.34% reduction, and 135 versus 127 output tokens, a 5.93% reduction.
+- The same sample took 6.925 seconds RAW versus 8.001 seconds with ContextGuard, a 15.54% increase. Small commands can therefore be slower because capture and summarization add local overhead.
+- Prompt-cache distribution changed materially: RAW had 19,200 cached and 3,738 uncached input tokens; ContextGuard had 13,056 cached and 9,575 uncached input tokens. Under the current GPT-5.5 rate card, this single run is approximately 0.81 RAW credits versus 1.46 ContextGuard credits despite lower total input.
+- A previously accepted identical benchmark sample recorded 34,008 RAW versus 22,673 ContextGuard input tokens and 9.701 versus 6.944 seconds, approximately 2.19 versus 1.47 credits. The opposite outcomes prove that one stochastic host run is not enough for a universal savings percentage.
+- Conclusion: large tool-output reduction is deterministic and substantial; end-to-end Codex usage-limit and latency savings are workload-, cache-, model-, and session-dependent. ContextGuard should not claim a fixed percentage reduction in Codex usage limits without a multi-run randomized benchmark.
+
+### Problems And Solutions
+
+- Problem: a normal modern `uv run` project installation failed before tests because setuptools discovered multiple top-level packages (`hooks`, `skills`, `assets`, and `contextguard`). The plugin copy/install path still passed acceptance and the live installed plugin works.
+  Solution: configure explicit setuptools package discovery for the Python package and add a clean wheel/editable-install smoke test before the next release.
+- Problem: the machine default `/usr/bin/python3` is Python 3.9.6 while `pyproject.toml` declares Python 3.10 or newer. Current hooks executed successfully, but the runtime contract is inconsistent.
+  Solution: either enforce a Python 3.10+ hook interpreter during installation or lower and test the declared minimum if Python 3.9 is intentionally supported.
+- Problem: direct lifecycle hooks still do not dispatch under isolated `codex exec` 0.139.0 tests, matching the existing upstream blocker; the host-independent project runner remains the working noninteractive fallback.
+  Solution: retain the runner-based path and keep rejecting any benchmark that cannot prove hook or capture-runner activation.
+
+### Audit Artifacts
+
+- Full command and hook captures: `.contextguard/tmp/`.
+- Test and benchmark logs: `contextguard/.contextguard/audit-2026-06-12/`.
