@@ -21,9 +21,9 @@ python3 benchmarks/real_codex_ab.py --self-check
 python3 benchmarks/real_codex_ab.py --run
 ```
 
-The harness creates two identical settlement repositories, uses isolated Codex homes with the same authentication, runs `gpt-5.5` at medium reasoning, parses exact `turn.completed.usage` fields, and validates 130 cases plus canonical CLI output. The optimized copy alone is initialized with ContextGuard and project hooks.
+The harness creates two identical settlement repositories, uses isolated Codex homes with the same authentication, runs `gpt-5.5` at medium reasoning, parses exact `turn.completed.usage` fields, and validates 130 cases plus canonical CLI output. The optimized copy alone is initialized with ContextGuard and is accepted only when its command event proves use of the project capture runner.
 
-The June 10, 2026 result is stored in `benchmarks/results/real-codex-hard-ab-2026-06-10.json`. No rerun was accepted: `codex exec` 0.128.0 and 0.139.0 completed both repositories but dispatched zero ContextGuard hooks. The harness now rejects any optimized trial without observed hook invocations and output compaction. See upstream Codex issues 25875, 26383 and 26452.
+The June 10, 2026 result in `benchmarks/results/real-codex-hard-ab-2026-06-10.json` is retained as a rejected historical hook-dependent sample. The current harness no longer configures or waits for `codex exec` lifecycle hooks; it uses the host-independent runner path and rejects any optimized trial that bypasses it.
 
 ## Host-Independent Capture A/B
 

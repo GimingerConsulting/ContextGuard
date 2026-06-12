@@ -2,6 +2,14 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Release 0.3.1 Problem Resolution
+
+- Packaging: configured explicit setuptools package discovery and modern SPDX license metadata. Clean wheel and editable installs are release gates.
+- Python runtime: lowered the declared minimum to Python 3.9 after running the complete suite on the system-compatible runtime.
+- Non-interactive Codex: removed lifecycle-hook dispatch from the real A/B contract. Optimized `codex exec` trials must prove `.contextguard/bin/contextguard capture` use, so protection works independently of the open upstream hook-dispatch defect.
+- Added regression tests for all three issues and updated marketplace-facing documentation.
+- Validation: 79 tests passed on Python 3.9 and Python 3.12; editable installation, plugin validation, isolated acceptance and a real runner-backed `codex exec` A/B all passed.
+
 ## 2026-06-12 Host-Independent Capture 0.3.0
 
 - Root cause: hook rewriting and replacement are not reliable across Codex hosts, so post-processing cannot guarantee that raw output stays out of model context.

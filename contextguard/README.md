@@ -16,7 +16,7 @@ The output-efficiency engine suppresses routine narration, request restatement, 
 
 ## Privacy
 
-ContextGuard sends no repository content or telemetry to external services. It uses Python 3 standard library modules and SQLite. Local state is stored under `.contextguard/` inside the project.
+ContextGuard sends no repository content or telemetry to external services. It supports Python 3.9 and newer and uses standard-library modules plus SQLite. Local state is stored under `.contextguard/` inside the project.
 
 ## Fast Setup From The Codex Marketplace
 
@@ -104,7 +104,7 @@ macOS is the primary target. Linux is supported where Python 3 and shell semanti
 
 ## Hook Compatibility
 
-Codex hook support varies by surface and CLI version. ContextGuard no longer depends on hook command rewriting or output replacement: managed project instructions execute noisy commands through the local runner before stdout reaches Codex. Hooks use the current nested schema and remain useful for automatic setup and fallback compaction where supported.
+Codex hook support varies by surface and CLI version. ContextGuard does not depend on hook dispatch, command rewriting or output replacement: managed project instructions execute noisy commands through the local runner before stdout reaches Codex, including non-interactive runs. Hooks use the current nested schema and remain useful for automatic setup and fallback compaction where supported.
 
 Hook commands are enabled by default in Codex but non-managed hooks require one explicit review in `/hooks`. This trust decision cannot and should not be automated by the plugin. ContextGuard automates project setup immediately after Codex dispatches the trusted `SessionStart` hook.
 

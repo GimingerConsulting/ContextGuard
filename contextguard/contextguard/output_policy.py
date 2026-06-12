@@ -23,7 +23,7 @@ def render_policy(project_kind: str) -> str:
     return f"""ContextGuard policy: {POLICY_NAME}.
 
 - Start focused; reuse facts; expand as needed.
-- For tests, linters, builds; recursive listings or searches; `git diff`; or structured data or logs, run `.contextguard/bin/contextguard capture -- <command> <args...>` before stdout reaches Codex. Shell: `capture -- sh -lc '<command>'`. Small commands run directly; capture keeps full local output and exit status.
+- For tests, linters, builds; recursive listings or searches; `git diff`; or structured data or logs, run `.contextguard/bin/contextguard capture -- <command>` before stdout reaches Codex (`sh -lc` for shell). This protects non-interactive runs and does not depend on lifecycle hook dispatch; output and status stay local.
 - Do not narrate routine inspection or tool use, restate intent, echo source, or print unasked diffs.
 - Final responses: changed files, validation, and only real risks.
 - Never trade correctness, context, validation, security, or data integrity for brevity.

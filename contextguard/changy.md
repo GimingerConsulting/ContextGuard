@@ -1,5 +1,34 @@
 # changy.md
 
+## 2026-06-12 Release 0.3.1 Problem Resolution
+
+### Changes
+
+- Restricted setuptools discovery to `contextguard*`, changed the license field to SPDX syntax and added a clean wheel-build regression test.
+- Declared Python 3.9 as the minimum supported runtime and validated the full suite under Python 3.9.
+- Removed project/user hook setup, hook counters and hook-trust bypasses from `benchmarks/real_codex_ab.py`.
+- Kept the same prompt and validation contract while requiring the optimized command event to prove project-runner use.
+- Updated managed policy text so non-interactive protection explicitly does not depend on lifecycle hook dispatch.
+
+### Problems And Solutions
+
+- Problem: setuptools treated plugin folders as accidental top-level Python packages and refused wheel/editable installation.
+  Solution: explicit package discovery includes only the Python `contextguard` package.
+- Problem: Codex invoked system Python 3.9 while package metadata required Python 3.10.
+  Solution: support and test Python 3.9 instead of imposing an unnecessary interpreter requirement.
+- Problem: `codex exec` 0.139.0 does not dispatch valid lifecycle hooks, which is outside plugin control.
+  Solution: make the host-independent capture runner the required non-interactive execution path and remove hook dispatch from benchmark acceptance.
+
+### Validation
+
+- Python 3.9 full suite: 79 passed.
+- Python 3.12 full suite: 79 passed.
+- Clean Python 3.9 editable install built and installed `contextguard==0.3.1`; the generated CLI executed successfully.
+- Plugin validation passed for `0.3.1+codex.20260612163532`.
+- Isolated installed-copy acceptance passed with preserved exit code and byte-identical archived output; runner-visible tokens fell from 2,739 to 673 (75.43%).
+- Host-independent self-check reduced 38,490 raw bytes to 2,042 visible bytes with the same exit code and byte-identical archive.
+- Fresh real `codex exec` A/B used the runner and returned the same response: tool output fell from 38,490 to 1,899 bytes (95.07%), input tokens from 22,947 to 22,684 (1.15%), uncached input from 9,891 to 9,628 (2.66%), and elapsed time from 8.171 to 7.483 seconds (8.42%).
+
 ## 2026-06-12 Host-Independent Capture 0.3.0
 
 ### Root Cause

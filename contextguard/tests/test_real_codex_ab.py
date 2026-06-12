@@ -3,8 +3,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 from benchmarks.real_codex_ab import (
     PROMPT,
     apply_reference_solution,
@@ -82,19 +80,24 @@ def test_real_ab_accepts_optimized_trial_only_when_project_runner_is_used():
     assert 'optimized["capture_runner_used"]' in source
 
 
-def test_optimized_command_can_explicitly_bypass_hook_trust(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("CONTEXTGUARD_BYPASS_HOOK_TRUST", "1")
+def test_real_ab_no_longer_requires_codex_exec_hook_dispatch():
+    source = (Path(__file__).resolve().parents[1] / "benchmarks" / "real_codex_ab.py").read_text()
+
+    assert 'hook_invocations' not in source
+    assert 'compacted_output_count' not in source
+    assert 'optimized["capture_runner_used"]' in source
+
+
+def test_optimized_command_does_not_depend_on_hook_trust_bypass(tmp_path: Path):
     raw = build_codex_command(tmp_path / "raw", optimized=False)
     optimized = build_codex_command(tmp_path / "optimized", optimized=True)
     assert "--dangerously-bypass-hook-trust" not in raw
-    assert "--dangerously-bypass-hook-trust" in optimized
+    assert "--dangerously-bypass-hook-trust" not in optimized
 
 
-def test_optimized_project_has_initialized_state_and_current_hook_schema(tmp_path: Path):
+def test_optimized_project_uses_initialized_host_independent_runner(tmp_path: Path):
     project = create_fixture(tmp_path / "optimized")
     prepare_optimized_project(project)
     assert (project / ".contextguard/manifest.json").exists()
-    hooks = json.loads((project / ".codex/hooks.json").read_text())
-    assert hooks["hooks"]["PreToolUse"][0]["matcher"] == ".*"
-    assert hooks["hooks"]["PreToolUse"][0]["hooks"][0]["type"] == "command"
-    assert (project / ".codex/config.toml").read_text() == "[features]\nhooks = true\n"
+    assert (project / ".contextguard/bin/contextguard").exists()
+    assert not (project / ".codex/hooks.json").exists()

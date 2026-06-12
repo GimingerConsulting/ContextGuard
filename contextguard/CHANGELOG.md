@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1
+
+- Fixed wheel and editable installation by restricting setuptools discovery to the `contextguard` package.
+- Declared and validated Python 3.9 as the minimum runtime used by Codex plugin hooks and scripts.
+- Removed the real Codex A/B harness dependency on `codex exec` lifecycle-hook dispatch; optimized trials now require the host-independent project capture runner.
+- Added packaging, Python-minimum and non-interactive runner regression coverage.
+
 ## 0.3.0
 
 - Added the executable project-local `.contextguard/bin/contextguard` runner.

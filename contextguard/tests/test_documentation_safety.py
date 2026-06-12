@@ -77,5 +77,7 @@ def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path)
     assert "structured data or logs" in policy
     assert "sh -lc" in policy
     assert "before stdout reaches Codex" in policy
+    assert "non-interactive" in policy
+    assert "does not depend on lifecycle hook dispatch" in policy
     assert "Never trade correctness" in policy
     assert len(policy.encode()) < 1400
