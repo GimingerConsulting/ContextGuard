@@ -2,6 +2,11 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Minimal Low-Usage Regression Test
+
+- Ran only `test_parse_codex_jsonl_extracts_exact_usage_and_tool_output`; result: `1 passed in 0.01s`.
+- Used the local ContextGuard runner and intentionally skipped real Codex subprocesses and larger benchmarks to conserve remaining Codex usage.
+
 ## 2026-06-12 Small Post-Fix RAW vs ContextGuard Test
 
 - Ran the deterministic 130-failure output benchmark with three timing samples.
