@@ -6,4 +6,4 @@ ContextGuard helps Codex produce the same correct result with less wasted input,
 
 See [contextguard/README.md](contextguard/README.md) for installation and usage.
 
-Quick start: add the `BurliNYC/ContextGuard` marketplace, install the plugin, review its local hooks once with `/hooks`, start a new project thread, and run `$contextguard-setup` to verify automatic initialization and hook dispatch.
+Quick start: add the `BurliNYC/ContextGuard` marketplace, install the plugin, start a project thread, and run `$contextguard-setup`. ContextGuard creates a project-local capture runner; hooks are optional defense in depth.

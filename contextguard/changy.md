@@ -1,5 +1,25 @@
 # changy.md
 
+## 2026-06-12 Host-Independent Capture 0.3.0
+
+### Root Cause
+
+- Codex hosts do not consistently dispatch hooks, apply `PreToolUse.updatedInput`, or remove the original output after `PostToolUse`.
+- A hook can therefore report successful compaction while raw output still reaches the model.
+
+### Solution
+
+- Generate an executable `.contextguard/bin/contextguard` runner during setup and refresh.
+- Require noisy commands to use the runner through the managed `AGENTS.md` policy, moving compaction before the host boundary.
+- Keep hooks as optional defense in depth and report runner readiness separately.
+- Reject real optimized benchmarks unless the Codex command event proves runner use.
+
+### Validation
+
+- Isolated installed-runner acceptance preserved exit codes and byte-identical archived output while reducing 2,739 raw tokens to 665 visible tokens.
+- A real same-prompt Codex A/B produced the same final response with one command per trial.
+- Raw versus ContextGuard: 34,008 versus 22,673 input tokens; 14,808 versus 9,617 uncached input tokens; 38,490 versus 1,899 tool-output bytes; 9.701 versus 6.944 seconds.
+
 ## 2026-06-12 Hybrid Onboarding
 
 ### Changes

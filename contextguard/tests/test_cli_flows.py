@@ -31,6 +31,17 @@ def test_init_repeated_status_and_paths_with_spaces(tmp_path: Path):
     assert "Lifetime estimated tokens saved:" in status.stdout
     assert "Lifetime context reduction:" in status.stdout
     assert (project / ".contextguard" / "index.sqlite").exists()
+    runner = project / ".contextguard" / "bin" / "contextguard"
+    assert runner.exists()
+    assert runner.stat().st_mode & 0o111
+    runner_status = subprocess.run(
+        [str(runner), "status"],
+        cwd=project,
+        text=True,
+        capture_output=True,
+    )
+    assert runner_status.returncode == 0
+    assert "Execution protection: ready" in runner_status.stdout
 
 
 def test_setup_initializes_empty_project_and_explains_unverified_hooks(tmp_path: Path):
@@ -43,6 +54,8 @@ def test_setup_initializes_empty_project_and_explains_unverified_hooks(tmp_path:
     assert "Project: initialized" in result.stdout
     assert "Hook status: not yet observed" in result.stdout
     assert "/hooks" in result.stdout
+    assert "Execution protection: ready" in result.stdout
+    assert "works without hook output replacement" in result.stdout
     assert "Project kind: empty" in second.stdout
     assert (tmp_path / ".contextguard" / "manifest.json").exists()
 
@@ -88,6 +101,44 @@ def test_capture_compacts_medium_noisy_test_output(tmp_path: Path):
     assert "ContextGuard capture summary" in result.stdout
     assert "raw_bytes:" in result.stdout
     assert len(result.stdout.encode()) < 1800
+
+
+def test_project_runner_capture_compacts_before_output_reaches_host(tmp_path: Path):
+    project = tmp_path / "runner project"
+    project.mkdir()
+    run_cli(["setup"], project)
+    script = project / "noisy.py"
+    script.write_text(
+        "for i in range(130): print(f'FAILED tests/test_live.py::test_{i} - AssertionError')\n"
+        "print('130 failed in 0.50s')\n"
+        "raise SystemExit(1)\n"
+    )
+
+    runner = project / ".contextguard" / "bin" / "contextguard"
+    result = subprocess.run(
+        [str(runner), "capture", "--", sys.executable, str(script)],
+        cwd=project,
+        text=True,
+        capture_output=True,
+    )
+
+    assert result.returncode == 1
+    assert "ContextGuard capture summary" in result.stdout
+    assert "130 failed in 0.50s" in result.stdout
+    assert len(result.stdout.encode()) < 2200
+    assert list((project / ".contextguard" / "tmp").glob("*.stdout.txt"))
+
+
+def test_refresh_regenerates_missing_project_runner(tmp_path: Path):
+    run_cli(["init"], tmp_path)
+    runner = tmp_path / ".contextguard" / "bin" / "contextguard"
+    runner.unlink()
+
+    result = run_cli(["refresh"], tmp_path)
+
+    assert result.returncode == 0
+    assert runner.exists()
+    assert runner.stat().st_mode & 0o111
 
 
 def test_report_shows_visible_lifetime_savings(tmp_path: Path):

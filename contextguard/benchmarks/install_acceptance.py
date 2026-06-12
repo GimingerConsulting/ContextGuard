@@ -200,12 +200,67 @@ def evaluate_hooks(plugin: Path, project: Path, timing_samples: int) -> tuple[di
     return automatic, equivalence, tokens
 
 
+def evaluate_execution_protection(plugin: Path, root: Path) -> tuple[dict, dict]:
+    project = root / "runner-project"
+    project.mkdir()
+    script = project / "emit_failures.py"
+    script.write_text(
+        "for index in range(130):\n"
+        "    print(f'FAILED tests/test_hard_output.py::test_case_{index} - AssertionError: deterministic failure {index}')\n"
+        "print('130 failed in 0.50s')\n"
+        "raise SystemExit(1)\n",
+        encoding="utf-8",
+    )
+    initialized = run_cli(plugin, project, "init")
+    if initialized.returncode != 0:
+        raise RuntimeError(initialized.stdout + initialized.stderr)
+    command = [sys.executable, str(script)]
+    raw = subprocess.run(command, cwd=project, text=True, capture_output=True)
+    raw_output = raw.stdout + raw.stderr
+    runner = project / ".contextguard" / "bin" / "contextguard"
+    protected = subprocess.run(
+        [str(runner), "capture", "--", *command],
+        cwd=project,
+        text=True,
+        capture_output=True,
+    )
+    summaries = sorted((project / ".contextguard" / "tmp").glob("command-*.summary.json"))
+    summary = json.loads(summaries[-1].read_text(encoding="utf-8"))
+    archived = Path(summary["stdout_path"]).read_text(encoding="utf-8") + Path(
+        summary["stderr_path"]
+    ).read_text(encoding="utf-8")
+    raw_tokens = token_count(raw_output)
+    visible_tokens = token_count(protected.stdout + protected.stderr)
+    execution = {
+        "runner_exists": runner.is_file(),
+        "runner_executable": bool(runner.stat().st_mode & 0o111),
+        "runner_used": "ContextGuard capture summary" in protected.stdout,
+        "exit_code_preserved": protected.returncode == raw.returncode,
+        "archived_raw_matches": hashlib.sha256(archived.encode()).hexdigest()
+        == hashlib.sha256(raw_output.encode()).hexdigest(),
+        "visible_output_reduced": visible_tokens < raw_tokens,
+        "raw_visible_tokens": raw_tokens,
+        "protected_visible_tokens": visible_tokens,
+        "reduction_percent": round((raw_tokens - visible_tokens) / raw_tokens * 100, 2),
+    }
+    tokens = {
+        "tokenizer": "o200k_base via tiktoken" if TOKENIZER else "estimated at four UTF-8 bytes per token",
+        "raw_visible": raw_tokens,
+        "contextguard_visible": visible_tokens,
+        "saved": raw_tokens - visible_tokens,
+        "reduction_percent": execution["reduction_percent"],
+        "measurement": "project-local capture stdout observed by the host",
+    }
+    return execution, tokens
+
+
 def run_acceptance(output: Path, timing_samples: int) -> dict:
     with tempfile.TemporaryDirectory(prefix="contextguard-install-acceptance-") as tmp:
         root = Path(tmp)
         installed = install_plugin(root / "installed-contextguard")
         empty, existing, existing_path = initialize_projects(installed, root)
-        automatic, equivalence, tokens = evaluate_hooks(installed, existing_path, timing_samples)
+        automatic, equivalence, hook_tokens = evaluate_hooks(installed, existing_path, timing_samples)
+        execution, tokens = evaluate_execution_protection(installed, root)
         package = {
             "installed_copy_used": installed != SOURCE_PLUGIN,
             "manifest_matches": file_sha256(installed / ".codex-plugin/plugin.json")
@@ -225,6 +280,7 @@ def run_acceptance(output: Path, timing_samples: int) -> dict:
                 existing["project_kind"] == "existing",
                 existing["user_content_preserved"],
                 existing["managed_section_added"],
+                *execution.values(),
                 *automatic.values(),
                 equivalence["archived_raw_matches"],
                 equivalence["summary_and_failed_tests_preserved"],
@@ -234,14 +290,16 @@ def run_acceptance(output: Path, timing_samples: int) -> dict:
         )
         result = {
             "benchmark": "isolated-plugin-install-acceptance",
-            "guarantee_scope": "Deterministic ContextGuard package and hook logic; excludes Codex host hook dispatch and stochastic model behavior.",
+            "guarantee_scope": "Deterministic installed project runner and package logic; real Codex model behavior remains stochastic.",
             "accepted": accepted,
             "package": package,
             "empty_project": empty,
             "existing_project": existing,
+            "execution_protection": execution,
             "automatic_hooks": automatic,
             "output_equivalence": equivalence,
             "tokens": tokens,
+            "hook_output_tokens": hook_tokens,
         }
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -25,6 +25,19 @@ The harness creates two identical settlement repositories, uses isolated Codex h
 
 The June 10, 2026 result is stored in `benchmarks/results/real-codex-hard-ab-2026-06-10.json`. No rerun was accepted: `codex exec` 0.128.0 and 0.139.0 completed both repositories but dispatched zero ContextGuard hooks. The harness now rejects any optimized trial without observed hook invocations and output compaction. See upstream Codex issues 25875, 26383 and 26452.
 
+## Host-Independent Capture A/B
+
+Run:
+
+```bash
+python3 benchmarks/host_capture_ab.py --self-check
+python3 benchmarks/host_capture_ab.py --run
+```
+
+This benchmark does not use ContextGuard hooks. Both Codex trials receive the same prompt and deterministic 130-failure command. The raw project runs the command directly; the initialized project must follow managed `AGENTS.md` instructions and execute it through `.contextguard/bin/contextguard capture`. The result is rejected unless both trials issue one command, produce the same exact final response, and the optimized command event proves runner usage.
+
+The accepted June 12, 2026 run measured 34,008 raw versus 22,673 ContextGuard input tokens, 14,808 versus 9,617 uncached input tokens, 38,490 versus 1,899 tool-output bytes, and 9.701 versus 6.944 seconds. This is one controlled real Codex sample, not a universal guarantee.
+
 ## Direct Output A/B
 
 Run `python3 benchmarks/output_ab.py` to compare the exact same hard 130-failure pytest output as fully visible RAW output and as the real ContextGuard PostToolUse response. The test counts visible bytes and `o200k_base` tokens, measures median processing time, verifies that the complete archived output is byte-identical, and requires the compact response to retain the test summary and concrete failed-test names.

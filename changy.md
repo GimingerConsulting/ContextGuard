@@ -2,6 +2,15 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Host-Independent Capture 0.3.0
+
+- Root cause: hook rewriting and replacement are not reliable across Codex hosts, so post-processing cannot guarantee that raw output stays out of model context.
+- Added `.contextguard/bin/contextguard`, generated from the installed plugin path during setup and refresh.
+- Updated managed project instructions so noisy tests, builds, recursive output, diffs, logs and structured data run through `capture` before stdout reaches Codex.
+- Kept hooks as optional defense in depth instead of a readiness requirement.
+- Isolated installed-runner acceptance: 2,739 raw tokens versus 665 visible tokens, saving 75.72%, with preserved exit code and byte-identical archived output.
+- Accepted real Codex A/B with the same prompt, one command per trial and the same final response: input tokens 34,008 to 22,673 (-33.33%), uncached input 14,808 to 9,617 (-35.06%), tool output 38,490 to 1,899 bytes (-95.07%), elapsed time 9.701 to 6.944 seconds (-28.42%).
+
 ## 2026-06-12 Local ContextGuard Compactor Verification
 
 - Confirmed project initialization, a current 124-file index and observed `SessionStart`, `PreToolUse` and `PostToolUse` hooks.

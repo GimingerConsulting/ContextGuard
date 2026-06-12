@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Added the executable project-local `.contextguard/bin/contextguard` runner.
+- Changed managed project instructions to route noisy commands through `capture` before stdout reaches Codex.
+- Made output protection independent of lifecycle hook dispatch and output replacement behavior.
+- Added truthful runner readiness reporting, isolated installed-runner acceptance and a real Codex host A/B benchmark.
+- Measured the accepted host A/B at 33.33% fewer input tokens, 35.06% fewer uncached input tokens, 95.07% less tool output and 28.42% lower elapsed time for the same validated result.
+
 ## Unreleased
 
 - Added the Adaptive Maximum Efficiency output policy and final-response quality checks.

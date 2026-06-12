@@ -20,7 +20,7 @@ REPOSITORY_ROOT = PLUGIN_ROOT.parent
 PROMPT = """Implement the settlement reconciliation feature described in SPEC.md.
 
 Requirements:
-- before editing, run `python3 -m pytest -q` exactly once with no redirection, pipes, wrappers, or added arguments
+- before editing, run `python3 -m pytest -q` exactly once and follow the repository instructions for safe command execution
 - preserve the public API and existing behavior
 - use Decimal-safe HALF_EVEN currency conversion
 - reject duplicate event IDs idempotently
@@ -340,6 +340,12 @@ def run_trial(project: Path, codex_home: Path, artifact_dir: Path, *, optimized:
         command.endswith("'python3 -m pytest -q'") or command == "python3 -m pytest -q"
         for command in parsed["commands"]
     )
+    parsed["capture_runner_used"] = any(
+        ".contextguard/bin/contextguard" in command
+        and "capture" in command
+        and "python3 -m pytest -q" in command
+        for command in parsed["commands"]
+    )
     compacted_raw_bytes = 0
     compacted_visible_bytes = 0
     compacted_output_count = 0
@@ -412,9 +418,7 @@ def execute_real_ab(output_dir: Path, *, timeout: int = 1200) -> dict:
             and raw["validation"]["canonical_output"] == optimized["validation"]["canonical_output"]
             and raw["validation"]["passed_tests"] == optimized["validation"]["passed_tests"]
             and raw["exact_baseline_command"]
-            and optimized["exact_baseline_command"]
-            and optimized["hook_invocations"] > 0
-            and optimized["compacted_output_count"] > 0
+            and optimized["capture_runner_used"]
         )
         comparison = {}
         for key in (
@@ -423,6 +427,7 @@ def execute_real_ab(output_dir: Path, *, timeout: int = 1200) -> dict:
             "raw_tool_output_bytes", "model_visible_tool_output_bytes", "file_changes",
             "final_response_bytes", "diff_bytes",
             "hook_invocations", "rewrite_requests", "compacted_output_count",
+            "capture_runner_used",
         ):
             comparison[key] = {
                 "raw": raw[key],

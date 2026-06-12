@@ -15,6 +15,7 @@ from .output_capture import capture
 from .output_policy import POLICY_NAME
 from .onboarding import initialize_project
 from .project import detect_project
+from .project_runner import install_project_runner, project_runner_ready, runner_path
 from .repo_map import detect_repo_facts
 from .database import connect, increment
 
@@ -37,6 +38,9 @@ def setup(args: argparse.Namespace) -> int:
     print("Project: initialized")
     print(f"Project kind: {result.project.kind}")
     print(f"Files indexed: {result.files_indexed}")
+    print("Execution protection: ready")
+    print(f"Project runner: {runner_path(result.project.root)}")
+    print("Noisy commands are compacted before stdout reaches Codex; this works without hook output replacement.")
     if readiness == "observed":
         print("Hook status: observed")
         print(f"Observed hooks: {', '.join(sorted(hooks))}")
@@ -61,6 +65,9 @@ def status(args: argparse.Namespace) -> int:
     print("Quality guard: enabled")
     print(f"Index: {'current' if initialized else 'missing'}")
     print(f"Large output protection: {'active' if initialized else 'inactive'}")
+    print(f"Execution protection: {'ready' if initialized and project_runner_ready(info.root) else 'missing'}")
+    if initialized:
+        print(f"Project runner: {runner_path(info.root)}")
     hooks = observed_hooks(info.root) if initialized else {}
     print(f"Hook status: {hook_status(hooks)}")
     if hooks:
@@ -76,6 +83,7 @@ def status(args: argparse.Namespace) -> int:
 
 def refresh(args: argparse.Namespace) -> int:
     info = detect_project(Path(args.path).resolve() if args.path else None)
+    install_project_runner(info.root)
     stats = refresh_index(info.root)
     (state_dir(info.root) / "repo_map.json").write_text(
         json.dumps(detect_repo_facts(info.root), indent=2) + "\n",

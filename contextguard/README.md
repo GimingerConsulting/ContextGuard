@@ -8,7 +8,7 @@ It optimizes repository input context, repeated session context, terminal and te
 
 ## What It Does
 
-ContextGuard is a local-first Codex plugin with explicit skills, lifecycle hooks and deterministic Python tooling. It indexes repository metadata locally, writes compact project guidance, captures large command output to disk, summarizes large data files, and injects small task capsules when there is enough evidence to help Codex start with targeted inspection.
+ContextGuard is a local-first Codex plugin with explicit skills, a project-local capture runner, optional lifecycle hooks and deterministic Python tooling. It indexes repository metadata locally, writes compact project guidance, captures large command output before it reaches Codex, summarizes large data files, and injects small task capsules when there is enough evidence to help Codex start with targeted inspection.
 
 It uses one policy: **Adaptive Maximum Efficiency**. The policy starts with metadata, symbol locations and focused ranges, reuses verified unchanged facts, and escalates through complete symbols, dependencies, files and wider repository context whenever evidence is insufficient.
 
@@ -37,11 +37,11 @@ Plugins -> Add More -> Add Source -> GitHub
 
 2. Install `contextguard` from the ContextGuard marketplace and start a new thread in the project you want to use.
 
-3. When Codex reports that hooks need review, open `/hooks`. Review and trust the ContextGuard hooks once. They are local Python scripts under `hooks/`, use no network API, and Codex stores trust against their exact content hash.
+3. Run `$contextguard-setup`. It initializes the project and creates `.contextguard/bin/contextguard`, which protects noisy command output without depending on hooks.
 
-4. Start a new thread or resume the project after trust. The trusted `SessionStart` hook automatically initializes both new and existing projects. No manual init command is required during the normal path.
+4. Optional: when Codex reports that hooks need review, open `/hooks` and trust the local ContextGuard hooks for automatic session initialization and extra protection on supported surfaces.
 
-5. Run `$contextguard-setup`. This idempotent fallback initializes the project if necessary and reports whether Codex hooks have actually been observed.
+5. Start a new thread after initial setup so Codex loads the managed `AGENTS.md` capture policy.
 
 ## Smoke Test
 
@@ -50,12 +50,12 @@ Run `$contextguard-setup`, then ask Codex to execute a command that produces sub
 A successful smoke test shows:
 
 - `Project: initialized`
-- `Hook status: observed` after a normal Codex tool command
-- `SessionStart`, followed by `PreToolUse` or `PostToolUse`, under observed hooks
+- `Execution protection: ready`
+- a project runner under `.contextguard/bin/contextguard`
 - at least one intercepted command after tool use
 - full large output archived under `.contextguard/tmp/` when compaction was needed
 
-If setup says `Hook status: not yet observed`, open `/hooks`, trust the ContextGuard hooks, and start a new thread. ContextGuard cannot safely approve its own command hooks because Codex intentionally requires user review for non-managed hooks.
+Hook observations are reported separately. Missing hooks do not disable project-runner protection. Trusting hooks remains optional and ContextGuard never edits hook-trust records.
 
 To update the marketplace, refresh the source in Codex. To update the plugin, pull the repository or update the marketplace source, then reinstall or refresh the plugin in Codex. To disable the plugin, disable it in Codex plugin settings. To remove the marketplace, remove the `BurliNYC/ContextGuard` source from Codex.
 
@@ -70,7 +70,7 @@ contextguard init
 
 or invoke `$contextguard-setup` or `$contextguard-init` in Codex. Prefer setup because it also checks whether hooks have been observed.
 
-Initialization creates `.contextguard/`, a local SQLite index, managed sections in `AGENTS.md`, `docs/ARCHITECTURE.md`, and `docs/CURRENT_STATE.md`, and backups before replacing existing managed sections. It never blindly overwrites user-authored content.
+Initialization creates `.contextguard/`, the executable `.contextguard/bin/contextguard` runner, a local SQLite index, managed sections in `AGENTS.md`, `docs/ARCHITECTURE.md`, and `docs/CURRENT_STATE.md`, and backups before replacing existing managed sections. It never blindly overwrites user-authored content.
 
 ## Daily Commands
 
@@ -89,7 +89,8 @@ contextguard uninstall-project
 ## Architecture
 
 - Skills provide explicit user commands.
-- Hooks provide normal runtime behavior with compact context and output protection.
+- The project-local runner compacts noisy command output before the host receives stdout.
+- Hooks provide optional automatic initialization and defense in depth.
 - The Python package performs project detection, indexing, documentation updates, command classification, output capture, large-file summaries and local metrics.
 - SQLite stores metadata, hashes, symbols, command executions, cache reuse and conservative savings estimates.
 
@@ -101,15 +102,15 @@ ContextGuard never blocks legitimate inspection or skips relevant validation to 
 
 macOS is the primary target. Linux is supported where Python 3 and shell semantics are compatible. `ripgrep` is used when available in future retrieval paths; the MVP keeps a Python fallback.
 
-## Known Hook Limitations
+## Hook Compatibility
 
-Codex hook support varies by surface and CLI version. ContextGuard uses the current nested `hooks/hooks.json` schema and PostToolUse replacement feedback as a fallback when older CLIs execute hooks but do not apply PreToolUse input rewriting. As of Codex CLI 0.139.0, `codex exec` has an upstream regression that can skip lifecycle hooks entirely even with trust bypass enabled; ContextGuard cannot reduce model-visible command output in that surface until Codex dispatches the hooks. Complete output remains stored locally when hooks run.
+Codex hook support varies by surface and CLI version. ContextGuard no longer depends on hook command rewriting or output replacement: managed project instructions execute noisy commands through the local runner before stdout reaches Codex. Hooks use the current nested schema and remain useful for automatic setup and fallback compaction where supported.
 
 Hook commands are enabled by default in Codex but non-managed hooks require one explicit review in `/hooks`. This trust decision cannot and should not be automated by the plugin. ContextGuard automates project setup immediately after Codex dispatches the trusted `SessionStart` hook.
 
 ## Benchmarks
 
-Use `benchmarks/run_benchmarks.py` to compare baseline and optimized runs from equivalent starting states. A scenario succeeds only when exit codes and repository-state hashes match. Output bytes and duration are measured; token reduction is estimated and labeled as such. The harness does not claim universal savings or exact Codex server-side usage.
+Use `benchmarks/run_benchmarks.py` for deterministic local scenarios and `benchmarks/host_capture_ab.py --run` for a controlled real Codex A/B. The June 12 accepted host run used the same prompt and result in both trials, observed the raw command in baseline and the project runner in ContextGuard, and measured 34,008 versus 22,673 input tokens, 14,808 versus 9,617 uncached input tokens, 38,490 versus 1,899 tool-output bytes, and 9.701 versus 6.944 seconds. This is one controlled sample, not a universal savings guarantee.
 
 ## Uninstall
 
@@ -125,9 +126,9 @@ The first command explains project-local files. The second removes `.contextguar
 ## Roadmap
 
 - Richer cross-language caller extraction.
-- Real Codex A/B runs with server-reported token usage where available.
+- Broader repeated real Codex A/B samples across task types and host versions.
 - More hook-surface compatibility tests.
 
 ## Disclaimer
 
-Token values in reports are conservative estimates. ContextGuard does not claim exact Codex server-side usage reduction.
+Local report token values are estimates. Real A/B result files use exact Codex `turn.completed.usage` values and remain scoped to their controlled samples.

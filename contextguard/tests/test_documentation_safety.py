@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from contextguard.documentation import replace_managed_section
+from contextguard.documentation import replace_managed_section, render_agents
+from contextguard.project import ProjectInfo
 from contextguard.config import MANAGED_BEGIN, MANAGED_END
 
 
@@ -62,3 +63,19 @@ def test_all_command_skills_use_the_bundled_runner():
     for name in ("init", "refresh", "report", "status", "uninstall-project"):
         skill = (ROOT / "skills" / f"contextguard-{name}" / "SKILL.md").read_text()
         assert '"$PLUGIN_ROOT/scripts/contextguard"' in skill
+
+
+def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path):
+    policy = render_agents(
+        ProjectInfo(root=tmp_path, kind="existing", is_git=False, is_monorepo=False)
+    )
+
+    assert ".contextguard/bin/contextguard capture --" in policy
+    assert "tests, linters, builds" in policy
+    assert "recursive listings or searches" in policy
+    assert "git diff" in policy
+    assert "structured data or logs" in policy
+    assert "sh -lc" in policy
+    assert "before stdout reaches Codex" in policy
+    assert "Never trade correctness" in policy
+    assert len(policy.encode()) < 1400

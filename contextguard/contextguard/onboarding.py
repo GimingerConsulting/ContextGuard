@@ -11,6 +11,7 @@ from .documentation import render_agents, write_managed_docs
 from .index import refresh_index
 from .output_policy import POLICY_NAME
 from .project import ProjectInfo, detect_project
+from .project_runner import install_project_runner
 from .repo_map import detect_repo_facts
 
 
@@ -36,6 +37,7 @@ def initialize_project(path: Path | None = None) -> InitializationResult:
 
     for name in ("cache", "sessions", "reports", "tmp"):
         (state_dir(info.root) / name).mkdir(parents=True, exist_ok=True)
+    install_project_runner(info.root)
 
     index_stats = refresh_index(info.root)
     (state_dir(info.root) / "repo_map.json").write_text(

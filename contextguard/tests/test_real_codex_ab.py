@@ -19,7 +19,7 @@ from benchmarks.real_codex_ab import (
 def test_prompt_forces_same_noisy_baseline_before_edits():
     assert "before editing" in PROMPT
     assert "python3 -m pytest -q" in PROMPT
-    assert "no redirection" in PROMPT
+    assert "follow the repository instructions" in PROMPT
 
 
 def test_hard_fixture_fails_before_reference_and_passes_after(tmp_path: Path):
@@ -72,6 +72,14 @@ def test_raw_and_optimized_commands_differ_only_by_hook_activation(tmp_path: Pat
     assert raw[-1] == optimized[-1]
     assert "gpt-5.5" in raw
     assert 'model_reasoning_effort="medium"' in raw
+
+
+def test_real_ab_accepts_optimized_trial_only_when_project_runner_is_used():
+    source = (Path(__file__).resolve().parents[1] / "benchmarks" / "real_codex_ab.py").read_text()
+
+    assert 'capture_runner_used' in source
+    assert '.contextguard/bin/contextguard' in source
+    assert 'optimized["capture_runner_used"]' in source
 
 
 def test_optimized_command_can_explicitly_bypass_hook_trust(tmp_path: Path, monkeypatch):

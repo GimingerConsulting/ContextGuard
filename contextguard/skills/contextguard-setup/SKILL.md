@@ -13,8 +13,7 @@ Run the bundled command:
 
 Report the result directly:
 
-- When a tool hook was observed, state that ContextGuard is initialized and ready.
-- When only `SessionStart` was observed, state that setup is partial and ask Codex to run one normal tool command before checking `$contextguard-status`.
-- When hooks were not observed, tell the user to open `/hooks`, review and trust the ContextGuard hooks, and then start a new thread in the project.
-- Do not claim token savings until hooks have been observed and commands have been intercepted.
+- When `Execution protection: ready` is present, state that host-independent command capture is initialized and ready.
+- Report hook status separately. Hooks are optional defense in depth; if they were not observed, mention `/hooks` as an optional enhancement rather than a blocker.
+- Do not claim measured savings until commands have been executed through the project runner and appear in `$contextguard-report`.
 - Do not edit Codex hook-trust records or bypass the review flow.

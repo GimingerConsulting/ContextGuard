@@ -22,14 +22,13 @@ def classify_complexity(prompt: str, *, changed_file_count: int = 0) -> str:
 def render_policy(project_kind: str) -> str:
     return f"""ContextGuard policy: {POLICY_NAME}.
 
-- Start with metadata, symbols, and ranges; expand when evidence is insufficient.
-- Reuse verified unchanged repository and session facts.
-- Store full command output locally; expose status, timing, unique failures, warnings, tests, and its path.
-- Do not narrate routine inspection or tool use, restate user intent, echo written source, or print full diffs unless requested.
-- Keep plans proportional to task complexity. Final responses contain changed files, validation, and only real risks.
+- Start focused; reuse facts; expand as needed.
+- For tests, linters, builds; recursive listings or searches; `git diff`; or structured data or logs, run `.contextguard/bin/contextguard capture -- <command> <args...>` before stdout reaches Codex. Shell: `capture -- sh -lc '<command>'`. Small commands run directly; capture keeps full local output and exit status.
+- Do not narrate routine inspection or tool use, restate intent, echo source, or print unasked diffs.
+- Final responses: changed files, validation, and only real risks.
 - Never trade correctness, context, validation, security, or data integrity for brevity.
 
-Project classification: {project_kind}.
+Project: {project_kind}.
 """
 
 

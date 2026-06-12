@@ -32,6 +32,12 @@ def test_install_acceptance_covers_empty_existing_and_automatic_hooks(tmp_path):
     assert result["existing_project"]["automatic_init"] is True
     assert result["existing_project"]["project_kind"] == "existing"
     assert result["existing_project"]["user_content_preserved"] is True
+    assert result["execution_protection"]["runner_exists"] is True
+    assert result["execution_protection"]["runner_executable"] is True
+    assert result["execution_protection"]["runner_used"] is True
+    assert result["execution_protection"]["exit_code_preserved"] is True
+    assert result["execution_protection"]["archived_raw_matches"] is True
+    assert result["execution_protection"]["visible_output_reduced"] is True
     assert result["automatic_hooks"]["session_start"] is True
     assert result["automatic_hooks"]["user_prompt_submit"] is True
     assert result["automatic_hooks"]["pre_tool_use"] is True

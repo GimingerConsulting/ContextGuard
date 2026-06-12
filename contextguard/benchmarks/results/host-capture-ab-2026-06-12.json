@@ -1,0 +1,81 @@
+{
+  "benchmark": "real-codex-host-independent-capture-ab",
+  "comparison": {
+    "cached_input_tokens": {
+      "change_percent": -32.0,
+      "contextguard": 13056,
+      "raw": 19200
+    },
+    "elapsed_seconds": {
+      "change_percent": -28.42,
+      "contextguard": 6.944,
+      "raw": 9.701
+    },
+    "input_tokens": {
+      "change_percent": -33.33,
+      "contextguard": 22673,
+      "raw": 34008
+    },
+    "output_tokens": {
+      "change_percent": 4.65,
+      "contextguard": 135,
+      "raw": 129
+    },
+    "tool_output_bytes": {
+      "change_percent": -95.07,
+      "contextguard": 1899,
+      "raw": 38490
+    },
+    "uncached_input_tokens": {
+      "change_percent": -35.06,
+      "contextguard": 9617,
+      "raw": 14808
+    }
+  },
+  "contextguard": {
+    "cached_input_tokens": 13056,
+    "capture_runner_used": true,
+    "codex_exit_code": 0,
+    "command_executions": 1,
+    "commands": [
+      "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 emit_failures.py'"
+    ],
+    "elapsed_seconds": 6.944,
+    "file_changes": 0,
+    "final_response": "OBSERVED 130 FAILURES",
+    "final_response_bytes": 21,
+    "input_tokens": 22673,
+    "output_tokens": 135,
+    "raw_command_used": false,
+    "reasoning_output_tokens": 0,
+    "tool_output_bytes": 1899,
+    "uncached_input_tokens": 9617
+  },
+  "equivalent_result": true,
+  "limitations": [
+    "Single controlled sample; model execution is stochastic."
+  ],
+  "model": "gpt-5.5",
+  "plugin_root": "contextguard",
+  "raw": {
+    "cached_input_tokens": 19200,
+    "capture_runner_used": false,
+    "codex_exit_code": 0,
+    "command_executions": 1,
+    "commands": [
+      "/bin/zsh -lc 'python3 emit_failures.py'"
+    ],
+    "elapsed_seconds": 9.701,
+    "file_changes": 0,
+    "final_response": "OBSERVED 130 FAILURES",
+    "final_response_bytes": 21,
+    "input_tokens": 34008,
+    "output_tokens": 129,
+    "raw_command_used": true,
+    "reasoning_output_tokens": 0,
+    "tool_output_bytes": 38490,
+    "uncached_input_tokens": 14808
+  },
+  "reasoning_effort": "low",
+  "same_prompt": true
+}
