@@ -2,7 +2,7 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
-## 2026-06-12 Live ContextGuard Verification
+## 2026-06-12 Local ContextGuard Compactor Verification
 
 - Confirmed project initialization, a current 124-file index and observed `SessionStart`, `PreToolUse` and `PostToolUse` hooks.
 - Confirmed live large-output protection by observing automatic compaction of repository inspection output in this Codex thread.
@@ -11,6 +11,16 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Verified that the archived full output was byte-identical and that the compact output retained the test summary and failed-test information.
 - Median hook overhead was 54.376 ms; net overhead beyond raw tokenization was 45.674 ms.
 - Limitation: these are local visible-context measurements, not exact Codex account quota or server-side token measurements.
+
+## 2026-06-12 Installed Host Live A/B Investigation
+
+- Ran two byte-identical real `codex exec 0.139.0` smoke trials against the same deterministic noisy command: one raw and one configured with the installed ContextGuard `0.2.0` hooks.
+- The raw trial reported 31,558 input tokens; the configured trial reported 32,834 input tokens, but the optimized trial recorded zero hook heartbeats and zero compactions, so this comparison is invalid and is not a ContextGuard result.
+- Repeated the optimized trial with project-local `.codex/hooks.json`, enabled hooks and `--dangerously-bypass-hook-trust`; the CLI still dispatched zero hooks. Its 33,176 input tokens are likewise rejected as evidence.
+- Ran the same noisy-output smoke test through the active Codex Desktop project where `SessionStart`, `PreToolUse` and `PostToolUse` heartbeats are observed.
+- ContextGuard locally recorded 12,053 raw bytes versus 2,507 compact bytes for the intercepted result, a 79.20% local reduction, and archived the intercepted output.
+- Problem: the agent transcript still exposed additional raw tool output after the compact ContextGuard summary. Therefore a successful hook heartbeat and local `model_visible_bytes` estimate do not yet prove that the host removed the original output from the model context.
+- Conclusion: the plugin currently has strong deterministic compactor tests, but this installed-host test does not prove lower Codex account quota consumption. Do not market server-side or five-hour-limit savings until a host reports exact usage with hooks observed and the original tool result absent.
 
 ## 2026-06-12 Hybrid Onboarding
 
