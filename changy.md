@@ -2,6 +2,16 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 Live ContextGuard Verification
+
+- Confirmed project initialization, a current 124-file index and observed `SessionStart`, `PreToolUse` and `PostToolUse` hooks.
+- Confirmed live large-output protection by observing automatic compaction of repository inspection output in this Codex thread.
+- Ran the deterministic hard 130-failure output A/B benchmark with eleven timing samples.
+- Result: 20,650 raw `o200k_base` tokens versus 545 ContextGuard-visible tokens, saving 20,105 tokens or 97.36%.
+- Verified that the archived full output was byte-identical and that the compact output retained the test summary and failed-test information.
+- Median hook overhead was 54.376 ms; net overhead beyond raw tokenization was 45.674 ms.
+- Limitation: these are local visible-context measurements, not exact Codex account quota or server-side token measurements.
+
 ## 2026-06-12 Hybrid Onboarding
 
 - Added automatic first-thread initialization for empty and existing projects after Codex hook trust.
