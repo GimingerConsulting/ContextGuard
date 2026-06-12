@@ -2,6 +2,13 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-12 ContextGuard Setup
+
+- Initialized ContextGuard for the existing project and indexed 131 files.
+- Confirmed host-independent execution protection is ready through `.contextguard/bin/contextguard`.
+- Confirmed lifecycle hook observation for `SessionStart`, `PreToolUse`, and `PostToolUse`.
+- No savings claim was made because this setup run did not execute a measured project-runner workload.
+
 ## 2026-06-12 Release 0.3.1 Problem Resolution
 
 - Packaging: configured explicit setuptools package discovery and modern SPDX license metadata. Clean wheel and editable installs are release gates.

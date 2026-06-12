@@ -1,0 +1,5 @@
+.contextguard/index.sqlite
+.contextguard/cache/
+.contextguard/sessions/
+.contextguard/reports/
+.contextguard/tmp/
