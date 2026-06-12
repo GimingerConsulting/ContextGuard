@@ -19,6 +19,28 @@ def run_hook(name: str, payload: dict, cwd: Path):
     return json.loads(proc.stdout)
 
 
+def test_cached_hook_commands_fail_open_after_plugin_cache_is_removed(tmp_path: Path):
+    hooks = json.loads((ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
+    removed_plugin_root = tmp_path / "removed-plugin-version"
+
+    for event_groups in hooks.values():
+        for event_group in event_groups:
+            for hook in event_group["hooks"]:
+                proc = subprocess.run(
+                    hook["command"],
+                    shell=True,
+                    cwd=tmp_path,
+                    env={"PLUGIN_ROOT": str(removed_plugin_root)},
+                    input="{}",
+                    text=True,
+                    capture_output=True,
+                )
+
+                assert proc.returncode == 0, hook["command"]
+                assert proc.stdout == ""
+                assert proc.stderr == ""
+
+
 def test_hook_json_input_output(tmp_path: Path):
     result = run_hook("pre_tool_use.py", {"tool_name": "Bash", "tool_input": {"command": "cat big.log"}}, tmp_path)
     output = result["hookSpecificOutput"]

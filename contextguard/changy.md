@@ -1,5 +1,29 @@
 # changy.md
 
+## 2026-06-12 Stale Hook Cache Lockout Fix 0.3.2
+
+### Root Cause
+
+- Codex expands `$PLUGIN_ROOT` to a version-specific absolute cache path when a thread loads plugin hooks.
+- Updating or uninstalling ContextGuard can remove that version directory while an existing thread still holds the expanded commands.
+- The previous commands invoked Python directly, so missing scripts returned exit code 2. Blocking hooks such as `UserPromptSubmit`, `PreToolUse` and `Stop` could then make the thread unusable.
+
+### Solution
+
+- Guard every lifecycle hook command with a file-existence check.
+- If the cached plugin version has been removed, the stale command now exits successfully without output instead of blocking the thread.
+- Keep normal hook execution unchanged while the script exists.
+- Add a regression test that executes every configured hook command against a removed plugin root and requires exit code 0 with empty stdout and stderr.
+
+### Validation
+
+- The regression test reproduced the old failure with exit code 2 before the fix.
+- The fixed regression test passed for all six configured lifecycle hooks.
+- Full Python 3.12 suite: 80 passed.
+- Wheel build succeeded for `contextguard-0.3.2-py3-none-any.whl`.
+- Isolated installed-copy acceptance passed; archived output remained byte-identical and visible runner tokens fell from 2,739 to 663 (75.79%).
+- Validation logs: `../.contextguard/tmp/pytest-uv-0.3.2.txt`, `../.contextguard/tmp/build-uv-0.3.2.txt` and `../.contextguard/tmp/install-acceptance-0.3.2.txt`.
+
 ## 2026-06-12 Release 0.3.1 Problem Resolution
 
 ### Changes

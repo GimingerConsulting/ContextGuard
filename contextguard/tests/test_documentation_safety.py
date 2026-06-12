@@ -36,7 +36,10 @@ def test_hooks_json_uses_current_codex_nested_schema():
     handler = hooks["PreToolUse"][0]["hooks"][0]
     assert hooks["PreToolUse"][0]["matcher"] == ".*"
     assert handler["type"] == "command"
-    assert handler["command"] == 'python3 "$PLUGIN_ROOT/hooks/pre_tool_use.py"'
+    assert handler["command"] == (
+        'test ! -f "$PLUGIN_ROOT/hooks/pre_tool_use.py" || '
+        'python3 "$PLUGIN_ROOT/hooks/pre_tool_use.py"'
+    )
 
 
 def test_marketplace_readme_documents_complete_safe_onboarding():

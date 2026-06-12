@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+- Made every lifecycle hook fail open when a running thread references a plugin cache directory removed by an update or uninstall.
+- Added regression coverage for stale cached hook commands so missing plugin files cannot block prompts, tools, compaction or thread completion.
+
 ## 0.3.1
 
 - Fixed wheel and editable installation by restricting setuptools discovery to the `contextguard` package.
