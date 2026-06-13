@@ -36,6 +36,17 @@ python3 benchmarks/real_codex_backend_ab.py --run
 
 This harness creates two isolated legacy inventory-service repositories and asks Codex to complete a production-style upgrade involving schema migration, API compatibility, idempotency, optimistic versions, thread-safe reservations, deterministic audit logs, CLI behavior, repository noise, and 329 tests. Acceptance requires both agents to pass every test and produce identical canonical API, migration, and concurrency probe results. The ContextGuard trial must additionally prove project capture-runner use.
 
+## Human Support-Ticket A/B
+
+Run the three-pair human-maintenance benchmark:
+
+```bash
+python3 benchmarks/real_codex_support_ab.py --self-check
+python3 benchmarks/real_codex_support_ab.py --run
+```
+
+Agents receive only an incident ticket, production-style logs, an unfamiliar legacy service and three public tests. A separate hidden suite checks 144 observable customer requirements after the agent finishes. Three pairs run in counterbalanced order, and every individual trial uses a separate temporary root so agents cannot inspect the comparison repository. This benchmark measures realistic diagnosis behavior, where model exploration choices can dominate total tokens and time.
+
 ## Host-Independent Capture A/B
 
 Run:
