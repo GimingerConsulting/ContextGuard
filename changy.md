@@ -11,6 +11,7 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Added status counters and focused regression coverage.
 - Validation: 97 tests passed, plugin validation passed, the 0.4.0 wheel built, and all ten deterministic scenarios preserved equivalent results.
 - Final real Codex A/B: both sides passed 130 tests with identical canonical output; ContextGuard reduced input tokens 57.70%, uncached input 42.41%, tool output 99.03%, elapsed time 18.06%, and estimated GPT-5.5 Codex credits 41.69%.
+- Upgraded the local marketplace installation to `0.4.0+codex.20260613081000`, regenerated the project runner from that cache, refreshed the project index, and updated the managed `AGENTS.md` policy.
 
 ## 2026-06-13 ContextGuard Usage Optimization Audit
 
