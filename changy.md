@@ -293,3 +293,14 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 
 - Full command and hook captures: `.contextguard/tmp/`.
 - Test and benchmark logs: `contextguard/.contextguard/audit-2026-06-12/`.
+
+## 2026-06-13 Post-Update Validated RAW vs ContextGuard A/B
+
+- Ran a fresh end-to-end comparison on `codex-cli 0.139.0` with `gpt-5.5` and medium reasoning in two isolated Git repositories and two separate `CODEX_HOME` sandboxes.
+- Both agents received the same settlement-reconciliation prompt, passed all 130 tests, produced the same canonical JSON result, and completed without timeout. The ContextGuard trial was accepted only after proving use of `.contextguard/bin/contextguard capture`.
+- RAW used 243,179 total input tokens, including 55,531 uncached tokens, plus 4,461 output tokens and 1,294 reasoning tokens. It exposed 93,727 tool-output bytes, ran 14 commands, and took 99.765 seconds.
+- ContextGuard used 160,418 total input tokens, including 16,930 uncached tokens, plus 3,715 output tokens and 939 reasoning tokens. It exposed 11,057 tool-output bytes, ran 8 commands, and took 81.290 seconds.
+- Measured changes: total input -34.03%, uncached input -69.51%, output -16.72%, reasoning output -27.43%, tool-output bytes -88.20%, commands -42.86%, and elapsed time -18.52%.
+- Added a deterministic control using the identical 130-failure pytest output. RAW exposed 20,650 `o200k_base` tokens versus 543 ContextGuard-visible tokens, saving 20,107 tokens or 97.37%, while preserving a byte-identical archive and the relevant failure information.
+- Conclusion: this update produced a clear end-to-end usage reduction in the fresh controlled sample, and noisy-output reduction remains deterministic. Codex subscription usage limits are not directly exposed, so the measured token reduction is strong evidence of lower usage pressure, not proof of a fixed quota multiplier for every workload.
+- Artifacts: `contextguard/benchmarks/results/real-codex-hard-ab-2026-06-13/` and `contextguard/benchmarks/results/output-ab-2026-06-13.json`.

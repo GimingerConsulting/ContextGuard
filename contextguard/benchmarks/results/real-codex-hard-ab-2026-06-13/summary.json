@@ -1,0 +1,263 @@
+{
+  "benchmark": "real-codex-hard-settlement-ab",
+  "codex_cli": "codex-cli 0.139.0",
+  "comparison": {
+    "cached_input_tokens": {
+      "change_percent": -23.53,
+      "contextguard": 143488,
+      "raw": 187648
+    },
+    "capture_runner_used": {
+      "change_percent": null,
+      "contextguard": true,
+      "raw": false
+    },
+    "command_executions": {
+      "change_percent": -42.86,
+      "contextguard": 8,
+      "raw": 14
+    },
+    "diff_bytes": {
+      "change_percent": 3.29,
+      "contextguard": 4362,
+      "raw": 4223
+    },
+    "elapsed_seconds": {
+      "change_percent": -18.52,
+      "contextguard": 81.29,
+      "raw": 99.765
+    },
+    "file_changes": {
+      "change_percent": 0.0,
+      "contextguard": 1,
+      "raw": 1
+    },
+    "final_response_bytes": {
+      "change_percent": 136.03,
+      "contextguard": 701,
+      "raw": 297
+    },
+    "input_tokens": {
+      "change_percent": -34.03,
+      "contextguard": 160418,
+      "raw": 243179
+    },
+    "model_visible_tool_output_bytes": {
+      "change_percent": -88.2,
+      "contextguard": 11057,
+      "raw": 93727
+    },
+    "output_tokens": {
+      "change_percent": -16.72,
+      "contextguard": 3715,
+      "raw": 4461
+    },
+    "raw_tool_output_bytes": {
+      "change_percent": -88.2,
+      "contextguard": 11057,
+      "raw": 93727
+    },
+    "reasoning_output_tokens": {
+      "change_percent": -27.43,
+      "contextguard": 939,
+      "raw": 1294
+    },
+    "tool_output_bytes": {
+      "change_percent": -88.2,
+      "contextguard": 11057,
+      "raw": 93727
+    },
+    "uncached_input_tokens": {
+      "change_percent": -69.51,
+      "contextguard": 16930,
+      "raw": 55531
+    }
+  },
+  "contextguard": {
+    "cached_input_tokens": 143488,
+    "capture_runner_used": true,
+    "codex_exit_code": 0,
+    "command_executions": 8,
+    "commands": [
+      "/bin/zsh -lc \"pwd && printf '%s\\\\n' '---FILES---' && rg --files -g 'SPEC.md' -g 'AGENTS.md' -g 'pyproject.toml' -g 'pytest.ini' -g 'setup.cfg' -g 'tox.ini' -g '*.py' | sed -n '1,200p' && printf '%s\\\\n' '---SPEC---' && sed -n '1,240p' SPEC.md && printf '%s\\\\n' '---STATUS---' && git status --short\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+      "/bin/zsh -lc \"sed -n '1,320p' settlement/money.py settlement/allocation.py settlement/ledger.py settlement/service.py settlement/cli.py settlement/__init__.py tests/test_settlement.py pyproject.toml\"",
+      "/bin/zsh -lc \"sed -n '1,240p' scenario.json && find docs -maxdepth 2 -type f -print\"",
+      "/bin/zsh -lc \"sed -n '1,260p' docs/ARCHITECTURE.md docs/CURRENT_STATE.md\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git diff --check'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m settlement.cli scenario.json'\""
+    ],
+    "diff_bytes": 4362,
+    "elapsed_seconds": 81.29,
+    "exact_baseline_command": false,
+    "file_changes": 1,
+    "final_response": "Implemented settlement reconciliation across:\n\n- [money.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-real-codex-ab-khy871ax/optimized-project/settlement/money.py)\n- [allocation.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-real-codex-ab-khy871ax/optimized-project/settlement/allocation.py)\n- [ledger.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-real-codex-ab-khy871ax/optimized-project/settlement/ledger.py)\n- [service.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-real-codex-ab-khy871ax/optimized-project/settlement/service.py)\n\nValidation: `130 passed`. CLI emits canonical sorted JSON, and `git diff --check` passes.",
+    "final_response_bytes": 701,
+    "input_tokens": 160418,
+    "model_visible_tool_output_bytes": 11057,
+    "optimized": true,
+    "output_tokens": 3715,
+    "raw_tool_output_bytes": 11057,
+    "reasoning_output_tokens": 939,
+    "repository_hash": "30b934e5684c146ddbe5cbb415827627d5a4515ebf89fa658e0e69ed0c99a568",
+    "stderr_bytes": 39,
+    "timed_out": false,
+    "tool_output_bytes": 11057,
+    "uncached_input_tokens": 16930,
+    "validation": {
+      "canonical_exit_code": 0,
+      "canonical_output": {
+        "allocated_minor": 9424,
+        "audit": [
+          {
+            "accepted_minor": 4400,
+            "account": "alpha",
+            "event_id": "evt-001",
+            "requested_minor": 4400,
+            "status": "accepted"
+          },
+          {
+            "accepted_minor": 800,
+            "account": "alpha",
+            "event_id": "evt-003",
+            "requested_minor": 2500,
+            "status": "partial"
+          },
+          {
+            "accepted_minor": 4224,
+            "account": "beta",
+            "event_id": "evt-002",
+            "requested_minor": 6250,
+            "status": "partial"
+          }
+        ],
+        "duplicates": [
+          "evt-001"
+        ],
+        "fee_minor": 250,
+        "ledger": [
+          {
+            "account": "settlement_receivable",
+            "debit_minor": 9424
+          },
+          {
+            "account": "merchant_cash",
+            "credit_minor": 9174
+          },
+          {
+            "account": "processing_fees",
+            "credit_minor": 250
+          }
+        ],
+        "posted_minor": 9174,
+        "settlement_id": "stl-001"
+      },
+      "collected_tests": 130,
+      "exit_code": 0,
+      "failed_tests": 0,
+      "passed_tests": 130
+    }
+  },
+  "equivalent_result": true,
+  "limitations": [
+    "Single controlled sample; model execution is stochastic.",
+    "The installed Codex CLI may include fixed system context not controlled by this harness.",
+    "Cached input tokens are reported separately from uncached input tokens."
+  ],
+  "model": "gpt-5.5",
+  "raw": {
+    "cached_input_tokens": 187648,
+    "capture_runner_used": false,
+    "codex_exit_code": 0,
+    "command_executions": 14,
+    "commands": [
+      "/bin/zsh -lc 'python3 -m pytest -q'",
+      "/bin/zsh -lc 'git status --short'",
+      "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'SPEC.md' -g 'README*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g '*.py'\"",
+      "/bin/zsh -lc 'for f in ../AGENTS.md ../../AGENTS.md ../../../AGENTS.md; do if [ -f \"$f\" ]; then printf '\"'%s\\\\n' \\\"\"'$f\"; sed -n '\"'1,240p' \\\"\"'$f\"; fi; done'",
+      "/bin/zsh -lc \"sed -n '1,260p' SPEC.md\"",
+      "/bin/zsh -lc \"for f in settlement/*.py; do printf '\\\\n### %s\\\\n' \\\"\"'$f\"; sed -n '\"'1,300p' \\\"\"'$f\"; done'",
+      "/bin/zsh -lc \"sed -n '1,260p' tests/test_settlement.py && sed -n '1,220p' pyproject.toml\"",
+      "/bin/zsh -lc \"sed -n '1,260p' scenario.json\"",
+      "/bin/zsh -lc \"find . -maxdepth 3 -type f -not -path './.git/*' -print | sort\"",
+      "/bin/zsh -lc 'git log --oneline --all --decorate -10 && git ls-tree -r HEAD'",
+      "/bin/zsh -lc 'python -m pytest -q'",
+      "/bin/zsh -lc 'python3 -m pytest'",
+      "/bin/zsh -lc 'git diff --check && git diff -- settlement/money.py settlement/allocation.py settlement/ledger.py settlement/service.py settlement/cli.py && git status --short'",
+      "/bin/zsh -lc 'python3 -m settlement.cli scenario.json'"
+    ],
+    "diff_bytes": 4223,
+    "elapsed_seconds": 99.765,
+    "exact_baseline_command": true,
+    "file_changes": 1,
+    "final_response": "Implemented settlement reconciliation across money conversion, allocation, duplicate handling, audit records, fees, and balanced ledger posting.\n\nValidation:\n- `130 passed`\n- CLI emits sorted canonical JSON\n- `git diff --check` passed\n- Required baseline command executed exactly once before edits",
+    "final_response_bytes": 297,
+    "input_tokens": 243179,
+    "model_visible_tool_output_bytes": 93727,
+    "optimized": false,
+    "output_tokens": 4461,
+    "raw_tool_output_bytes": 93727,
+    "reasoning_output_tokens": 1294,
+    "repository_hash": "543b7a59e3219e7747b802618c6e125501c080c0b4c51585338765e60e1a6e99",
+    "stderr_bytes": 39,
+    "timed_out": false,
+    "tool_output_bytes": 93727,
+    "uncached_input_tokens": 55531,
+    "validation": {
+      "canonical_exit_code": 0,
+      "canonical_output": {
+        "allocated_minor": 9424,
+        "audit": [
+          {
+            "accepted_minor": 4400,
+            "account": "alpha",
+            "event_id": "evt-001",
+            "requested_minor": 4400,
+            "status": "accepted"
+          },
+          {
+            "accepted_minor": 800,
+            "account": "alpha",
+            "event_id": "evt-003",
+            "requested_minor": 2500,
+            "status": "partial"
+          },
+          {
+            "accepted_minor": 4224,
+            "account": "beta",
+            "event_id": "evt-002",
+            "requested_minor": 6250,
+            "status": "partial"
+          }
+        ],
+        "duplicates": [
+          "evt-001"
+        ],
+        "fee_minor": 250,
+        "ledger": [
+          {
+            "account": "settlement_receivable",
+            "debit_minor": 9424
+          },
+          {
+            "account": "merchant_cash",
+            "credit_minor": 9174
+          },
+          {
+            "account": "processing_fees",
+            "credit_minor": 250
+          }
+        ],
+        "posted_minor": 9174,
+        "settlement_id": "stl-001"
+      },
+      "collected_tests": 130,
+      "exit_code": 0,
+      "failed_tests": 0,
+      "passed_tests": 130
+    }
+  },
+  "reasoning_effort": "medium",
+  "same_prompt": true
+}
