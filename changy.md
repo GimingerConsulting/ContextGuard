@@ -2,6 +2,18 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-13 Isolated Real Codex RAW vs ContextGuard A/B
+
+- Created two temporary identical Git projects and isolated Codex homes, then ran the same prompt once with RAW command execution and once through the ContextGuard project runner using `gpt-5.5` with low reasoning effort.
+- Acceptance passed: both runs executed exactly one command and returned exactly `OBSERVED 130 FAILURES`; RAW used the direct command and the protected run used `.contextguard/bin/contextguard capture`.
+- Real Codex result: input tokens fell from 23,060 to 22,762 (-1.29%), uncached input from 10,004 to 9,706 (-2.98%), output from 131 to 130 (-0.76%), tool output from 38,490 to 1,899 bytes (-95.07%), and elapsed time from 7.557s to 6.752s (-10.65%).
+- Deterministic local output check preserved the exit code and byte-identical archived output while reducing visible output from 38,490 to 2,043 bytes.
+- Tokenizer A/B measured 20,650 RAW visible tokens versus 545 protected tokens, saving 20,105 tokens or 97.36% for the noisy command output itself.
+- At the official GPT-5.5 standard API rates available on 2026-06-13 ($5/M uncached input, $0.50/M cached input, $30/M output), this single sample is approximately $0.060478 RAW versus $0.058958 protected: $0.00152 or 2.51% lower, about $1.52 per 1,000 equivalent runs.
+- Interpretation: ContextGuard has a large direct effect on noisy tool output, but fixed prompt and cached context dominate this one-turn sample. Multi-turn savings may be larger because suppressed output is not carried forward, but this test does not measure that claim.
+- Limitation: this is one controlled stochastic Codex sample and API-equivalent pricing, not a Codex subscription billing statement.
+- Local artifacts: `.contextguard/reports/host-capture-ab-2026-06-13/` and `.contextguard/reports/output-ab-2026-06-13.json`.
+
 ## 2026-06-12 Minimal Low-Usage Regression Test
 
 - Ran only `test_parse_codex_jsonl_extracts_exact_usage_and_tool_output`; result: `1 passed in 0.01s`.
