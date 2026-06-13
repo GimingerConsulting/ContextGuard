@@ -25,6 +25,17 @@ The harness creates two identical settlement repositories, uses isolated Codex h
 
 The June 10, 2026 result in `benchmarks/results/real-codex-hard-ab-2026-06-10.json` is retained as a rejected historical hook-dependent sample. The current harness no longer configures or waits for `codex exec` lifecycle hooks; it uses the host-independent runner path and rejects any optimized trial that bypasses it.
 
+## Realistic Production Backend A/B
+
+Run the heavier opt-in benchmark:
+
+```bash
+python3 benchmarks/real_codex_backend_ab.py --self-check
+python3 benchmarks/real_codex_backend_ab.py --run
+```
+
+This harness creates two isolated legacy inventory-service repositories and asks Codex to complete a production-style upgrade involving schema migration, API compatibility, idempotency, optimistic versions, thread-safe reservations, deterministic audit logs, CLI behavior, repository noise, and 329 tests. Acceptance requires both agents to pass every test and produce identical canonical API, migration, and concurrency probe results. The ContextGuard trial must additionally prove project capture-runner use.
+
 ## Host-Independent Capture A/B
 
 Run:

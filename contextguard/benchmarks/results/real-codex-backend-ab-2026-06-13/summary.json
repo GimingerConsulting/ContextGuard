@@ -1,0 +1,204 @@
+{
+  "benchmark": "real-codex-production-backend-ab",
+  "codex_cli": "codex-cli 0.139.0",
+  "comparison": {
+    "cached_input_tokens": {
+      "change_percent": 0.14,
+      "contextguard": 186624,
+      "raw": 186368
+    },
+    "command_executions": {
+      "change_percent": -50.0,
+      "contextguard": 8,
+      "raw": 16
+    },
+    "diff_bytes": {
+      "change_percent": -2.15,
+      "contextguard": 4829,
+      "raw": 4935
+    },
+    "elapsed_seconds": {
+      "change_percent": -24.54,
+      "contextguard": 111.667,
+      "raw": 147.982
+    },
+    "file_changes": {
+      "change_percent": 0.0,
+      "contextguard": 2,
+      "raw": 2
+    },
+    "final_response_bytes": {
+      "change_percent": -12.62,
+      "contextguard": 367,
+      "raw": 420
+    },
+    "input_tokens": {
+      "change_percent": -11.62,
+      "contextguard": 222214,
+      "raw": 251429
+    },
+    "output_tokens": {
+      "change_percent": -7.03,
+      "contextguard": 4850,
+      "raw": 5217
+    },
+    "reasoning_output_tokens": {
+      "change_percent": 51.27,
+      "contextguard": 1791,
+      "raw": 1184
+    },
+    "tool_output_bytes": {
+      "change_percent": -94.2,
+      "contextguard": 16930,
+      "raw": 291844
+    },
+    "uncached_input_tokens": {
+      "change_percent": -45.3,
+      "contextguard": 35590,
+      "raw": 65061
+    }
+  },
+  "contextguard": {
+    "cached_input_tokens": 186624,
+    "capture_runner_used": true,
+    "codex_exit_code": 0,
+    "command_executions": 8,
+    "commands": [
+      "/bin/zsh -lc \"pwd && printf '%s\\\\n' '---FILES---' && rg --files -g 'AGENTS.md' -g 'SPEC.md' -g 'pyproject.toml' -g 'pytest.ini' -g 'setup.cfg' -g 'tox.ini' -g '*.py' | sed -n '1,160p' && printf '%s\\\\n' '---AGENTS---' && sed -n '1,240p' AGENTS.md && printf '%s\\\\n' '---SPEC---' && sed -n '1,280p' SPEC.md\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+      "/bin/zsh -lc \"sed -n '1,280p' inventory/service.py; sed -n '1,240p' inventory/migration.py; sed -n '1,240p' inventory/api.py; sed -n '1,220p' inventory/audit.py; sed -n '1,260p' inventory/cli.py; sed -n '1,360p' tests/test_inventory.py; sed -n '1,220p' pyproject.toml\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- pytest -q'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest tests -q'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git diff --check && git diff -- inventory'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest tests -q'\"",
+      "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git diff --check'\""
+    ],
+    "diff_bytes": 4829,
+    "elapsed_seconds": 111.667,
+    "exact_baseline_command": false,
+    "file_changes": 2,
+    "final_response": "Implemented production inventory reservation behavior across:\n\n- `inventory/service.py`\n- `inventory/migration.py`\n- `inventory/api.py`\n- `inventory/audit.py`\n\nIncludes atomic reservations, idempotent request IDs, version conflicts, stock-preserving migration, v1/v2 response fields, and deterministic audit JSON.\n\nValidation: `329 passed`; `git diff --check` passed.",
+    "final_response_bytes": 367,
+    "input_tokens": 222214,
+    "optimized": true,
+    "output_tokens": 4850,
+    "reasoning_output_tokens": 1791,
+    "repository_hash": "fa09a57937b1b1077c778d116f0488ad2a0e0ee422e4e9aae7becdd5b3235a1a",
+    "stderr_bytes": 39,
+    "timed_out": false,
+    "tool_output_bytes": 16930,
+    "uncached_input_tokens": 35590,
+    "validation": {
+      "canonical_exit_code": 0,
+      "canonical_output": {
+        "available": 7,
+        "ok": true,
+        "quantity": 3,
+        "remaining": 7,
+        "request_id": "req-001",
+        "reserved": 3,
+        "sku": "widget",
+        "status": "reserved",
+        "version": 1
+      },
+      "collected_tests": 329,
+      "concurrency_output": {
+        "available": 0,
+        "reserved": 10,
+        "successful": 10,
+        "version": 10
+      },
+      "exit_code": 0,
+      "failed_tests": 0,
+      "migration_exit_code": 0,
+      "migration_output": {
+        "available": 10,
+        "reserved": 0,
+        "schema_version": 2,
+        "sku": "widget",
+        "version": 0
+      },
+      "passed_tests": 329
+    }
+  },
+  "equivalent_result": true,
+  "limitations": [
+    "Single controlled sample; model execution is stochastic.",
+    "Codex subscription quota accounting is not exposed by the CLI.",
+    "Cached and uncached input are reported separately."
+  ],
+  "model": "gpt-5.5",
+  "raw": {
+    "cached_input_tokens": 186368,
+    "capture_runner_used": false,
+    "codex_exit_code": 0,
+    "command_executions": 16,
+    "commands": [
+      "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'SPEC.md' -g '\"'!**/.git/**'\"' | sort\"",
+      "/bin/zsh -lc \"sed -n '1,260p' SPEC.md\"",
+      "/bin/zsh -lc \"find . -maxdepth 3 -type f -not -path './.git/*' | sort\"",
+      "/bin/zsh -lc 'git status --short'",
+      "/bin/zsh -lc \"sed -n '1,360p' tests/test_inventory.py\"",
+      "/bin/zsh -lc \"sed -n '1,260p' pyproject.toml\"",
+      "/bin/zsh -lc \"sed -n '1,260p' inventory/service.py && sed -n '1,220p' inventory/api.py\"",
+      "/bin/zsh -lc \"sed -n '1,220p' inventory/migration.py && sed -n '1,220p' inventory/audit.py && sed -n '1,260p' inventory/cli.py && sed -n '1,120p' inventory/__init__.py\"",
+      "/bin/zsh -lc 'python3 -m pytest -q'",
+      "/bin/zsh -lc 'git diff --check && git diff -- inventory'",
+      "/bin/zsh -lc 'python3 -m inventory.cli migrate legacy-db.json && python3 -m inventory.cli reserve scenario.json'",
+      "/bin/zsh -lc 'python3 -m pytest'",
+      "/bin/zsh -lc \"python3 - <<'PY'\nimport json\nfrom inventory.migration import migrate_record\nfrom inventory.service import InventoryService\n\nrecord = {\\\"sku\\\": \\\"w\\\", \\\"available\\\": 7, \\\"reserved\\\": 3, \\\"version\\\": 4, \\\"schema_version\\\": 2}\nassert migrate_record(record) == record\nservice = InventoryService([record])\nfirst = service.reserve(\\\"w\\\", 2, \\\"same\\\", expected_version=4)\nassert service.reserve(\\\"other\\\", 0, \\\"same\\\", expected_version=999) == first\nassert service.records[\\\"w\\\"] == {\\\"sku\\\": \\\"w\\\", \\\"available\\\": 5, \\\"reserved\\\": 5, \\\"version\\\": 5, \\\"schema_version\\\": 2}\nassert len(service.audit) == 1\nassert json.dumps(json.loads(service.audit[0]), sort_keys=True, separators=(\\\",\\\", \\\":\\\")) == service.audit[0]\nprint(\\\"edge checks passed\\\")\nPY\"",
+      "/bin/zsh -lc 'python3 -m pytest'",
+      "/bin/zsh -lc 'git diff --check'",
+      "/bin/zsh -lc 'git status --short && git diff --stat'"
+    ],
+    "diff_bytes": 4935,
+    "elapsed_seconds": 147.982,
+    "exact_baseline_command": true,
+    "file_changes": 2,
+    "final_response": "Implemented the inventory reservation upgrade:\n\n- Lossless schema v1-to-v2 migration\n- Atomic, thread-safe reservations\n- Idempotent request IDs\n- Version conflict handling\n- Backward-compatible v1 plus v2 response fields\n- Deterministic structured audit JSON\n- Explicit CLI command handling\n- Preserved `inventory.api.handle_request`\n\nValidation: `329 passed`; CLI and edge-case checks passed; `git diff --check` clean.",
+    "final_response_bytes": 420,
+    "input_tokens": 251429,
+    "optimized": false,
+    "output_tokens": 5217,
+    "reasoning_output_tokens": 1184,
+    "repository_hash": "60b25bda164e5aea9bf00826c9a8434c84e07a4698f4e3cf1cb230d7d52f6937",
+    "stderr_bytes": 39,
+    "timed_out": false,
+    "tool_output_bytes": 291844,
+    "uncached_input_tokens": 65061,
+    "validation": {
+      "canonical_exit_code": 0,
+      "canonical_output": {
+        "available": 7,
+        "ok": true,
+        "quantity": 3,
+        "remaining": 7,
+        "request_id": "req-001",
+        "reserved": 3,
+        "sku": "widget",
+        "status": "reserved",
+        "version": 1
+      },
+      "collected_tests": 329,
+      "concurrency_output": {
+        "available": 0,
+        "reserved": 10,
+        "successful": 10,
+        "version": 10
+      },
+      "exit_code": 0,
+      "failed_tests": 0,
+      "migration_exit_code": 0,
+      "migration_output": {
+        "available": 10,
+        "reserved": 0,
+        "schema_version": 2,
+        "sku": "widget",
+        "version": 0
+      },
+      "passed_tests": 329
+    }
+  },
+  "reasoning_effort": "medium",
+  "same_prompt": true
+}

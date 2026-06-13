@@ -304,3 +304,14 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Added a deterministic control using the identical 130-failure pytest output. RAW exposed 20,650 `o200k_base` tokens versus 543 ContextGuard-visible tokens, saving 20,107 tokens or 97.37%, while preserving a byte-identical archive and the relevant failure information.
 - Conclusion: this update produced a clear end-to-end usage reduction in the fresh controlled sample, and noisy-output reduction remains deterministic. Codex subscription usage limits are not directly exposed, so the measured token reduction is strong evidence of lower usage pressure, not proof of a fixed quota multiplier for every workload.
 - Artifacts: `contextguard/benchmarks/results/real-codex-hard-ab-2026-06-13/` and `contextguard/benchmarks/results/output-ab-2026-06-13.json`.
+
+## 2026-06-13 Realistic Production Backend A/B
+
+- Added a reusable heavier real-Codex benchmark for a legacy inventory backend upgrade: schema migration, backward-compatible API responses, idempotency, optimistic version conflicts, atomic concurrent reservations, deterministic JSON audit logs, CLI behavior, large historical logs and 329 tests.
+- Ran RAW and ContextGuard on `codex-cli 0.139.0`, `gpt-5.5`, medium reasoning, identical prompts, separate Git repositories and separate `CODEX_HOME` sandboxes.
+- Both implementations passed all 329 tests and produced identical canonical reservation, migration and concurrency results. The ContextGuard run proved `.contextguard/bin/contextguard capture` use.
+- RAW: 251,429 input tokens, 65,061 uncached input tokens, 5,217 output tokens, 1,184 reasoning tokens, 291,844 tool-output bytes, 16 commands and 147.982 seconds.
+- ContextGuard: 222,214 input tokens, 35,590 uncached input tokens, 4,850 output tokens, 1,791 reasoning tokens, 16,930 tool-output bytes, 8 commands and 111.667 seconds.
+- Changes: total input -11.62%, uncached input -45.30%, output -7.03%, tool-output bytes -94.20%, commands -50.00%, elapsed time -24.54%. Reasoning tokens increased 51.27%; output plus reasoning increased from 6,401 to 6,641 tokens (+3.75%). Input plus generated tokens still fell from 257,830 to 228,855 (-11.24%).
+- Conclusion: ContextGuard reduced overall usage pressure and completion time on this realistic multi-module task, with the strongest effect on uncached input and noisy tool output. A single stochastic run cannot establish a universal percentage or direct Codex subscription quota multiplier.
+- Artifact: `contextguard/benchmarks/results/real-codex-backend-ab-2026-06-13/summary.json`.
