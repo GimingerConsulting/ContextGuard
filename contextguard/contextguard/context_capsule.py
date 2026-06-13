@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from .config import state_dir
+from .session_state import CHECKPOINT_FIELDS, persist_checkpoint
 from .task_classifier import classify_task
 from .utils import estimate_tokens
 
@@ -35,25 +36,12 @@ def build_capsule(root: Path, prompt: str, token_limit: int = 400) -> str:
     return text
 
 
-SESSION_FIELDS = (
-    "current_objective",
-    "likely_relevant_files",
-    "likely_relevant_symbols",
-    "changed_files",
-    "verified_tests",
-    "known_failures",
-    "active_constraints",
-    "next_action",
-)
+SESSION_FIELDS = CHECKPOINT_FIELDS
 
 
 def persist_session_capsule(root: Path, facts: dict) -> Path:
-    session_dir = state_dir(root) / "sessions"
-    session_dir.mkdir(parents=True, exist_ok=True)
-    compact = {key: facts[key] for key in SESSION_FIELDS if facts.get(key)}
-    path = session_dir / "latest.json"
-    path.write_text(json.dumps(compact, indent=2) + "\n", encoding="utf-8")
-    return path
+    persist_checkpoint(root, facts)
+    return state_dir(root) / "sessions" / "latest.json"
 
 
 def build_session_capsule(root: Path, token_limit: int = 400) -> str:

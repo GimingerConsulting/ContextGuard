@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shlex
 import subprocess
 import sys
 import time
@@ -10,6 +11,7 @@ from pathlib import Path
 from .config import state_dir
 from .database import connect, increment
 from .output_compactor import compact_output
+from .optimization_advisor import analyze_command, analyze_completed_command, record_command
 
 
 NOISY_MEDIUM_BYTES = 2048
@@ -44,6 +46,8 @@ def _render_summary(argv: list[str], summary: dict) -> str:
     if summary.get("stack_traces"):
         lines.append("stack_trace:")
         lines.append(summary["stack_traces"][0])
+    if summary.get("optimization_advice"):
+        lines.append(f"optimization_advice: {summary['optimization_advice']}")
     lines.append(f"full_output: {summary['summary_path']}")
     return "\n".join(lines) + "\n"
 
@@ -51,8 +55,12 @@ def _render_summary(argv: list[str], summary: dict) -> str:
 def capture(root: Path, argv: list[str]) -> int:
     tmp_dir = state_dir(root) / "tmp"
     tmp_dir.mkdir(parents=True, exist_ok=True)
+    command = shlex.join(argv)
+    advice = analyze_command(root, command)
     started = time.time()
     proc = subprocess.run(argv, cwd=root, text=True, capture_output=True)
+    record_command(root, command, succeeded=proc.returncode == 0)
+    advice = advice or analyze_completed_command(root, command)
     duration_ms = int((time.time() - started) * 1000)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     base = tmp_dir / f"command-{stamp}-{int(started * 1000)}"
@@ -70,6 +78,7 @@ def capture(root: Path, argv: list[str]) -> int:
             "stdout_path": stdout_path.as_posix(),
             "stderr_path": stderr_path.as_posix(),
             "summary_path": summary_path.as_posix(),
+            "optimization_advice": advice,
         }
     )
     summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
@@ -81,7 +90,7 @@ def capture(root: Path, argv: list[str]) -> int:
     increment(conn, "commands_intercepted", 1)
     increment(conn, "raw_output_bytes", summary["stdout_bytes"] + summary["stderr_bytes"])
     raw_bytes = summary["raw_bytes"]
-    should_compact = raw_bytes > SMALL_PASSTHROUGH_BYTES or _is_noisy_medium_output(summary)
+    should_compact = bool(advice) or raw_bytes > SMALL_PASSTHROUGH_BYTES or _is_noisy_medium_output(summary)
     if should_compact:
         rendered = _render_summary(argv, summary)
         shown_bytes = len(rendered.encode())

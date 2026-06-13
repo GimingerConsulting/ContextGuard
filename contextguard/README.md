@@ -12,6 +12,10 @@ ContextGuard is a local-first Codex plugin with explicit skills, a project-local
 
 It uses one policy: **Adaptive Maximum Efficiency**. The policy starts with metadata, symbol locations and focused ranges, reuses verified unchanged facts, and escalates through complete symbols, dependencies, files and wider repository context whenever evidence is insufficient.
 
+Within one Codex session, ContextGuard fingerprints exact read-only `cat` and `sed -n` commands. If the same command targets byte-identical files again, it emits one compact reuse hint instead of silently changing or blocking the command. File changes invalidate the hint immediately.
+
+ContextGuard also tracks command families and emits deduplicated, non-blocking guidance when repository listings or checks repeat, when more than two full-suite validations run, or when a session crosses a command milestone. Initial and final full validation remain allowed. Model selection always remains under user control.
+
 The output-efficiency engine suppresses routine narration, request restatement, source echo, full diffs and unrelated closing suggestions by default. Completed-task responses retain changed files, validation results and any real blocker, limitation or unverified assumption. Explicit requests for detailed explanations still take precedence.
 
 ## Privacy
@@ -84,19 +88,21 @@ contextguard large-file data.json --contains error --limit 10
 contextguard uninstall-project
 ```
 
-`status` and `report` show measured raw and compact output bytes, managed-policy and capsule overhead, cache reuse, and estimated token reduction. Token values are local estimates, not exact Codex server-side usage numbers.
+`status` and `report` show measured raw and compact output bytes, managed-policy and capsule overhead, cache reuse, session command counts, repeated-read detections, command-budget advice, and estimated token reduction. Token values are local estimates, not exact Codex server-side usage numbers.
 
 ## Architecture
 
 - Skills provide explicit user commands.
 - The project-local runner compacts noisy command output before the host receives stdout.
 - Hooks provide optional automatic initialization and defense in depth.
-- The Python package performs project detection, indexing, documentation updates, command classification, output capture, large-file summaries and local metrics.
+- The Python package performs project detection, indexing, documentation updates, command classification, session checkpoints, read fingerprinting, command-budget advice, output capture, large-file summaries and local metrics.
 - SQLite stores metadata, hashes, symbols, command executions, cache reuse and conservative savings estimates.
 
 ## Quality Guard
 
 ContextGuard never blocks legitimate inspection or skips relevant validation to preserve a token estimate. It does not hide failures, warnings, security concerns or data-integrity risks. Complete command output, stderr, exit code and duration are stored under `.contextguard/tmp/`; Codex receives unique errors, warnings, failed tests and paths for targeted follow-up inspection.
+
+Read reuse and command budgets are advisory. They never select a model, deny a command, cross a SessionStart boundary, or trust a fingerprint after the underlying file changes.
 
 ## Supported Platforms
 
@@ -110,7 +116,7 @@ Hook commands are enabled by default in Codex but non-managed hooks require one 
 
 ## Benchmarks
 
-Use `benchmarks/run_benchmarks.py` for deterministic local scenarios and `benchmarks/host_capture_ab.py --run` for a controlled real Codex A/B. The June 12 accepted host run used the same prompt and result in both trials, observed the raw command in baseline and the project runner in ContextGuard, and measured 34,008 versus 22,673 input tokens, 14,808 versus 9,617 uncached input tokens, 38,490 versus 1,899 tool-output bytes, and 9.701 versus 6.944 seconds. This is one controlled sample, not a universal savings guarantee.
+Use `benchmarks/run_benchmarks.py` for deterministic local scenarios and `benchmarks/real_codex_ab.py --run` for a controlled implementation A/B. The June 13 ContextGuard 0.4.0 run used identical temporary projects, prompt, model and validation contract. Both sides passed 130 tests with the same canonical output. RAW versus ContextGuard measured 369,946 versus 156,482 input tokens, 40,346 versus 23,234 uncached input tokens, 1,140,951 versus 11,077 tool-output bytes, 115.546 versus 94.679 seconds, and 12.590 versus 7.342 GPT-5.5 Codex credits. This is one controlled stochastic sample, not a universal savings guarantee.
 
 ## Uninstall
 

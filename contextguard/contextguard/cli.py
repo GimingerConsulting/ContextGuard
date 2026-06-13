@@ -17,6 +17,7 @@ from .onboarding import initialize_project
 from .project import detect_project
 from .project_runner import install_project_runner, project_runner_ready, runner_path
 from .repo_map import detect_repo_facts
+from .session_state import load_session_state
 from .database import connect, increment
 
 
@@ -68,6 +69,11 @@ def status(args: argparse.Namespace) -> int:
     print(f"Execution protection: {'ready' if initialized and project_runner_ready(info.root) else 'missing'}")
     if initialized:
         print(f"Project runner: {runner_path(info.root)}")
+        session = load_session_state(info.root)
+        session_metrics = session.get("metrics", {})
+        print(f"Session commands tracked: {len(session.get('commands', []))}")
+        print(f"Repeated reads detected: {session_metrics.get('repeated_reads_detected', 0)}")
+        print(f"Command budget advice emitted: {session_metrics.get('budget_advice_emitted', 0)}")
     hooks = observed_hooks(info.root) if initialized else {}
     print(f"Hook status: {hook_status(hooks)}")
     if hooks:

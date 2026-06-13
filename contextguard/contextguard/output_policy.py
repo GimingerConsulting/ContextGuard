@@ -22,8 +22,8 @@ def classify_complexity(prompt: str, *, changed_file_count: int = 0) -> str:
 def render_policy(project_kind: str) -> str:
     return f"""ContextGuard policy: {POLICY_NAME}.
 
-- Start focused; reuse facts; expand as needed.
-- For tests, linters, builds; recursive listings or searches; `git diff`; or structured data or logs, run `.contextguard/bin/contextguard capture -- <command>` before stdout reaches Codex (`sh -lc` for shell). This protects non-interactive runs and does not depend on lifecycle hook dispatch; output and status stay local.
+- Reuse unchanged reads; group repeated inspection; expand as needed.
+- For tests, linters, builds; recursive listings or searches; `git diff`; or structured data or logs, run `.contextguard/bin/contextguard capture -- <command>` before stdout reaches Codex (`sh -lc`). This protects non-interactive runs and does not depend on lifecycle hook dispatch.
 - Do not narrate routine inspection or tool use, restate intent, echo source, or print unasked diffs.
 - Final responses: changed files, validation, and only real risks.
 - Never trade correctness, context, validation, security, or data integrity for brevity.

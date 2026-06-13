@@ -6,6 +6,7 @@ from contextguard.command_classifier import classify_command
 from contextguard.command_rewriter import rewrite_for_capture
 from contextguard.config import state_dir
 from contextguard.hook_diagnostics import record_hook
+from contextguard.optimization_advisor import analyze_command
 from contextguard.project import detect_project
 import json
 import os
@@ -20,6 +21,9 @@ if command:
     info = detect_project()
     if (state_dir(info.root) / "manifest.json").exists():
         record_hook(info.root, "PreToolUse")
+        advice = analyze_command(info.root, command)
+    else:
+        advice = ""
     decision = classify_command(command)
     runner = Path(__file__).resolve().parents[1] / "scripts" / "contextguard"
     rewritten = rewrite_for_capture(command, runner)
@@ -28,19 +32,24 @@ if command:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps({"event": "PreToolUse", "tool": tool, "command": command, "rewrite_requested": bool(rewritten)}) + "\n")
-    if rewritten:
+    if rewritten or advice:
         updated = dict(tool_input)
-        if "command" in updated:
-            updated["command"] = rewritten
-        else:
-            updated["cmd"] = rewritten
+        if rewritten:
+            if "command" in updated:
+                updated["command"] = rewritten
+            else:
+                updated["cmd"] = rewritten
+        hook_output = {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "allow",
+        }
+        if rewritten:
+            hook_output["updatedInput"] = updated
+        if advice:
+            hook_output["additionalContext"] = advice
         write_event(
             {
-                "hookSpecificOutput": {
-                    "hookEventName": "PreToolUse",
-                    "permissionDecision": "allow",
-                    "updatedInput": updated,
-                }
+                "hookSpecificOutput": hook_output
             }
         )
     else:

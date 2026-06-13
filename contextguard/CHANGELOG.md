@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Added versioned, allow-listed session checkpoints for compact resume context.
+- Added session-scoped SHA-256 tracking for exact repeated `cat` and `sed -n` reads, with immediate invalidation when a file changes.
+- Added a non-blocking command budget for repeated repository listings, repository checks, excessive full-suite validation, and long command sequences.
+- Added status metrics for tracked commands, repeated reads, and emitted budget advice.
+- Kept model selection entirely user-controlled and preserved all commands, validation, exit codes, and archived output.
+
 ## 0.3.2
 
 - Made every lifecycle hook fail open when a running thread references a plugin cache directory removed by an update or uninstall.

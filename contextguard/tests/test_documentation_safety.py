@@ -82,5 +82,7 @@ def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path)
     assert "before stdout reaches Codex" in policy
     assert "non-interactive" in policy
     assert "does not depend on lifecycle hook dispatch" in policy
+    assert "Reuse unchanged reads" in policy
+    assert "group repeated inspection" in policy
     assert "Never trade correctness" in policy
     assert len(policy.encode()) < 1400

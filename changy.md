@@ -2,6 +2,16 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-13 Context Efficiency 0.4.0
+
+- Implemented versioned checkpoint/resume state, session-scoped hash-aware repeated-read detection, and a non-blocking command budget.
+- Model selection remains entirely user-controlled.
+- Repeated reads are advised only for exact `cat`/`sed -n` commands with unchanged SHA-256 values in the current session; SessionStart and file changes invalidate reuse.
+- Command-budget hints cover repeated listings/checks, a third full-suite validation, and long command sequences without denying commands or weakening final validation.
+- Added status counters and focused regression coverage.
+- Validation: 97 tests passed, plugin validation passed, the 0.4.0 wheel built, and all ten deterministic scenarios preserved equivalent results.
+- Final real Codex A/B: both sides passed 130 tests with identical canonical output; ContextGuard reduced input tokens 57.70%, uncached input 42.41%, tool output 99.03%, elapsed time 18.06%, and estimated GPT-5.5 Codex credits 41.69%.
+
 ## 2026-06-13 ContextGuard Usage Optimization Audit
 
 - Ran the hard settlement RAW-vs-ContextGuard benchmark in two isolated temporary Git projects with identical prompt, GPT-5.5 medium reasoning, required initial failing tests, implementation work, and final 130-test validation.

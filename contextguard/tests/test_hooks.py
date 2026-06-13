@@ -3,6 +3,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from contextguard.optimization_advisor import record_command
+from contextguard.session_state import load_session_state, reset_session_state, save_session_state
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -92,6 +95,23 @@ def test_session_start_initialized_is_silent(tmp_path: Path):
     assert result == {}
 
 
+def test_session_start_resets_transient_optimization_state(tmp_path: Path):
+    state_dir = tmp_path / ".contextguard"
+    state_dir.mkdir()
+    (state_dir / "manifest.json").write_text("{}")
+    reset_session_state(tmp_path)
+    state = load_session_state(tmp_path)
+    state["commands"] = [{"command": "rg --files", "family": "repository_listing"}]
+    state["reads"] = {"key": {"hashes": {"app.py": "hash"}}}
+    save_session_state(tmp_path, state)
+
+    run_hook("session_start.py", {}, tmp_path)
+
+    reset = load_session_state(tmp_path)
+    assert reset["commands"] == []
+    assert reset["reads"] == {}
+
+
 def test_status_reports_session_hook_as_partial_until_tool_hook_runs(tmp_path: Path):
     run_hook("session_start.py", {}, tmp_path)
     proc = subprocess.run(
@@ -117,6 +137,28 @@ def test_status_reports_session_hook_as_partial_until_tool_hook_runs(tmp_path: P
     )
     assert "Hook status: observed" in verified.stdout
     assert "PreToolUse" in verified.stdout
+
+
+def test_status_reports_session_efficiency_metrics(tmp_path: Path):
+    run_hook("session_start.py", {}, tmp_path)
+    state = load_session_state(tmp_path)
+    state["metrics"]["repeated_reads_detected"] = 3
+    state["metrics"]["budget_advice_emitted"] = 2
+    state["commands"] = [{"command": "printf ok", "family": "other"}]
+    save_session_state(tmp_path, state)
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "contextguard.cli", "status"],
+        cwd=tmp_path,
+        env={"PYTHONPATH": str(ROOT)},
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert "Session commands tracked: 1" in proc.stdout
+    assert "Repeated reads detected: 3" in proc.stdout
+    assert "Command budget advice emitted: 2" in proc.stdout
 
 
 def test_post_tool_use_stores_large_output(tmp_path: Path):
@@ -160,6 +202,50 @@ def test_pre_compact_persists_compact_session_facts(tmp_path: Path):
     capsule = (tmp_path / ".contextguard" / "sessions" / "latest.json").read_text()
     assert "finish policy" in capsule
     assert "transcript" not in capsule
+    checkpoint = json.loads(capsule)
+    assert checkpoint["version"] == 1
+    assert checkpoint["checkpoint_id"]
+
+
+def test_pre_tool_use_adds_non_blocking_repeated_read_advice(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    (tmp_path / "app.py").write_text("print('ok')\n")
+    reset_session_state(tmp_path)
+    record_command(tmp_path, "cat app.py", succeeded=True)
+
+    result = run_hook(
+        "pre_tool_use.py",
+        {"tool_name": "Bash", "tool_input": {"command": "cat app.py"}},
+        tmp_path,
+    )
+
+    output = result["hookSpecificOutput"]
+    assert output["permissionDecision"] == "allow"
+    assert "unchanged" in output["additionalContext"].lower()
+    assert "updatedInput" in output
+
+
+def test_post_tool_use_records_successful_command_for_budget(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    reset_session_state(tmp_path)
+
+    run_hook(
+        "post_tool_use.py",
+        {
+            "tool_name": "Bash",
+            "tool_input": {"command": "rg --files"},
+            "tool_response": "app.py\n",
+            "exit_code": 0,
+        },
+        tmp_path,
+    )
+
+    session = load_session_state(tmp_path)
+    assert session["commands"][-1]["family"] == "repository_listing"
 
 
 def test_user_prompt_context_uses_codex_hook_envelope(tmp_path: Path):

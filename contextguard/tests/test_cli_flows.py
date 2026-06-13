@@ -103,6 +103,16 @@ def test_capture_compacts_medium_noisy_test_output(tmp_path: Path):
     assert len(result.stdout.encode()) < 1800
 
 
+def test_capture_runner_emits_budget_advice_without_hooks(tmp_path: Path):
+    run_cli(["init"], tmp_path)
+    command = ["capture", "--", sys.executable, "-m", "pytest", "-q"]
+    run_cli(command, tmp_path)
+    second = run_cli(command, tmp_path)
+
+    assert "two full validations have now run" in second.stdout
+    assert "targeted tests" in second.stdout
+
+
 def test_project_runner_capture_compacts_before_output_reaches_host(tmp_path: Path):
     project = tmp_path / "runner project"
     project.mkdir()

@@ -48,3 +48,16 @@ def test_session_capsule_keeps_only_verified_resume_facts(tmp_path: Path):
     assert "finish output policy" in capsule
     assert "ignored_blob" not in capsule
     assert estimate_tokens(capsule) < 400
+
+
+def test_session_capsule_renders_versioned_checkpoint_without_metadata_noise(tmp_path: Path):
+    persist_session_capsule(
+        tmp_path,
+        {"current_objective": "resume efficiently", "next_action": "run focused test"},
+    )
+
+    capsule = build_session_capsule(tmp_path)
+
+    assert "resume efficiently" in capsule
+    assert "checkpoint_id=" not in capsule
+    assert "version=" not in capsule

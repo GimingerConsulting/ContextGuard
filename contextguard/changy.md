@@ -1,5 +1,32 @@
 # changy.md
 
+## 2026-06-13 Context Efficiency 0.4.0
+
+### Changes
+
+- Added versioned session checkpoints containing only verified allow-listed resume facts.
+- Added session-scoped SHA-256 fingerprints for exact repeated `cat` and `sed -n` reads.
+- Added deduplicated command-budget advice for repeated listings, repository checks, excessive full validations, and long command sequences.
+- Added status metrics for commands, repeated reads, and budget advice.
+- Kept model choice user-controlled and all optimization advice non-blocking.
+
+### Safety
+
+- SessionStart clears transient command and read history while retaining the latest checkpoint.
+- Changed or missing files invalidate read reuse.
+- Initial and final full validation remain allowed; ContextGuard only advises targeted iteration after repeated full-suite runs.
+- Existing output capture continues to preserve complete logs and exit codes locally.
+
+### Validation
+
+- Full suite: 97 tests passed.
+- Plugin schema validation passed and `contextguard-0.4.0-py3-none-any.whl` built successfully.
+- All ten deterministic benchmark scenarios preserved result hashes and output quality.
+- Final isolated GPT-5.5 implementation A/B passed 130/130 tests on both sides with the same canonical output.
+- RAW versus ContextGuard: 369,946 vs 156,482 input tokens (-57.70%), 40,346 vs 23,234 uncached input (-42.41%), 1,140,951 vs 11,077 tool-output bytes (-99.03%), and 115.546s vs 94.679s (-18.06%).
+- Codex rate-card estimate: 12.590 vs 7.342 credits, saving 5.248 credits or 41.69% in this sample.
+- The host-independent runner surfaced budget advice after the second full validation; the optimized agent completed with two full-suite runs.
+
 ## 2026-06-12 Stale Hook Cache Lockout Fix 0.3.2
 
 ### Root Cause

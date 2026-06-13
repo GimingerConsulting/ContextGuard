@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from _bootstrap import read_event, write_event
 from contextguard.config import state_dir
 from contextguard.hook_diagnostics import record_hook
+from contextguard.optimization_advisor import record_command
 from contextguard.output_compactor import compact_output
 from contextguard.output_capture import NOISY_MEDIUM_BYTES, SMALL_PASSTHROUGH_BYTES
 from contextguard.project import detect_project
@@ -16,6 +17,12 @@ event = read_event()
 info = detect_project()
 if (state_dir(info.root) / "manifest.json").exists():
     record_hook(info.root, "PostToolUse")
+    tool_input = event.get("tool_input") or event.get("input") or {}
+    command = tool_input.get("command") or tool_input.get("cmd") or ""
+    response = event.get("tool_response") or event.get("output") or event.get("result") or ""
+    response_exit = response.get("exit_code") if isinstance(response, dict) else None
+    exit_code = event.get("exit_code", response_exit)
+    record_command(info.root, command, succeeded=exit_code in (None, 0))
 output = event.get("tool_response") or event.get("output") or event.get("result") or ""
 compact = compact_output(output, "") if isinstance(output, str) else {}
 raw_bytes = int(compact.get("raw_bytes", 0))

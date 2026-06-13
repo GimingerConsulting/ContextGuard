@@ -1,6 +1,6 @@
 {
   "name": "contextguard",
-  "version": "0.3.2+codex.20260612165140",
+  "version": "0.4.0+codex.20260613081000",
   "description": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
   "author": {
     "name": "Giminger Consulting",
