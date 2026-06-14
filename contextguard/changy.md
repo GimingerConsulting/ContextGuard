@@ -27,6 +27,9 @@
 - Built `contextguard-0.4.1-py3-none-any.whl` successfully.
 - Isolated installed-copy acceptance passed with byte-identical archives, preserved exit code and 2,739 RAW versus 674 protected visible tokens (75.39% reduction).
 - Generated-project probe confirmed the strengthened enforcement text is written to `AGENTS.md`.
+- Pushed release implementation to GitHub `main` and upgraded the configured Codex Git marketplace.
+- Installed and enabled `contextguard@contextguard` version `0.4.1+codex.20260614093000` at `~/.codex/plugins/cache/contextguard/contextguard/0.4.1+codex.20260614093000`.
+- Refreshed this project from the installed copy; `.contextguard/bin/contextguard` now bootstraps from the 0.4.1 cache and the installed classifier captures the observed log, JSONL and multi-file bypass commands.
 
 ## 2026-06-13 Context Efficiency 0.4.0
 

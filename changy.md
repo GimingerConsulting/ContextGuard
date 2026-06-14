@@ -9,6 +9,7 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Added regression coverage for logs, JSONL, pipelines and multi-file inspection.
 - Host limitation remains explicit: without `PreToolUse` dispatch or shell interception, enforcement relies on Codex following project instructions.
 - Validation: 113 tests passed, plugin schema passed, the 0.4.1 wheel built, and isolated installed-copy acceptance preserved raw output while reducing visible runner tokens 75.39%.
+- Updated Codex to `contextguard@contextguard` `0.4.1+codex.20260614093000` and regenerated the project runner from the new cache.
 
 ## 2026-06-13 Context Efficiency 0.4.0
 
