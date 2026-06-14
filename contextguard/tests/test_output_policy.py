@@ -13,8 +13,11 @@ def test_policy_is_single_adaptive_maximum_efficiency_mode():
     assert "Do not narrate routine inspection or tool use" in policy
     assert "Orient once" in policy
     assert "Escalate only the missing evidence" in policy
+    assert "contextguard-worker" in policy
+    assert "exactly one bounded implementation worker" in policy
+    assert "parent model must review" in policy
     assert "changed files, validation, and only real risks" in policy
-    assert len(policy.encode()) < 1300
+    assert len(policy.encode()) < 1800
 
 
 def test_task_complexity_controls_visible_planning():

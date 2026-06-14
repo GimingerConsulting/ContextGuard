@@ -60,6 +60,35 @@ def render_agents(info: ProjectInfo) -> str:
     return render_policy(info.kind)
 
 
+def render_model_routing_agent() -> str:
+    return '''name = "contextguard-worker"
+description = "Bounded implementation worker selected by ContextGuard after parent planning."
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+developer_instructions = """
+Implement only the bounded package assigned by the parent agent.
+You are the lower-cost gpt-5.4-mini execution worker; do not claim or imitate the parent model.
+Respect explicit file ownership and do not broaden scope or make architecture, security, migration, concurrency, payment, or data-integrity decisions.
+Do not spawn subagents.
+Inspect only the files needed for the assignment, preserve public behavior, edit directly, and run focused tests.
+Report changed files, focused validation, unresolved ambiguity, and any reason the parent must take over.
+Never claim final task completion; the parent reviews the diff and performs final validation.
+"""
+'''
+
+
+def write_model_routing_agent(root: Path) -> bool:
+    path = root / ".codex" / "agents" / "contextguard-worker.toml"
+    content = render_model_routing_agent()
+    if path.exists() and path.read_text(encoding="utf-8") == content:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        _backup(path)
+    path.write_text(content, encoding="utf-8")
+    return True
+
+
 def render_architecture(root: Path) -> str:
     facts = detect_repo_facts(root)
     return f"""## System Purpose
@@ -128,4 +157,6 @@ def write_managed_docs(info: ProjectInfo) -> list[str]:
         changed.append("docs/CURRENT_STATE.md")
     if update_gitignore(root):
         changed.append(".gitignore")
+    if write_model_routing_agent(root):
+        changed.append(".codex/agents/contextguard-worker.toml")
     return changed

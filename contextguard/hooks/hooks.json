@@ -54,6 +54,28 @@
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "matcher": "contextguard-worker",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test ! -f \"$PLUGIN_ROOT/hooks/subagent_start.py\" || python3 \"$PLUGIN_ROOT/hooks/subagent_start.py\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "contextguard-worker",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test ! -f \"$PLUGIN_ROOT/hooks/subagent_stop.py\" || python3 \"$PLUGIN_ROOT/hooks/subagent_stop.py\""
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

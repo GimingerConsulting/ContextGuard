@@ -279,3 +279,68 @@ def test_user_prompt_context_uses_codex_hook_envelope(tmp_path: Path):
     output = result["hookSpecificOutput"]
     assert output["hookEventName"] == "UserPromptSubmit"
     assert "ContextGuard" in output["additionalContext"]
+
+
+def test_user_prompt_adds_single_worker_routing_for_bounded_feature(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    (tmp_path / "parser.py").write_text("def parse(value): return value\n")
+    tests = tmp_path / "tests"
+    tests.mkdir()
+    (tests / "test_parser.py").write_text("def test_parse(): pass\n")
+
+    result = run_hook(
+        "user_prompt_submit.py",
+        {"prompt": "Implement the validated parser change in parser.py and add focused parser tests."},
+        tmp_path,
+    )
+
+    context = result["hookSpecificOutput"]["additionalContext"]
+    assert "delegate exactly one" in context
+    assert "contextguard-worker" in context
+    assert "review the worker diff" in context
+
+
+def test_user_prompt_does_not_route_security_migration(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    (tmp_path / "auth.py").write_text("SCHEMA = 1\n")
+
+    result = run_hook(
+        "user_prompt_submit.py",
+        {"prompt": "Migrate the production authentication schema in auth.py without data loss."},
+        tmp_path,
+    )
+
+    context = result["hookSpecificOutput"]["additionalContext"]
+    assert "contextguard-worker" not in context
+
+
+def test_subagent_hooks_record_actual_routing_lifecycle(tmp_path: Path):
+    state = tmp_path / ".contextguard"
+    state.mkdir()
+    (state / "manifest.json").write_text("{}")
+    reset_session_state(tmp_path)
+
+    started = run_hook(
+        "subagent_start.py",
+        {"agent_type": "contextguard-worker", "model": "gpt-5.4-mini", "thread_id": "worker-1"},
+        tmp_path,
+    )
+    stopped = run_hook(
+        "subagent_stop.py",
+        {"agent_type": "contextguard-worker", "model": "gpt-5.4-mini", "thread_id": "worker-1", "status": "completed"},
+        tmp_path,
+    )
+
+    assert "bounded package" in started["hookSpecificOutput"]["additionalContext"]
+    assert stopped == {}
+    session = load_session_state(tmp_path)
+    assert session["routing_events"] == [
+        {"event": "start", "agent_type": "contextguard-worker", "model": "gpt-5.4-mini", "thread_id": "worker-1"},
+        {"event": "stop", "agent_type": "contextguard-worker", "model": "gpt-5.4-mini", "thread_id": "worker-1", "status": "completed"},
+    ]
+    assert session["metrics"]["routed_workers_started"] == 1
+    assert session["metrics"]["routed_workers_completed"] == 1

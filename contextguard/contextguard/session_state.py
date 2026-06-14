@@ -45,8 +45,14 @@ def _empty_state(checkpoint: dict | None = None) -> dict:
         "commands": [],
         "reads": {},
         "evidence": {},
+        "routing_events": [],
         "advice_emitted": [],
-        "metrics": {"repeated_reads_detected": 0, "budget_advice_emitted": 0},
+        "metrics": {
+            "repeated_reads_detected": 0,
+            "budget_advice_emitted": 0,
+            "routed_workers_started": 0,
+            "routed_workers_completed": 0,
+        },
     }
 
 
@@ -119,3 +125,18 @@ def record_evidence(root: Path, fingerprint: str, summary_path: str) -> dict:
     }
     save_session_state(root, state)
     return {"repeated": False, "occurrences": 1, "first_summary_path": summary_path}
+
+
+def record_routing_event(root: Path, event: dict) -> None:
+    state = load_session_state(root)
+    state.setdefault("routing_events", []).append(event)
+    metrics = state.setdefault("metrics", {})
+    if event.get("event") == "start" and event.get("agent_type") == "contextguard-worker":
+        metrics["routed_workers_started"] = int(metrics.get("routed_workers_started", 0)) + 1
+    if (
+        event.get("event") == "stop"
+        and event.get("agent_type") == "contextguard-worker"
+        and event.get("status") == "completed"
+    ):
+        metrics["routed_workers_completed"] = int(metrics.get("routed_workers_completed", 0)) + 1
+    save_session_state(root, state)

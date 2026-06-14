@@ -453,3 +453,13 @@
 - Tool calls regressed: pair changes +73.33%, +166.67% and -19.44%, median +73.33%. Additional bounded inspections after compacted evidence are the remaining optimization target.
 - Separate-group uncached medians show +35.44%, while paired deltas show a -15.27% median. The paired statistic respects the counterbalanced design; neither proves a subscription quota multiplier.
 - Artifact: `benchmarks/results/real-codex-support-ab-0.4.2-2026-06-14/summary.json`.
+# 2026-06-14 - 0.5.0 adaptive model routing
+
+- Final release validation passed 133 tests, source compilation, whitespace validation, wheel/sdist build, and isolated installed-copy acceptance. The installed capture runner preserved full raw output and exit status with 79.99% less visible output in the acceptance fixture.
+- Implemented deterministic eligibility classification and automatic additional-context routing to exactly one bounded `contextguard-worker` using GPT-5.4-mini at medium reasoning.
+- Installed the custom worker configuration during project setup without overwriting other user agents. Added lifecycle hooks and session metrics for routed worker starts/completions.
+- Kept architecture, security, migrations, schemas, payments, concurrency, destructive operations, production incidents, and data-integrity decisions on the parent model. Parent review and final validation are mandatory, with local fallback on any worker ambiguity or failure.
+- Corrected the routing contract after a real Codex probe showed that full-history forks inherit the parent model. ContextGuard now requires an isolated prompt when selecting a different model.
+- Added router, installation, hook, output-policy, pricing, and benchmark tests. Focused validation passed 35 tests before release validation.
+- Real validation: both completed GPT-5.5 runs passed 160 hidden tests and produced the same canonical result. The routed run successfully spawned a separate worker. Aggregate CLI usage changed from 380,710 input / 6,017 output tokens to 387,693 input / 5,124 output tokens. The API parent-only cost ceiling fell from $0.559964 to $0.500697; exact mixed-model billing and subscription quota usage are not exposed by Codex CLI.
+- A subsequent clean A/B rerun could not start because the account hit its Codex Usage Limit; both arms returned zero tokens and the same 22:31 reset notice. This is retained as a benchmark limitation, not counted as a product failure.
