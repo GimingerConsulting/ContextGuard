@@ -455,6 +455,7 @@
 - Artifact: `benchmarks/results/real-codex-support-ab-0.4.2-2026-06-14/summary.json`.
 # 2026-06-14 - 0.5.0 adaptive model routing
 
+- Published commit `cb38407` to `main`; upgraded and activated local Codex plugin `0.5.0+codex.20260614162403`. Project refresh regenerated the stale 0.4.2 runner and installed `.codex/agents/contextguard-worker.toml`.
 - Final release validation passed 133 tests, source compilation, whitespace validation, wheel/sdist build, and isolated installed-copy acceptance. The installed capture runner preserved full raw output and exit status with 79.99% less visible output in the acceptance fixture.
 - Implemented deterministic eligibility classification and automatic additional-context routing to exactly one bounded `contextguard-worker` using GPT-5.4-mini at medium reasoning.
 - Installed the custom worker configuration during project setup without overwriting other user agents. Added lifecycle hooks and session metrics for routed worker starts/completions.

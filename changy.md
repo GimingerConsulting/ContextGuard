@@ -383,6 +383,7 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Artifact: `contextguard/benchmarks/results/real-codex-support-ab-0.4.2-2026-06-14/summary.json`.
 # 2026-06-14 - ContextGuard 0.5.0 adaptive model routing
 
+- Pushed commit `cb38407` to GitHub `main`, upgraded the configured ContextGuard marketplace, activated plugin `0.5.0+codex.20260614162403`, refreshed this project, regenerated its project runner, and installed the project-local worker agent.
 - Release validation passed 133 tests, `compileall`, `git diff --check`, wheel/sdist build, and isolated installed-copy acceptance. The capture runner preserved raw output and exit status while reducing visible acceptance output by 79.99%.
 - Added automatic task routing for bounded, high-confidence implementation work. GPT-5.5 retains orientation, planning, risk decisions, diff review, and final validation; one project-local `contextguard-worker` pinned to GPT-5.4-mini performs the bounded implementation package and focused tests.
 - Added conservative exclusions for trivial, ambiguous, security, authentication, migration, schema, payment, concurrency, destructive, production, secret, transaction, and data-integrity work. The parent continues locally whenever delegation is unavailable, incomplete, or ambiguous.
