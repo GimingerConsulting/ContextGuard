@@ -370,3 +370,14 @@ See [contextguard/changy.md](contextguard/changy.md) for the detailed implementa
 - Artifacts: `contextguard/benchmarks/results/output-ab-0.4.2-2026-06-14.json` and `contextguard/benchmarks/results/post-0.4.2-matrix-2026-06-14.json`.
 - Isolated installed-copy measurements: runner output saved 2,191 of 2,739 visible tokens (79.99%); repeated hook output saved 14,487 of 14,581 tokens (99.36%) while retaining byte-identical archives and concrete failure evidence.
 - Published commit `ce37730` to GitHub `main`, upgraded the Codex marketplace, installed and enabled `0.4.2+codex.20260614121614`, refreshed the current project runner to the new cache path and regenerated the managed `AGENTS.md` policy.
+
+## 2026-06-14 ContextGuard 0.4.2 Human Support-Ticket Validation
+
+- Ran six independent GPT-5.5 agents as three counterbalanced RAW/ContextGuard pairs in isolated repositories and `CODEX_HOME` directories. The task was a realistic support incident involving legacy inventory migration, retry idempotency, concurrent oversell, production logs, regression tests and a changelog update.
+- Quality passed in all six runs. Every implementation passed all 144 hidden migration/retry/concurrency cases, preserved the required core API result, produced the same concurrency result and updated the changelog. Every ContextGuard agent used the project capture runner.
+- Paired median ContextGuard change: total input -19.48%, uncached input -15.27%, tool-output bytes -64.47%, output tokens -2.42%, reasoning tokens -19.23%, elapsed time -5.34%. Combined generated tokens changed -6.46%, +45.23% and -11.96% by pair.
+- ContextGuard did not reduce every individual run. Pair 2 explored substantially longer: total input +79.25%, generated plus reasoning +45.23% and time +52.47%, despite uncached input -15.27% and tool output -62.44%.
+- Command count remains the main weakness. Paired changes were +73.33%, +166.67% and -19.44% (median +73.33%). Command-category inspection showed ContextGuard agents performed more follow-up inspections after compacted evidence, especially in pairs 1 and 2.
+- Separate-group medians report uncached input +35.44% because the raw and ContextGuard distributions cross between pairs; the counterbalanced paired median is -15.27% and is the more appropriate comparison for this experiment. Neither metric maps directly to the undisclosed Codex subscription quota formula.
+- Conclusion: ContextGuard 0.4.2 works for quality-preserving context reduction on this human workflow and materially lowers noisy tool output. It improves the typical paired token result, but it does not guarantee savings per run and currently trades some output compression for extra inspection calls.
+- Artifact: `contextguard/benchmarks/results/real-codex-support-ab-0.4.2-2026-06-14/summary.json`.

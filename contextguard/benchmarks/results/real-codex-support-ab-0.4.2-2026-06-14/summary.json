@@ -1,0 +1,595 @@
+{
+  "aggregate": {
+    "cached_input_tokens": {
+      "contextguard_median": 270976,
+      "contextguard_values": [
+        270976,
+        560256,
+        253440
+      ],
+      "median_change_percent": -19.51,
+      "raw_median": 336640,
+      "raw_values": [
+        336640,
+        279936,
+        356480
+      ]
+    },
+    "command_executions": {
+      "contextguard_median": 29,
+      "contextguard_values": [
+        26,
+        32,
+        29
+      ],
+      "median_change_percent": 93.33,
+      "raw_median": 15,
+      "raw_values": [
+        15,
+        12,
+        36
+      ]
+    },
+    "elapsed_seconds": {
+      "contextguard_median": 146.119,
+      "contextguard_values": [
+        138.494,
+        220.032,
+        146.119
+      ],
+      "median_change_percent": -5.34,
+      "raw_median": 154.361,
+      "raw_values": [
+        161.28,
+        144.311,
+        154.361
+      ]
+    },
+    "input_tokens": {
+      "contextguard_median": 297749,
+      "contextguard_values": [
+        294925,
+        612681,
+        297749
+      ],
+      "median_change_percent": -18.71,
+      "raw_median": 366260,
+      "raw_values": [
+        366260,
+        341810,
+        389196
+      ]
+    },
+    "output_tokens": {
+      "contextguard_median": 6542,
+      "contextguard_values": [
+        6117,
+        9607,
+        6542
+      ],
+      "median_change_percent": -4.52,
+      "raw_median": 6852,
+      "raw_values": [
+        6269,
+        6852,
+        7173
+      ]
+    },
+    "reasoning_output_tokens": {
+      "contextguard_median": 1611,
+      "contextguard_values": [
+        1600,
+        2926,
+        1611
+      ],
+      "median_change_percent": -18.68,
+      "raw_median": 1981,
+      "raw_values": [
+        1981,
+        1778,
+        2088
+      ]
+    },
+    "tool_output_bytes": {
+      "contextguard_median": 12706,
+      "contextguard_values": [
+        11322,
+        12706,
+        26969
+      ],
+      "median_change_percent": -62.44,
+      "raw_median": 33830,
+      "raw_values": [
+        31870,
+        33830,
+        1841790
+      ]
+    },
+    "uncached_input_tokens": {
+      "contextguard_median": 44309,
+      "contextguard_values": [
+        23949,
+        52425,
+        44309
+      ],
+      "median_change_percent": 35.44,
+      "raw_median": 32716,
+      "raw_values": [
+        29620,
+        61874,
+        32716
+      ]
+    }
+  },
+  "all_pairs_accepted": true,
+  "benchmark": "real-codex-human-support-ticket-three-pair-ab",
+  "limitations": [
+    "Three controlled pairs reduce but do not eliminate model stochasticity.",
+    "Hidden tests improve quality independence but cannot represent every production repository.",
+    "Codex subscription quota accounting is not exposed by the CLI."
+  ],
+  "model": "gpt-5.5",
+  "pairs": [
+    {
+      "accepted": true,
+      "contextguard": {
+        "cached_input_tokens": 270976,
+        "capture_runner_used": true,
+        "codex_exit_code": 0,
+        "command_executions": 26,
+        "commands": [
+          "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- files ---' && .contextguard/bin/contextguard capture -- sh -lc 'rg --files -g \\\"AGENTS.md\\\" -g \\\"SUPPORT_TICKET.md\\\" -g \\\"CHANGELOG.md\\\" -g \\\"pyproject.toml\\\" -g \\\"pytest.ini\\\" -g \\\"setup.cfg\\\" -g \\\"tox.ini\\\" | sort'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'printf \\\"%s\\\\n\\\" \\\"--- AGENTS.md ---\\\"; nl -ba AGENTS.md; printf \\\"%s\\\\n\\\" \\\"--- SUPPORT_TICKET.md ---\\\"; nl -ba SUPPORT_TICKET.md; printf \\\"%s\\\\n\\\" \\\"--- pyproject.toml ---\\\"; nl -ba pyproject.toml'\"",
+          "/bin/zsh -lc '.contextguard/bin/contextguard --help'",
+          "/bin/zsh -lc 'nl -ba SUPPORT_TICKET.md'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 -m pytest -q'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'rg --files | sort'\"",
+          "/bin/zsh -lc 'nl -ba inventory/service.py'",
+          "/bin/zsh -lc 'nl -ba inventory/api.py'",
+          "/bin/zsh -lc 'nl -ba inventory/migration.py'",
+          "/bin/zsh -lc 'nl -ba tests/test_public_behavior.py'",
+          "/bin/zsh -lc 'nl -ba inventory/audit.py'",
+          "/bin/zsh -lc 'nl -ba inventory/cli.py'",
+          "/bin/zsh -lc 'nl -ba inventory/__init__.py'",
+          "/bin/zsh -lc 'nl -ba docs/ARCHITECTURE.md'",
+          "/bin/zsh -lc 'nl -ba docs/CURRENT_STATE.md'",
+          "/bin/zsh -lc 'nl -ba CHANGELOG.md'",
+          "/bin/zsh -lc 'nl -ba pyproject.toml'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'rg -n \\\"\\\" data/production.log'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 - <<\\\"PY\\\"\nimport json\nfrom pathlib import Path\nfor path in [Path(\\\"data/warehouse-export.jsonl\\\"), Path(\\\"legacy-db.json\\\"), Path(\\\"scenario.json\\\")]:\n    print(f\\\"--- {path} ---\\\")\n    if path.suffix == \\\".jsonl\\\":\n        for line in path.read_text().splitlines(): print(json.loads(line))\n    else: print(json.loads(path.read_text()))\nPY'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 - <<\\\"PY\\\"\nimport json\nfrom collections import Counter\nfrom pathlib import Path\n\nlines = Path(\\\"data/production.log\\\").read_text().splitlines()\nerrors = [line for line in lines if \\\"ERROR\\\" in line]\nrequests = []\nfor line in lines:\n    for field in line.split():\n        if field.startswith(\\\"request=\\\"):\n            requests.append(field.split(\\\"=\\\", 1)[1])\n            break\nprint(\\\"log_lines\\\", len(lines))\nprint(\\\"errors\\\", errors[:10])\nprint(\\\"duplicate_requests\\\", Counter(requests).most_common(10))\nfor path in (Path(\\\"data/warehouse-export.jsonl\\\"), Path(\\\"legacy-db.json\\\"), Path(\\\"scenario.json\\\")):\n    if path.suffix == \\\".jsonl\\\":\n        values = [json.loads(line) for line in path.read_text().splitlines()]\n        print(path, \\\"count\\\", len(values), \\\"sample\\\", values[:3])\n    else:\n        value = json.loads(path.read_text())\n        print(path, value)\nPY'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'git log --oneline --decorate -10 && git status --short'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'rg -n \\\"expected_version|schema_version|reserved|available|request_id|migrate_record|reserve\\\\(\\\" --glob \\\"\"'!data/**\" --glob \"!*.log\" .'\"'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 -m pytest -q tests/test_public_behavior.py -k \\\"migration_preserves or parallel_reservations or retrying_request_id or forwards_expected_version\\\"'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 -m inventory.cli reserve scenario.json && python3 -m inventory.cli migrate legacy-db.json'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'python3 -m pytest -q'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'git diff --check && git status --short && git diff --stat'\""
+        ],
+        "diff_bytes": 6231,
+        "elapsed_seconds": 138.494,
+        "exact_baseline_command": false,
+        "file_changes": 1,
+        "final_response": "Fixed the inventory incident root causes:\n\n- Preserved legacy stock during migration.\n- Added atomic stock checks to prevent negative inventory.\n- Made request retries idempotent.\n- Forwarded optimistic version checks through the API.\n- Added focused concurrency and migration regressions.\n- Updated `CHANGELOG.md`.\n\nValidation: baseline `3 passed`; final suite `7 passed`; CLI migration/reservation scenarios and `git diff --check` passed.",
+        "final_response_bytes": 440,
+        "input_tokens": 294925,
+        "optimized": true,
+        "output_tokens": 6117,
+        "reasoning_output_tokens": 1600,
+        "repository_hash": "880863437624f2bef9058b34ddd6e4c7e4d5503df2a47a5b2bd3b5dbc014e9d5",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 11322,
+        "uncached_input_tokens": 23949,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget",
+            "version": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 151
+        }
+      },
+      "order": [
+        "raw",
+        "contextguard"
+      ],
+      "pair": 1,
+      "raw": {
+        "cached_input_tokens": 336640,
+        "capture_runner_used": false,
+        "codex_exit_code": 0,
+        "command_executions": 15,
+        "commands": [
+          "/bin/zsh -lc \"pwd && rg --files -g 'SUPPORT_TICKET.md' -g 'AGENTS.md' -g 'README*' -g 'CONTRIBUTING*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g 'CHANGELOG.md' -g '\"'!.*'\"'\"",
+          "/bin/zsh -lc \"sed -n '1,240p' SUPPORT_TICKET.md pyproject.toml CHANGELOG.md\"",
+          "/bin/zsh -lc 'find . -maxdepth 3 -type f -print | sort'",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc \"sed -n '1,280p' inventory/api.py inventory/service.py inventory/migration.py inventory/audit.py inventory/cli.py tests/test_public_behavior.py data/production.log data/warehouse-export.jsonl scenario.json legacy-db.json\"",
+          "/bin/zsh -lc \"sed -n '1,220p' data/warehouse-export.jsonl scenario.json legacy-db.json inventory/__init__.py .gitignore\"",
+          "/bin/zsh -lc \"sed -n '1,200p' scenario.json legacy-db.json\"",
+          "/bin/zsh -lc 'git log --oneline --decorate --all --max-count=20'",
+          "/bin/zsh -lc \"python3 -c 'from concurrent.futures import ThreadPoolExecutor; from inventory.migration import migrate_record; from inventory.service import InventoryService; print(\\\"migration\\\", migrate_record({\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":10,\\\"schema_version\\\":1})); s=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":1}]); print(\\\"retry-1\\\", s.reserve(\\\"widget\\\",1,\\\"req-1\\\")); print(\\\"retry-2\\\", s.reserve(\\\"widget\\\",1,\\\"req-1\\\")); s=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":5}]); print(\\\"parallel\\\", list(ThreadPoolExecutor(max_workers=8).map(lambda i: s.reserve(\\\"widget\\\",1,f\\\"req-{i}\\\"), range(8)))); print(\\\"final\\\", s.records[\\\"widget\\\"])'\"",
+          "/bin/zsh -lc 'git diff --check'",
+          "/bin/zsh -lc 'python3 -m pytest tests/test_inventory_regressions.py -q'",
+          "/bin/zsh -lc 'python3 -m pytest'",
+          "/bin/zsh -lc 'python3 -m inventory.cli reserve scenario.json'",
+          "/bin/zsh -lc 'python3 -m inventory.cli migrate legacy-db.json'",
+          "/bin/zsh -lc 'git status --short'"
+        ],
+        "diff_bytes": 3344,
+        "elapsed_seconds": 161.28,
+        "exact_baseline_command": true,
+        "file_changes": 1,
+        "final_response": "Fixed INC-4821.\n\nRoot causes addressed:\n- Legacy quantities now migrate correctly.\n- Reservations are atomic and cannot oversell.\n- Explicit request IDs are idempotent.\n- Version checks are enforced.\n- Legacy requests without IDs remain compatible.\n- Added focused concurrency, retry, migration, and API regression tests.\n- Updated `CHANGELOG.md`.\n\nValidation:\n- Baseline: 3 passed\n- Regression tests: 5 passed\n- Full suite: 8 passed\n- Supplied CLI scenarios verified successfully.",
+        "final_response_bytes": 481,
+        "input_tokens": 366260,
+        "optimized": false,
+        "output_tokens": 6269,
+        "reasoning_output_tokens": 1981,
+        "repository_hash": "7c16fb3c7dad20d29c4e31494656ee49b562a85b3224d94659ed3cab18c38ec8",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 31870,
+        "uncached_input_tokens": 29620,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget"
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 152
+        }
+      }
+    },
+    {
+      "accepted": true,
+      "contextguard": {
+        "cached_input_tokens": 560256,
+        "capture_runner_used": true,
+        "codex_exit_code": 0,
+        "command_executions": 32,
+        "commands": [
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'",
+          "/bin/zsh -lc 'nl -ba SUPPORT_TICKET.md'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- rg --files'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- rg -n \"\" inventory tests docs pyproject.toml scenario.json legacy-db.json data/production.log data/warehouse-export.jsonl CHANGELOG.md'",
+          "/bin/zsh -lc 'nl -ba inventory/service.py'",
+          "/bin/zsh -lc 'nl -ba inventory/migration.py'",
+          "/bin/zsh -lc 'nl -ba inventory/api.py'",
+          "/bin/zsh -lc 'nl -ba tests/test_public_behavior.py'",
+          "/bin/zsh -lc 'nl -ba docs/ARCHITECTURE.md'",
+          "/bin/zsh -lc 'nl -ba docs/CURRENT_STATE.md'",
+          "/bin/zsh -lc 'nl -ba scenario.json'",
+          "/bin/zsh -lc 'nl -ba legacy-db.json'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- rg -n -m 40 \"available=-|duplicate|retry|request=|version|legacy|startup|migration\" data/production.log'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard --help'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture --help'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'import json; p=\\\".contextguard/tmp/command-20260614T153807Z-1781451487007.summary.json\\\"; d=json.load(open(p)); print(d.keys()); print(json.dumps(d, indent=2)[:5000])'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'from pathlib import Path; lines=Path(\\\"data/production.log\\\").read_text().splitlines(); print(\\\"line_count\\\", len(lines)); print(\\\"\\\\n\\\".join(line.replace(\\\"ERROR\\\", \\\"EVENT\\\") for line in lines[:30]))'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'import re, collections; from pathlib import Path; lines=Path(\\\"data/production.log\\\").read_text().splitlines(); rows=[dict(re.findall(r\\\"(request|sku|available|worker)=([\"'^ ]+)\", x)) for x in lines]; c=collections.Counter(r[\"request\"] for r in rows); dup=[(k,v) for k,v in c.items() if v>1]; print(\"negative\", sum(int(r[\"available\"])<0 for r in rows)); print(\"duplicate_request_ids\", len(dup)); print(\"duplicate_samples\", dup[:10]); print(\"sample_occurrences\"); keys={k for k,_ in dup[:3]}; print(\"'\"\\\\n\\\".join(x.replace(\\\"ERROR\\\", \\\"EVENT\\\") for x,r in zip(lines,rows) if r[\\\"request\\\"] in keys)[:4000])'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'import re, collections; from pathlib import Path; lines=Path(\\\"data/production.log\\\").read_text().splitlines(); rows=[dict(re.findall(r\\\"(request|sku|available|worker)=([\"'^ ]+)\", x)) for x in lines]; c=collections.Counter(r[\"request\"] for r in rows); dup=[(k,v) for k,v in c.items() if v>1]; print(\"negative\", sum(int(r[\"available\"])<0 for r in rows)); print(\"duplicate_request_ids\", len(dup)); print(\"duplicate_samples\", dup[:5]); k=dup[0][0] if dup else None; print(\"first_duplicate\", k); print(\"occurrences\", [(i+1, rows[i]) for i in range(len(rows)) if rows[i][\"request\"]==k][:5])'\"'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'import json, collections; from pathlib import Path; lines=Path(\\\"data/warehouse-export.jsonl\\\").read_text().splitlines(); rows=[json.loads(x) for x in lines]; print(\\\"records\\\", len(rows)); print(\\\"keys\\\", collections.Counter(tuple(sorted(r)) for r in rows).most_common(5)); print(\\\"positive_quantity\\\", sum(r.get(\\\"quantity\\\",0)>0 for r in rows)); print(\\\"samples\\\", rows[:5])'\"",
+          "/bin/zsh -lc 'nl -ba inventory/audit.py'",
+          "/bin/zsh -lc 'nl -ba inventory/cli.py'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'from concurrent.futures import ThreadPoolExecutor; from inventory.migration import migrate_record; from inventory.service import InventoryService; print(\\\"migrated\\\", migrate_record({\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":10})); s=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":10}]); s.records[\\\"widget\\\"][\\\"available\\\"]=10; print(\\\"first\\\", s.reserve(\\\"widget\\\",2,\\\"retry-1\\\")); print(\\\"retry\\\", s.reserve(\\\"widget\\\",2,\\\"retry-1\\\")); c=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":10}]); c.records[\\\"widget\\\"][\\\"available\\\"]=10; list(ThreadPoolExecutor(max_workers=6).map(lambda i: c.reserve(\\\"widget\\\",2,f\\\"parallel-{i}\\\"), range(6))); print(\\\"parallel_remaining\\\", c.records[\\\"widget\\\"][\\\"available\\\"])'\"",
+          "/bin/zsh -lc 'nl -ba CHANGELOG.md'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q tests/test_public_behavior.py::test_retry_is_idempotent tests/test_public_behavior.py::test_parallel_reservations_cannot_overdraw_stock tests/test_public_behavior.py::test_api_forwards_expected_version_without_changing_legacy_requests'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- git diff --check'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- git diff -- inventory/service.py inventory/migration.py inventory/api.py tests/test_public_behavior.py CHANGELOG.md'",
+          "/bin/zsh -lc 'nl -ba pyproject.toml'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m inventory.cli checkout scenario.json'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m inventory.cli migrate legacy-db.json'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- git status --short'"
+        ],
+        "diff_bytes": 6913,
+        "elapsed_seconds": 220.032,
+        "exact_baseline_command": false,
+        "file_changes": 1,
+        "final_response": "Fixed the reservation issue across:\n\n- [service.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-2-contextguard-pcyi9tyu/contextguard-project/inventory/service.py): atomic stock checks, idempotent retries, version enforcement.\n- [migration.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-2-contextguard-pcyi9tyu/contextguard-project/inventory/migration.py): preserves legacy quantities.\n- [api.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-2-contextguard-pcyi9tyu/contextguard-project/inventory/api.py): forwards version checks.\n- [test_public_behavior.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-2-contextguard-pcyi9tyu/contextguard-project/tests/test_public_behavior.py): regression coverage.\n- [CHANGELOG.md](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-2-contextguard-pcyi9tyu/contextguard-project/CHANGELOG.md): fix documented.\n\nValidation: `7 passed`; CLI migration and checkout scenarios also pass.",
+        "final_response_bytes": 1054,
+        "input_tokens": 612681,
+        "optimized": true,
+        "output_tokens": 9607,
+        "reasoning_output_tokens": 2926,
+        "repository_hash": "264510a7fc3b9ed468b9c1a95b00e6f1197d203ab1a4d608fd75d04b66404ef9",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 12706,
+        "uncached_input_tokens": 52425,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget"
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 151
+        }
+      },
+      "order": [
+        "contextguard",
+        "raw"
+      ],
+      "pair": 2,
+      "raw": {
+        "cached_input_tokens": 279936,
+        "capture_runner_used": false,
+        "codex_exit_code": 0,
+        "command_executions": 12,
+        "commands": [
+          "/bin/zsh -lc \"pwd && rg --files -g 'SUPPORT_TICKET.md' -g 'CHANGELOG.md' -g 'AGENTS.md' -g 'README*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g 'setup.cfg' -g 'requirements*.txt' | sort\"",
+          "/bin/zsh -lc \"sed -n '1,240p' SUPPORT_TICKET.md pyproject.toml CHANGELOG.md\"",
+          "/bin/zsh -lc 'rg --files -uu | sort'",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc \"sed -n '1,260p' inventory/api.py inventory/service.py inventory/migration.py inventory/audit.py inventory/cli.py inventory/__init__.py tests/test_public_behavior.py data/production.log data/warehouse-export.jsonl legacy-db.json scenario.json .gitignore\"",
+          "/bin/zsh -lc \"wc -l data/production.log data/warehouse-export.jsonl legacy-db.json scenario.json && tail -n 40 data/production.log && sed -n '1,160p' data/warehouse-export.jsonl legacy-db.json scenario.json && git log --oneline --decorate -5 && git status --short\"",
+          "/bin/zsh -lc \"for f in legacy-db.json scenario.json; do printf '\\\\n--- %s ---\\\\n' \\\"\"'$f\"; sed -n '\"'1,120p' \\\"\"'$f\"; done'",
+          "/bin/zsh -lc \"python3 - <<'PY'\nfrom concurrent.futures import ThreadPoolExecutor\nfrom inventory.api import handle_request\nfrom inventory.migration import migrate_record\nfrom inventory.service import InventoryService\n\nprint('migration:', migrate_record({'sku': 'widget', 'quantity': 10, 'schema_version': 1}))\nservice = InventoryService([{'sku': 'widget', 'quantity': 10}])\nfirst = handle_request({'sku': 'widget', 'quantity': 3, 'request_id': 'req-001', 'expected_version': 0}, service)\nretry = handle_request({'sku': 'widget', 'quantity': 3, 'request_id': 'req-001', 'expected_version': 0}, service)\nprint('first:', first)\nprint('retry:', retry)\n\nservice = InventoryService([{'sku': 'widget', 'quantity': 5}])\nwith ThreadPoolExecutor(max_workers=16) as pool:\n    results = list(pool.map(lambda n: service.reserve('widget', 1, f'parallel-{n}'), range(16)))\nprint('parallel successful:', sum(result['ok'] for result in results))\nprint('parallel remaining:', service.records['widget']['available'])\nPY\"",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_reservation_regressions.py'",
+          "/bin/zsh -lc 'git diff --check && git diff -- inventory/api.py inventory/migration.py inventory/service.py tests/test_reservation_regressions.py CHANGELOG.md'",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_reservation_regressions.py && python3 -m inventory.cli migrate legacy-db.json && python3 -m inventory.cli reserve scenario.json'",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/ && python3 -m compileall -q inventory tests && git diff --check && git status --short'"
+        ],
+        "diff_bytes": 3896,
+        "elapsed_seconds": 144.311,
+        "exact_baseline_command": true,
+        "file_changes": 3,
+        "final_response": "Fixed the reservation issues:\n\n- Atomic stock checks prevent overselling.\n- Request IDs provide retry idempotency.\n- Optimistic versions are enforced.\n- Legacy quantities survive migration.\n- Added six focused regression tests and changelog entry.\n\nValidation: baseline `3 passed`; final suite `9 passed`; CLI scenarios and compilation checks passed.",
+        "final_response_bytes": 350,
+        "input_tokens": 341810,
+        "optimized": false,
+        "output_tokens": 6852,
+        "reasoning_output_tokens": 1778,
+        "repository_hash": "2c03379190512cdd9f28d1c28cff527a3903b844c406f132eda75b2da486c9de",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 33830,
+        "uncached_input_tokens": 61874,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget"
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 153
+        }
+      }
+    },
+    {
+      "accepted": true,
+      "contextguard": {
+        "cached_input_tokens": 253440,
+        "capture_runner_used": true,
+        "codex_exit_code": 0,
+        "command_executions": 29,
+        "commands": [
+          "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- top-level ---' && rg --files -g 'SUPPORT_TICKET.md' -g 'CHANGELOG.md' -g 'pyproject.toml' -g 'pytest.ini' -g 'setup.cfg' -g 'tox.ini' -g 'AGENTS.md' | sort && printf '%s\\\\n' '--- ticket ---' && sed -n '1,240p' SUPPORT_TICKET.md && printf '%s\\\\n' '--- contextguard ---' && ls -l .contextguard/bin/contextguard\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- rg --files'\"",
+          "/bin/zsh -lc \"sed -n '1,260p' inventory/service.py\"",
+          "/bin/zsh -lc \"sed -n '1,260p' inventory/api.py\"",
+          "/bin/zsh -lc \"sed -n '1,260p' inventory/migration.py\"",
+          "/bin/zsh -lc \"sed -n '1,320p' tests/test_public_behavior.py\"",
+          "/bin/zsh -lc \"sed -n '1,240p' docs/CURRENT_STATE.md\"",
+          "/bin/zsh -lc \"sed -n '1,240p' CHANGELOG.md\"",
+          "/bin/zsh -lc \"sed -n '1,240p' pyproject.toml\"",
+          "/bin/zsh -lc \"sed -n '1,240p' docs/ARCHITECTURE.md\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- printf \\\"production log:\\\\n\\\" && .contextguard/bin/contextguard capture -- cat data/production.log && printf \\\"warehouse export:\\\\n\\\" && .contextguard/bin/contextguard capture -- cat data/warehouse-export.jsonl && printf \\\"scenario:\\\\n\\\" && .contextguard/bin/contextguard capture -- cat scenario.json && printf \\\"legacy db:\\\\n\\\" && .contextguard/bin/contextguard capture -- cat legacy-db.json'\"",
+          "/bin/zsh -lc \"sed -n '1,260p' inventory/cli.py\"",
+          "/bin/zsh -lc \"sed -n '1,160p' inventory/__init__.py\"",
+          "/bin/zsh -lc \"sed -n '1,220p' inventory/audit.py\"",
+          "/bin/zsh -lc \"sed -n '1,220p' .contextguard/bin/contextguard\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard --help'\"",
+          "/bin/zsh -lc '.contextguard/bin/contextguard large-file --help'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard large-file data/warehouse-export.jsonl --contains 'widget' --records 10 --limit 10\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard large-file data/warehouse-export.jsonl --contains 'quantity' --records 5 --limit 5\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard large-file data/production.log --contains 'req-5' --before 3 --after 3 --limit 20\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard large-file data/production.log --contains 'retry' --before 2 --after 2 --limit 20\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard large-file data/production.log --contains 'ERROR checkout' --lines 20 --limit 20\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -c '\\\\''from concurrent.futures import ThreadPoolExecutor; from inventory.api import handle_request; from inventory.migration import migrate_record; from inventory.service import InventoryService; print(\\\"migration\\\", migrate_record({\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":10,\\\"schema_version\\\":1})); s=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":2}]); print(\\\"retry-1\\\", handle_request({\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":2,\\\"request_id\\\":\\\"same\\\"},s)); print(\\\"retry-2\\\", handle_request({\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":2,\\\"request_id\\\":\\\"same\\\"},s)); p=InventoryService([{\\\"sku\\\":\\\"widget\\\",\\\"quantity\\\":5}]); print(\\\"parallel\\\", list(ThreadPoolExecutor(max_workers=10).map(lambda i: p.reserve(\\\"widget\\\",1,\\\"req-%s\\\" % i), range(10)))); print(\\\"record\\\", p.records[\\\"widget\\\"])'\\\\'''\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q tests/test_public_behavior.py'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git diff --check && .contextguard/bin/contextguard capture -- git diff -- inventory/migration.py inventory/api.py inventory/service.py tests/test_public_behavior.py CHANGELOG.md'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m inventory.cli reserve scenario.json'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git status --short'\""
+        ],
+        "diff_bytes": 6505,
+        "elapsed_seconds": 146.119,
+        "exact_baseline_command": false,
+        "file_changes": 1,
+        "final_response": "Fixed the reservation race and legacy migration issue.\n\nChanged:\n- [service.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-3-contextguard-jddyx63b/contextguard-project/inventory/service.py): atomic stock checks, idempotent retries, version validation.\n- [migration.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-3-contextguard-jddyx63b/contextguard-project/inventory/migration.py): preserve legacy quantities.\n- [api.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-3-contextguard-jddyx63b/contextguard-project/inventory/api.py): forward version metadata.\n- Added concurrency and regression coverage.\n- Updated [CHANGELOG.md](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-support-ab-3-contextguard-jddyx63b/contextguard-project/CHANGELOG.md).\n\nValidation: full suite passes, `8 passed`. CLI scenario succeeds with 7 units remaining.",
+        "final_response_bytes": 936,
+        "input_tokens": 297749,
+        "optimized": true,
+        "output_tokens": 6542,
+        "reasoning_output_tokens": 1611,
+        "repository_hash": "2a2233d8bb560699e65203f629bc940b5dce2655503b2b0933110c526107b42d",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 26969,
+        "uncached_input_tokens": 44309,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget"
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 152
+        }
+      },
+      "order": [
+        "raw",
+        "contextguard"
+      ],
+      "pair": 3,
+      "raw": {
+        "cached_input_tokens": 356480,
+        "capture_runner_used": false,
+        "codex_exit_code": 0,
+        "command_executions": 36,
+        "commands": [
+          "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'SUPPORT_TICKET.md' -g 'CHANGELOG.md' -g 'README*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g 'setup.cfg' -g 'requirements*.txt' | sort\"",
+          "/bin/zsh -lc \"sed -n '1,260p' pyproject.toml\"",
+          "/bin/zsh -lc \"sed -n '1,240p' SUPPORT_TICKET.md\"",
+          "/bin/zsh -lc 'rg --files | sort'",
+          "/bin/zsh -lc \"sed -n '1,220p' CHANGELOG.md\"",
+          "/bin/zsh -lc 'git status --short'",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc 'nl -ba inventory/api.py'",
+          "/bin/zsh -lc 'nl -ba inventory/cli.py'",
+          "/bin/zsh -lc 'nl -ba inventory/audit.py'",
+          "/bin/zsh -lc 'nl -ba inventory/service.py'",
+          "/bin/zsh -lc 'nl -ba tests/test_public_behavior.py'",
+          "/bin/zsh -lc 'nl -ba inventory/migration.py'",
+          "/bin/zsh -lc 'nl -ba inventory/__init__.py'",
+          "/bin/zsh -lc 'nl -ba data/warehouse-export.jsonl'",
+          "/bin/zsh -lc 'nl -ba legacy-db.json'",
+          "/bin/zsh -lc 'nl -ba scenario.json'",
+          "/bin/zsh -lc 'nl -ba data/production.log'",
+          "/bin/zsh -lc 'rg -n \"duplicate|retry|version|migration|startup|request=req-001|sku=widget\" data/production.log | head -n 80'",
+          "/bin/zsh -lc 'wc -l data/production.log data/warehouse-export.jsonl && tail -n 30 data/production.log'",
+          "/bin/zsh -lc 'git log --oneline --decorate -8'",
+          "/bin/zsh -lc \"rg -n \\\"expected_version|schema_version|reserved|available|request_id|migrate_record|reserve\\\\(\\\" --glob '\"'!data/*'\"'\"",
+          "/bin/zsh -lc 'head -n 5 data/warehouse-export.jsonl && tail -n 5 data/warehouse-export.jsonl'",
+          "/bin/zsh -lc \"python3 - <<'PY'\nfrom concurrent.futures import ThreadPoolExecutor\n\nfrom inventory.api import handle_request\nfrom inventory.migration import migrate_record\nfrom inventory.service import InventoryService\n\nprint('migration:', migrate_record({'sku': 'legacy', 'quantity': 7, 'schema_version': 1}))\nservice = InventoryService([{'sku': 'widget', 'quantity': 3}])\nprint('first:', handle_request({'sku': 'widget', 'quantity': 2, 'request_id': 'retry-1'}, service))\nprint('retry:', handle_request({'sku': 'widget', 'quantity': 2, 'request_id': 'retry-1'}, service))\nprint('after retry:', service.records['widget'])\n\nservice = InventoryService([{'sku': 'limited', 'quantity': 5}])\ndef reserve(i):\n    return service.reserve('limited', 1, f'parallel-{i}', expected_version=0)\nwith ThreadPoolExecutor(max_workers=16) as pool:\n    results = list(pool.map(reserve, range(16)))\nprint('parallel successes:', sum(result['ok'] for result in results))\nprint('parallel record:', service.records['limited'])\nPY\"",
+          "/bin/zsh -lc 'git status --short'",
+          "/bin/zsh -lc 'nl -ba inventory/service.py && nl -ba inventory/migration.py && nl -ba inventory/api.py'",
+          "/bin/zsh -lc 'git diff --check && git diff -- inventory/api.py inventory/migration.py inventory/service.py tests/test_public_behavior.py CHANGELOG.md'",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_public_behavior.py'",
+          "/bin/zsh -lc 'python3 -m inventory.cli migrate legacy-db.json'",
+          "/bin/zsh -lc 'python3 -m inventory.cli reserve scenario.json'",
+          "/bin/zsh -lc \"python3 - <<'PY'\nimport json\nfrom pathlib import Path\n\nfrom inventory.migration import migrate_record\n\nrecords = [migrate_record(json.loads(line)) for line in Path('data/warehouse-export.jsonl').read_text().splitlines()]\nassert len(records) == 12000\nassert all(record['available'] > 0 for record in records)\nassert all(record['version'] == 0 for record in records)\nprint(f\\\"normalized={len(records)} min_available={min(r['available'] for r in records)} max_available={max(r['available'] for r in records)}\\\")\nPY\"",
+          "/bin/zsh -lc 'python3 -m pytest'",
+          "/bin/zsh -lc 'git diff --stat'",
+          "/bin/zsh -lc 'git status --short'",
+          "/bin/zsh -lc 'git diff -- CHANGELOG.md inventory/api.py inventory/migration.py inventory/service.py tests/test_public_behavior.py'",
+          "/bin/zsh -lc 'python3 -m compileall -q inventory && git diff --check'"
+        ],
+        "diff_bytes": 6148,
+        "elapsed_seconds": 154.361,
+        "exact_baseline_command": true,
+        "file_changes": 2,
+        "final_response": "Fixed the inventory incident root causes:\n\n- Atomic stock checks prevent overselling.\n- Retries are idempotent by request/SKU.\n- `expected_version` is enforced.\n- Legacy quantities and current metadata survive migration.\n- Added focused concurrency, retry, version, and migration tests.\n- Updated `CHANGELOG.md`.\n\nValidation: full suite passes, `7 passed`; CLI scenarios and all 12,000 export records verified.",
+        "final_response_bytes": 410,
+        "input_tokens": 389196,
+        "optimized": false,
+        "output_tokens": 7173,
+        "reasoning_output_tokens": 2088,
+        "repository_hash": "68a610626b772adfc51afe17045e6c290394c12764de678f927dbc8abaa3225a",
+        "stderr_bytes": 39,
+        "timed_out": false,
+        "tool_output_bytes": 1841790,
+        "uncached_input_tokens": 32716,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "ok": true,
+            "quantity": 3,
+            "remaining": 7,
+            "sku": "widget",
+            "version": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 147,
+          "concurrency_output": {
+            "available": 0,
+            "reserved": 10,
+            "successful": 10,
+            "version": 10
+          },
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 144,
+          "passed_tests": 151
+        }
+      }
+    }
+  ],
+  "reasoning_effort": "medium",
+  "run_orders": [
+    [
+      "raw",
+      "contextguard"
+    ],
+    [
+      "contextguard",
+      "raw"
+    ],
+    [
+      "raw",
+      "contextguard"
+    ]
+  ]
+}

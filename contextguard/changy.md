@@ -443,3 +443,13 @@
 - Artifacts: `benchmarks/results/output-ab-0.4.2-2026-06-14.json` and `benchmarks/results/post-0.4.2-matrix-2026-06-14.json`.
 - Installed-copy acceptance measured 79.99% runner-output reduction and 99.36% repeated-hook reduction with complete archive equivalence.
 - Published commit `ce37730` to GitHub `main`; Codex now has `0.4.2+codex.20260614121614` installed and enabled, and the current project runner/policy were refreshed from that cache entry.
+
+## 2026-06-14 ContextGuard 0.4.2 Human Support-Ticket Validation
+
+- Ran three counterbalanced RAW/ContextGuard pairs, six isolated GPT-5.5 agents total, against the inventory support-ticket benchmark with 144 hidden migration, retry-idempotency and concurrency cases.
+- All six implementations passed every quality gate; all ContextGuard runs proved project capture-runner use.
+- Paired median changes: total input -19.48%, uncached input -15.27%, visible tool output -64.47%, output -2.42%, reasoning -19.23% and elapsed time -5.34%.
+- One ContextGuard run was a material exploration outlier with total input +79.25% and time +52.47%. ContextGuard therefore still cannot guarantee savings for an individual stochastic run.
+- Tool calls regressed: pair changes +73.33%, +166.67% and -19.44%, median +73.33%. Additional bounded inspections after compacted evidence are the remaining optimization target.
+- Separate-group uncached medians show +35.44%, while paired deltas show a -15.27% median. The paired statistic respects the counterbalanced design; neither proves a subscription quota multiplier.
+- Artifact: `benchmarks/results/real-codex-support-ab-0.4.2-2026-06-14/summary.json`.
