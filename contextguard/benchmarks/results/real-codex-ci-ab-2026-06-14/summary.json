@@ -1,0 +1,360 @@
+{
+  "aggregate": {
+    "cached_input_tokens": {
+      "contextguard_median": 164608.0,
+      "contextguard_values": [
+        168192,
+        161024
+      ],
+      "median_change_percent": -39.71,
+      "raw_median": 273024.0,
+      "raw_values": [
+        293120,
+        252928
+      ]
+    },
+    "command_executions": {
+      "contextguard_median": 16.5,
+      "contextguard_values": [
+        11,
+        22
+      ],
+      "median_change_percent": -5.71,
+      "raw_median": 17.5,
+      "raw_values": [
+        11,
+        24
+      ]
+    },
+    "elapsed_seconds": {
+      "contextguard_median": 104.3615,
+      "contextguard_values": [
+        97.272,
+        111.451
+      ],
+      "median_change_percent": -1.71,
+      "raw_median": 106.17949999999999,
+      "raw_values": [
+        103.497,
+        108.862
+      ]
+    },
+    "input_tokens": {
+      "contextguard_median": 201378.5,
+      "contextguard_values": [
+        202700,
+        200057
+      ],
+      "median_change_percent": -36.57,
+      "raw_median": 317463.0,
+      "raw_values": [
+        356949,
+        277977
+      ]
+    },
+    "output_tokens": {
+      "contextguard_median": 4596.0,
+      "contextguard_values": [
+        3991,
+        5201
+      ],
+      "median_change_percent": -4.36,
+      "raw_median": 4805.5,
+      "raw_values": [
+        4564,
+        5047
+      ]
+    },
+    "reasoning_output_tokens": {
+      "contextguard_median": 1420.5,
+      "contextguard_values": [
+        1252,
+        1589
+      ],
+      "median_change_percent": -3.33,
+      "raw_median": 1469.5,
+      "raw_values": [
+        1503,
+        1436
+      ]
+    },
+    "tool_output_bytes": {
+      "contextguard_median": 28495.5,
+      "contextguard_values": [
+        10294,
+        46697
+      ],
+      "median_change_percent": -52.08,
+      "raw_median": 59470.0,
+      "raw_values": [
+        76914,
+        42026
+      ]
+    },
+    "uncached_input_tokens": {
+      "contextguard_median": 36770.5,
+      "contextguard_values": [
+        34508,
+        39033
+      ],
+      "median_change_percent": -17.26,
+      "raw_median": 44439.0,
+      "raw_values": [
+        63829,
+        25049
+      ]
+    }
+  },
+  "all_pairs_accepted": true,
+  "benchmark": "real-codex-human-ci-investigation-ab",
+  "limitations": [
+    "Two pairs expose order effects but model execution remains stochastic.",
+    "Codex subscription quota accounting is not exposed by the CLI."
+  ],
+  "model": "gpt-5.5",
+  "pairs": [
+    {
+      "accepted": true,
+      "contextguard": {
+        "cached_input_tokens": 168192,
+        "capture_runner_used": true,
+        "codex_exit_code": 0,
+        "command_executions": 11,
+        "commands": [
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+          "/bin/zsh -lc \"sed -n '1,240p' PR_REVIEW.md\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- sed -n \\\"1,260p\\\" artifacts/CI_FAILURE.log'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- rg --files -g \\\"\"'!artifacts/CI_FAILURE.log\"'\"'\"",
+          "/bin/zsh -lc \"sed -n '1,240p' reporting/buckets.py && sed -n '1,200p' reporting/__init__.py && sed -n '1,260p' tests/test_public.py && sed -n '1,220p' pyproject.toml && sed -n '1,180p' CHANGELOG.md && sed -n '1,220p' docs/ARCHITECTURE.md\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- rg -n \\\"daily_counts|ZoneInfo|dateutil|pytz|Traceback|platform|Python|installed|created_at|expected=\\\" artifacts/CI_FAILURE.log'\"",
+          "/bin/zsh -lc \"sed -n '1,220p' reporting/cli.py && sed -n '1,220p' docs/CURRENT_STATE.md && sed -n '1,220p' scenario.json\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -c '\\\\''from reporting import daily_counts; actual=daily_counts([{\\\"created_at\\\":\\\"2026-03-08T04:30:00Z\\\"}], \\\"America/New_York\\\"); expected={\\\"2026-03-07\\\":1}; print({\\\"expected\\\": expected, \\\"actual\\\": actual}); raise SystemExit(actual \"'!= expected)'\"'\\\\'''\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q tests/test_public.py -k \\\"local_calendar_day or dst_transition or explicit_offsets\\\"'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'\"",
+          "/bin/zsh -lc \"sh -lc '.contextguard/bin/contextguard capture -- git diff --check && .contextguard/bin/contextguard capture -- git diff -- reporting/buckets.py tests/test_public.py CHANGELOG.md && .contextguard/bin/contextguard capture -- git status --short'\""
+        ],
+        "diff_bytes": 2779,
+        "elapsed_seconds": 97.272,
+        "exact_baseline_command": true,
+        "file_changes": 1,
+        "final_response": "Fixed timezone bucketing by parsing aware ISO timestamps and converting through `zoneinfo`, including DST rules.\n\nChanged:\n- `reporting/buckets.py`\n- `tests/test_public.py`\n- `CHANGELOG.md`\n\nValidation:\n- Targeted regressions: 3 passed\n- Complete suite: 6 passed\n- `git diff --check`: passed",
+        "final_response_bytes": 291,
+        "input_tokens": 202700,
+        "optimized": true,
+        "output_tokens": 3991,
+        "reasoning_output_tokens": 1252,
+        "repository_hash": "0c7fe8dd02bc7cfb3285b1aae9851d856eb7b378bdfec7d9e7360876e056da27",
+        "timed_out": false,
+        "tool_output_bytes": 10294,
+        "uncached_input_tokens": 34508,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "2026-03-08": 2,
+            "2026-03-09": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 163,
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 160,
+          "passed_tests": 166,
+          "public_exit_code": 0
+        }
+      },
+      "order": [
+        "raw",
+        "contextguard"
+      ],
+      "pair": 1,
+      "raw": {
+        "cached_input_tokens": 293120,
+        "capture_runner_used": false,
+        "codex_exit_code": 0,
+        "command_executions": 11,
+        "commands": [
+          "/bin/zsh -lc \"pwd && rg --files -g 'PR_REVIEW.md' -g 'CI_FAILURE.log' -g 'AGENTS.md' -g 'README*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g 'CHANGELOG.md'\"",
+          "/bin/zsh -lc 'head -n 500 PR_REVIEW.md artifacts/CI_FAILURE.log pyproject.toml CHANGELOG.md'",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc \"rg -n \\\"daily_counts|timezone|zoneinfo|pytz|dateutil|datetime\\\" . --glob '\"'!artifacts/CI_FAILURE.log'\"' --glob '\"'!*.pyc'\"'\"",
+          "/bin/zsh -lc \"git status --short && find . -maxdepth 3 -type f -not -path './.git/*' -not -path './artifacts/CI_FAILURE.log' -print && sed -n '1,240p' reporting/buckets.py && sed -n '1,240p' tests/test_public.py && sed -n '1,200p' reporting/cli.py && sed -n '1,120p' scenario.json\"",
+          "/bin/zsh -lc 'git log --oneline --decorate -8 && git log -p -5 -- reporting/buckets.py pyproject.toml tests/test_public.py && python3 -m reporting.cli scenario.json'",
+          "/bin/zsh -lc \"python3 -c 'from reporting import daily_counts; cases=[([{\\\"created_at\\\":\\\"2026-03-02T01:30:00Z\\\"}], \\\"America/New_York\\\"), ([{\\\"created_at\\\":\\\"2026-03-02T23:30:00Z\\\"}], \\\"Asia/Tokyo\\\")]; print([(tz, daily_counts(events, tz)) for events, tz in cases])'\"",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_public.py'",
+          "/bin/zsh -lc \"git diff --check && git diff && TZ=UTC python3 -m reporting.cli scenario.json && TZ=Europe/Berlin python3 -m reporting.cli scenario.json && TZ=UTC python3 -c 'from reporting import daily_counts; print(daily_counts([{\\\"created_at\\\":\\\"2026-03-02T01:30:00Z\\\"}], \\\"America/New_York\\\")); print(daily_counts([{\\\"created_at\\\":\\\"2026-03-02T23:30:00Z\\\"}], \\\"Asia/Tokyo\\\"))'\"",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc 'git status --short && nl -ba reporting/buckets.py && nl -ba tests/test_public.py && nl -ba CHANGELOG.md'"
+        ],
+        "diff_bytes": 2216,
+        "elapsed_seconds": 103.497,
+        "exact_baseline_command": true,
+        "file_changes": 1,
+        "final_response": "Fixed the CI issue.\n\nRoot cause: `daily_counts` sliced the UTC date string and ignored `timezone_name`.\n\nChanges:\n- Convert timestamps using `ZoneInfo` before bucketing.\n- Added cross-midnight and DST regression tests.\n- Updated `CHANGELOG.md`.\n- Preserved the public API.\n\nValidation:\n- Baseline: `3 passed`\n- Focused tests: `6 passed`\n- Full suite: `6 passed`\n- Verified identical behavior across different host `TZ` settings.",
+        "final_response_bytes": 428,
+        "input_tokens": 356949,
+        "optimized": false,
+        "output_tokens": 4564,
+        "reasoning_output_tokens": 1503,
+        "repository_hash": "7630870e5dc6bef0ef05394e388511bda3e314004c5a72631adfc37714396318",
+        "timed_out": false,
+        "tool_output_bytes": 76914,
+        "uncached_input_tokens": 63829,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "2026-03-08": 2,
+            "2026-03-09": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 163,
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 160,
+          "passed_tests": 166,
+          "public_exit_code": 0
+        }
+      }
+    },
+    {
+      "accepted": true,
+      "contextguard": {
+        "cached_input_tokens": 161024,
+        "capture_runner_used": true,
+        "codex_exit_code": 0,
+        "command_executions": 22,
+        "commands": [
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q'",
+          "/bin/zsh -lc \"sed -n '1,240p' PR_REVIEW.md\"",
+          "/bin/zsh -lc \"sed -n '1,260p' artifacts/CI_FAILURE.log\"",
+          "/bin/zsh -lc 'git status --short'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- rg --files -g '\"'!artifacts/**'\"'\"",
+          "/bin/zsh -lc \"sed -n '1,240p' reporting/__init__.py\"",
+          "/bin/zsh -lc \"sed -n '1,240p' reporting/buckets.py\"",
+          "/bin/zsh -lc \"sed -n '1,220p' CHANGELOG.md\"",
+          "/bin/zsh -lc \"sed -n '1,280p' tests/test_public.py\"",
+          "/bin/zsh -lc \"sed -n '1,240p' pyproject.toml\"",
+          "/bin/zsh -lc \"sed -n '1,220p' docs/ARCHITECTURE.md && sed -n '1,220p' docs/CURRENT_STATE.md\"",
+          "/bin/zsh -lc 'tail -n 40 artifacts/CI_FAILURE.log'",
+          "/bin/zsh -lc \"sed -n '1,260p' scenario.json\"",
+          "/bin/zsh -lc \"sed -n '1,240p' reporting/cli.py\"",
+          "/bin/zsh -lc 'git log --oneline --all -8'",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- sh -lc 'actual=\"'$(python3 -m reporting.cli scenario.json); expected='\"'\\\"'\\\"'{\\\"2026-03-08\\\": 3}'\\\"'\\\"'; printf \\\"expected: %s\\\\nactual:   %s\\\\n\\\" \\\"\"'$expected\" \"$actual\"; test \"$actual\" = \"$expected\"'\"'\"",
+          "/bin/zsh -lc \".contextguard/bin/contextguard capture -- python3 -c 'from reporting import daily_counts; assert daily_counts([{\\\"created_at\\\": \\\"2026-03-08T04:30:00Z\\\"}], \\\"America/New_York\\\") == {\\\"2026-03-07\\\": 1}'\"",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m compileall -q reporting tests'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest -q tests/test_public.py::test_events_are_bucketed_by_local_calendar_day tests/test_public.py::test_day_bucketing_uses_dst_offset_at_each_instant tests/test_public.py::test_repeated_dst_hour_stays_on_the_same_local_day'",
+          "/bin/zsh -lc 'git status --short'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- git diff -- reporting/buckets.py tests/test_public.py CHANGELOG.md'",
+          "/bin/zsh -lc '.contextguard/bin/contextguard capture -- python3 -m pytest'"
+        ],
+        "diff_bytes": 2912,
+        "elapsed_seconds": 111.451,
+        "exact_baseline_command": true,
+        "file_changes": 1,
+        "final_response": "Fixed CI timezone bucketing.\n\nChanged:\n- [reporting/buckets.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-ci-ab-2-contextguard-xokkfmll/project/reporting/buckets.py): parse timestamps and convert via `ZoneInfo`.\n- [tests/test_public.py](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-ci-ab-2-contextguard-xokkfmll/project/tests/test_public.py): added midnight and DST regressions.\n- [CHANGELOG.md](/var/folders/1h/bcpfd4vj5lj3zzt50w1v4wjr0000gn/T/contextguard-ci-ab-2-contextguard-xokkfmll/project/CHANGELOG.md): documented the fix.\n\nValidation: full suite passes, `6 passed`; targeted tests and compile checks also pass. Existing unrelated workspace changes were untouched.",
+        "final_response_bytes": 709,
+        "input_tokens": 200057,
+        "optimized": true,
+        "output_tokens": 5201,
+        "reasoning_output_tokens": 1589,
+        "repository_hash": "c1352bab602f5b76d02ad9803d584010d9cda82d14d35b08cefd3a158384d506",
+        "timed_out": false,
+        "tool_output_bytes": 46697,
+        "uncached_input_tokens": 39033,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "2026-03-08": 2,
+            "2026-03-09": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 163,
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 160,
+          "passed_tests": 166,
+          "public_exit_code": 0
+        }
+      },
+      "order": [
+        "contextguard",
+        "raw"
+      ],
+      "pair": 2,
+      "raw": {
+        "cached_input_tokens": 252928,
+        "capture_runner_used": false,
+        "codex_exit_code": 0,
+        "command_executions": 24,
+        "commands": [
+          "/bin/zsh -lc \"pwd && rg --files -g 'PR_REVIEW.md' -g 'CI_FAILURE.log' -g 'AGENTS.md' -g 'CONTRIBUTING*' -g 'README*' -g 'pyproject.toml' -g 'pytest.ini' -g 'tox.ini' -g 'CHANGELOG.md'\"",
+          "/bin/zsh -lc \"sed -n '1,240p' artifacts/CI_FAILURE.log\"",
+          "/bin/zsh -lc \"sed -n '1,240p' PR_REVIEW.md\"",
+          "/bin/zsh -lc \"sed -n '1,240p' CHANGELOG.md\"",
+          "/bin/zsh -lc \"sed -n '1,240p' pyproject.toml\"",
+          "/bin/zsh -lc 'python3 -m pytest -q'",
+          "/bin/zsh -lc \"rg -n \\\"daily_counts|created_at|timezone|ZoneInfo|dateutil|pendulum|arrow\\\" . --glob '\"'!artifacts/CI_FAILURE.log'\"'\"",
+          "/bin/zsh -lc 'rg --files'",
+          "/bin/zsh -lc \"find . -maxdepth 3 -type f -not -path './.git/*' -print\"",
+          "/bin/zsh -lc 'git status --short && git log -5 --oneline'",
+          "/bin/zsh -lc 'nl -ba reporting/buckets.py'",
+          "/bin/zsh -lc 'nl -ba .gitignore'",
+          "/bin/zsh -lc 'nl -ba reporting/cli.py'",
+          "/bin/zsh -lc 'nl -ba reporting/__init__.py'",
+          "/bin/zsh -lc 'nl -ba scenario.json'",
+          "/bin/zsh -lc 'nl -ba tests/test_public.py'",
+          "/bin/zsh -lc \"python3 -m reporting.cli scenario.json && python3 - <<'PY'\nfrom reporting import daily_counts\n\ncases = [\n    ([{\\\"created_at\\\": \\\"2026-03-08T06:30:00Z\\\"}, {\\\"created_at\\\": \\\"2026-03-08T07:30:00Z\\\"}, {\\\"created_at\\\": \\\"2026-03-09T04:30:00Z\\\"}], \\\"America/New_York\\\"),\n    ([{\\\"created_at\\\": \\\"2026-03-02T23:30:00Z\\\"}], \\\"Europe/Berlin\\\"),\n]\nfor events, zone in cases:\n    print(zone, daily_counts(events, zone))\nPY\"",
+          "/bin/zsh -lc 'git diff --check && git diff -- reporting/buckets.py tests/test_public.py CHANGELOG.md'",
+          "/bin/zsh -lc 'python3 -m reporting.cli scenario.json'",
+          "/bin/zsh -lc 'python3 -m compileall -q reporting tests'",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_public.py::test_events_are_bucketed_by_local_calendar_day tests/test_public.py::test_dst_transition_uses_timezone_rules_for_each_instant tests/test_public.py::test_created_at_offset_is_converted_as_an_instant'",
+          "/bin/zsh -lc 'python3 -m pytest -q tests/test_public.py::test_events_are_bucketed_by_local_calendar_day tests/test_public.py::test_dst_transition_uses_timezone_rules_for_each_instant tests/test_public.py::test_created_at_offset_is_converted_as_an_instant'",
+          "/bin/zsh -lc 'python3 -m pytest'",
+          "/bin/zsh -lc \"python3 - <<'PY'\nfrom reporting import daily_counts\n\nchecks = {\n    \\\"America/New_York\\\": (\\\"2026-03-01T00:30:00Z\\\", \\\"2026-02-28\\\"),\n    \\\"Europe/Berlin\\\": (\\\"2026-03-02T23:30:00Z\\\", \\\"2026-03-03\\\"),\n    \\\"Asia/Tokyo\\\": (\\\"2026-03-03T23:30:00Z\\\", \\\"2026-03-04\\\"),\n    \\\"Australia/Sydney\\\": (\\\"2026-03-04T23:30:00Z\\\", \\\"2026-03-05\\\"),\n}\nfor zone, (created_at, expected) in checks.items():\n    actual = next(iter(daily_counts([{\\\"created_at\\\": created_at}], zone)))\n    assert actual == expected, (zone, expected, actual)\n    print(zone, actual)\nPY\n\ngit diff --check\ngit status --short\""
+        ],
+        "diff_bytes": 2458,
+        "elapsed_seconds": 108.862,
+        "exact_baseline_command": true,
+        "file_changes": 2,
+        "final_response": "Fixed the CI timezone bucketing failure.\n\n- `daily_counts` now parses timezone-aware ISO timestamps and buckets via `ZoneInfo`.\n- Added regression coverage for positive/negative offsets, DST, and explicit offsets.\n- Updated `CHANGELOG.md`.\n- Preserved `daily_counts(events, timezone_name)` API.\n\nValidation: baseline `3 passed`; targeted checks `3 passed`; complete suite `6 passed`; regional and diff checks passed.",
+        "final_response_bytes": 416,
+        "input_tokens": 277977,
+        "optimized": false,
+        "output_tokens": 5047,
+        "reasoning_output_tokens": 1436,
+        "repository_hash": "848268a2b863750269adb27fc9c0ed89f366794522fd29695319840b5b6d1898",
+        "timed_out": false,
+        "tool_output_bytes": 42026,
+        "uncached_input_tokens": 25049,
+        "validation": {
+          "canonical_exit_code": 0,
+          "canonical_output": {
+            "2026-03-08": 2,
+            "2026-03-09": 1
+          },
+          "changelog_updated": true,
+          "collected_tests": 163,
+          "exit_code": 0,
+          "failed_tests": 0,
+          "hidden_failed_tests": 0,
+          "hidden_passed_tests": 160,
+          "passed_tests": 166,
+          "public_exit_code": 0
+        }
+      }
+    }
+  ],
+  "reasoning_effort": "medium",
+  "run_orders": [
+    [
+      "raw",
+      "contextguard"
+    ],
+    [
+      "contextguard",
+      "raw"
+    ]
+  ]
+}

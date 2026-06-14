@@ -47,6 +47,17 @@ python3 benchmarks/real_codex_support_ab.py --run
 
 Agents receive only an incident ticket, production-style logs, an unfamiliar legacy service and three public tests. A separate hidden suite checks 144 observable customer requirements after the agent finishes. Three pairs run in counterbalanced order, and every individual trial uses a separate temporary root so agents cannot inspect the comparison repository. This benchmark measures realistic diagnosis behavior, where model exploration choices can dominate total tokens and time.
 
+## Human CI-Investigation A/B
+
+Run:
+
+```bash
+python3 benchmarks/real_codex_ci_ab.py --self-check
+python3 benchmarks/real_codex_ci_ab.py --run
+```
+
+This benchmark starts with a locally green reporting service, a PR review note, and a large CI failure artifact covering timezone and DST cases. Agents must diagnose the discrepancy, add regression tests, preserve the public API, and update the changelog. Two counterbalanced pairs use separate temporary roots; acceptance requires all 160 hidden CI cases and the canonical CLI result.
+
 ## Host-Independent Capture A/B
 
 Run:
