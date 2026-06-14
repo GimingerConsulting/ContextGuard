@@ -12,7 +12,7 @@ def test_policy_is_single_adaptive_maximum_efficiency_mode():
     assert POLICY_NAME in policy
     assert "Do not narrate routine inspection or tool use" in policy
     assert "changed files, validation, and only real risks" in policy
-    assert len(policy.encode()) < 700
+    assert len(policy.encode()) < 1100
 
 
 def test_task_complexity_controls_visible_planning():

@@ -22,6 +22,12 @@ def classify_command(command: str) -> CommandDecision:
     if any(joined.startswith(item) for item in destructive):
         return CommandDecision("allow", "Destructive or state-changing command is not rewritten.")
     first = parts[0]
+    file_like_parts = [
+        part for part in parts[1:]
+        if not part.startswith("-")
+        and part not in {"|", ">", ">>", "2>&1"}
+        and ("/" in part or "." in part)
+    ]
     python_module = None
     if first.rsplit("/", 1)[-1] in {"python", "python3"} and len(parts) >= 3 and parts[1] == "-m":
         python_module = parts[2]
@@ -41,6 +47,8 @@ def classify_command(command: str) -> CommandDecision:
         return CommandDecision("capture", "Recursive search output can be large.")
     if first in {"tar", "unzip", "zipinfo"}:
         return CommandDecision("capture", "Archive listings can be large.")
+    if first in {"sed", "head", "tail", "awk", "jq", "rg", "grep"} and len(file_like_parts) >= 3:
+        return CommandDecision("capture", "Inspection spans multiple files and can emit large output.")
     if any(part.endswith((".json", ".jsonl", ".csv", ".tsv", ".log", ".sql")) for part in parts[1:]):
         return CommandDecision("capture", "Structured or log output can be summarized compactly.")
     if any(part in joined for part in ("node_modules", "dist/", "build/", "coverage/")):

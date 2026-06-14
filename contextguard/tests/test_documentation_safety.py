@@ -85,4 +85,8 @@ def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path)
     assert "Reuse unchanged reads" in policy
     assert "group repeated inspection" in policy
     assert "Never trade correctness" in policy
-    assert len(policy.encode()) < 1400
+    assert "Never run `sed`, `tail`, `head`, `cat`, `awk`, `jq`, or `rg` directly" in policy
+    assert "multiple files" in policy
+    assert "Pipelines do not make output safe" in policy
+    assert "Small, bounded source reads" in policy
+    assert len(policy.encode()) < 1900

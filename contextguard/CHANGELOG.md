@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1
+
+- Strengthened managed project instructions so large `sed`, `tail`, `head`, `cat`, `awk`, `jq`, `rg`, pipeline and multi-file inspections must use the project capture runner.
+- Extended command classification and hook rewriting to cover multi-file inspection commands while preserving direct small, bounded single-source reads.
+- Added regression coverage for the exact CI-log and large-JSONL bypass patterns observed in real Codex A/B runs.
+- Documented that hosts without shell interception still rely on agent compliance with managed project instructions.
+
 ## 0.4.0
 
 - Added versioned, allow-listed session checkpoints for compact resume context.

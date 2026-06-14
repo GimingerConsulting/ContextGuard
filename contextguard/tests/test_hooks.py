@@ -63,6 +63,17 @@ def test_python_module_pytest_pipeline_is_rewritten(tmp_path: Path):
     assert "python3 -m pytest" in command
 
 
+def test_large_sed_log_inspection_is_rewritten(tmp_path: Path):
+    result = run_hook(
+        "pre_tool_use.py",
+        {"tool_name": "Bash", "tool_input": {"command": "sed -n '1,260p' artifacts/CI_FAILURE.log"}},
+        tmp_path,
+    )
+    command = result["hookSpecificOutput"]["updatedInput"]["command"]
+    assert "/scripts/contextguard" in command
+    assert "CI_FAILURE.log" in command
+
+
 def test_stop_hook_loop_prevention(tmp_path: Path):
     result = run_hook("stop.py", {"stop_hook_active": True}, tmp_path)
     assert result == {}

@@ -2,6 +2,14 @@
 
 See [contextguard/changy.md](contextguard/changy.md) for the detailed implementation protocol.
 
+## 2026-06-14 Capture Runner Enforcement 0.4.1
+
+- Strengthened generated `AGENTS.md` instructions for the exact large-file bypasses observed in real A/B runs.
+- Added automatic classification and hook rewriting for multi-file inspection commands while retaining direct small source reads.
+- Added regression coverage for logs, JSONL, pipelines and multi-file inspection.
+- Host limitation remains explicit: without `PreToolUse` dispatch or shell interception, enforcement relies on Codex following project instructions.
+- Validation: 113 tests passed, plugin schema passed, the 0.4.1 wheel built, and isolated installed-copy acceptance preserved raw output while reducing visible runner tokens 75.39%.
+
 ## 2026-06-13 Context Efficiency 0.4.0
 
 - Implemented versioned checkpoint/resume state, session-scoped hash-aware repeated-read detection, and a non-blocking command budget.

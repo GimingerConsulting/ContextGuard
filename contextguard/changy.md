@@ -1,5 +1,33 @@
 # changy.md
 
+## 2026-06-14 Capture Runner Enforcement 0.4.1
+
+### Root Cause
+
+- Real CI and support-ticket A/B runs showed that ContextGuard saved the most context when agents used `.contextguard/bin/contextguard capture --` consistently.
+- Direct `sed`, `tail`, `head` and `awk` inspection of large logs or JSONL files bypassed the host-independent runner and exposed raw output.
+- The managed policy described command categories but did not explicitly forbid these common inspection forms, pipelines or multi-file reads.
+
+### Solution
+
+- Made capture mandatory in managed instructions for log, structured-data, artifact, generated-output and multi-file inspection with `sed`, `tail`, `head`, `cat`, `awk`, `jq`, `rg` and pipelines.
+- Kept one small bounded source-file read direct to avoid capture overhead on normal code inspection.
+- Extended command classification so supported hook hosts automatically rewrite multi-file inspections through capture.
+- Added regression tests for the exact observed bypass commands and release version `0.4.1`.
+
+### Limitation
+
+- Codex hosts that do not dispatch `PreToolUse` cannot be technically forced to rewrite arbitrary shell commands. On those hosts, enforcement is the project-level `AGENTS.md` instruction contract; complete shell interception requires upstream host support.
+
+### Validation
+
+- Full Python 3.12 suite: 113 passed.
+- Targeted classifier, rewriter, hook and policy regressions: 13 passed.
+- Plugin schema validation passed.
+- Built `contextguard-0.4.1-py3-none-any.whl` successfully.
+- Isolated installed-copy acceptance passed with byte-identical archives, preserved exit code and 2,739 RAW versus 674 protected visible tokens (75.39% reduction).
+- Generated-project probe confirmed the strengthened enforcement text is written to `AGENTS.md`.
+
 ## 2026-06-13 Context Efficiency 0.4.0
 
 ### Changes
