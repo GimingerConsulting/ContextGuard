@@ -466,6 +466,7 @@
 - A subsequent clean A/B rerun could not start because the account hit its Codex Usage Limit; both arms returned zero tokens and the same 22:31 reset notice. This is retained as a benchmark limitation, not counted as a product failure.
 # 2026-06-15 - 0.5.1 bounded source inspector
 
+- Published `5327a4f` to `main`; upgraded and activated local Codex plugin `0.5.1+codex.20260615082846`. Project refresh regenerated AGENTS policy and the installed runner successfully executed `contextguard inspect` against two named source files with symbol focus.
 - Final validation: 147 tests passed; 10/10 deterministic fixtures preserved output quality, repository state, and exit codes; visible output was 66,634 RAW versus 2,077 ContextGuard bytes. Compile, diff, wheel/sdist, and isolated install acceptance passed, with 79.99% install-fixture output reduction.
 - Implemented the bounded `inspect` CLI and source validation module with compact JSON output, 2-4 file scope, symbol/range focus, output limits, fingerprints, and path/artifact safety checks.
 - Parent review added missing-file normalization, real symbol-focus tests, safe companion context, and bounded windows for source files larger than 200 lines.
