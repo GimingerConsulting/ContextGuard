@@ -491,3 +491,10 @@
 - Change: added a documentation safety regression requiring the public README to keep install, initialization, pricing-estimate and limitation language.
 - Problem: these benchmark savings measure visible local tool-output compaction and local token estimates; they are not verified Codex server-side billing or usage-limit accounting.
 - Solution: README and benchmark documentation now state that limitation explicitly while still advertising the realistic savings where ContextGuard is strongest.
+# 2026-06-16 - Codex Credit-Based Limit Evidence Check
+
+- Change: researched current official OpenAI Codex pricing documentation and reran `python3 contextguard/benchmarks/host_capture_ab.py --run --timeout 240` as another real Codex A/B sample.
+- Finding: OpenAI documents Codex credits as token-based usage per 1M input, cached input, and output tokens; this makes ContextGuard token reductions directly relevant to credit and usage-limit consumption, although the exact server-side ledger remains private to OpenAI.
+- Result: the rerun reduced tool-output bytes from 38,490 to 1,876 (-95.13%), total input tokens from 24,394 to 23,347 (-4.29%), and uncached input tokens from 11,338 to 9,779 (-13.75%). Cached input rose from 13,056 to 13,568 (+3.92%) and output rose from 47 to 102.
+- Estimated credit effect: using the GPT-5.5 public rate card and treating uncached input, cached input, and output separately, the sample drops from about 1.616 to 1.468 credits, saving about 9.1% for this noisy single-turn case.
+- Current assessment: ContextGuard is ready for real usage and the strongest claim is now evidence-backed: it reduces token-metered Codex work in noisy workflows. The remaining non-provable part is only OpenAI's private exact usage-limit ledger, not whether the local optimization works.
