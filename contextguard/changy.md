@@ -473,3 +473,11 @@
 - Added a dedicated realistic inspector A/B harness. The completed live run passed 144 hidden tests and cut command events from the previous ContextGuard baseline of 34 to 15, while reducing tool output by 47.2% and uncached input by 42.5% relative to RAW.
 - The same run incorrectly spawned a worker for migration/concurrency work and attempted one full-history fork. Managed policy was strengthened to perform risk exclusion before delegation, forbid all subagents on high-risk tasks, and require isolated worker prompts.
 - Final live rerun was quota-blocked before execution for both arms; Codex reported a June 19, 2026 18:17 reset. This limitation is retained explicitly and is not counted as a passing live policy test.
+# 2026-06-16 - RAW vs ContextGuard Benchmark Status
+
+- Change: ran the current realistic host-capture A/B benchmark for RAW vs ContextGuard 0.9 behavior using `python3 contextguard/benchmarks/host_capture_ab.py --run --timeout 240`.
+- Self-check: passed before the real run; ContextGuard preserved the same exit code, archived raw output exactly, used the capture runner, and reduced visible command output from 38,490 bytes to 1,876 bytes.
+- Result: real Codex A/B run reduced tool output bytes by 95.13%, total input tokens by 4.30%, and uncached input tokens by 49.98%. Cached input tokens rose from 4,864 to 13,568, output tokens rose from 47 to 101, and elapsed time improved from 10.133s to 8.944s.
+- Current assessment: ContextGuard is now clearly useful for noisy command-output sessions; the strongest saving is on uncached input and visible tool output. Total input-token savings are smaller because the protected run shifts more input into cached context.
+- Problem: no code change was required from this benchmark run, so there was nothing meaningful to commit or push to `main`.
+- Solution: recorded the run and kept the repository unchanged apart from this protocol entry.
