@@ -89,4 +89,21 @@ def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path)
     assert "multiple files" in policy
     assert "Pipelines do not make output safe" in policy
     assert "Small, bounded source reads" in policy
-    assert len(policy.encode()) < 1900
+    assert len(policy.encode()) < 2000
+def test_public_readme_documents_install_usage_costs_and_limits():
+    readme = (ROOT / "README.md").read_text()
+
+    required = [
+        "## Install and update",
+        "## Initialize a project",
+        "contextguard init --path .",
+        "contextguard session-cost",
+        "contextguard lifetime-savings",
+        "## Known limitations",
+        "not verified Codex server-side billing",
+        "Small commands can cost slightly more than they save",
+        "Existing projects keep user-authored AGENTS.md content",
+    ]
+
+    for phrase in required:
+        assert phrase in readme

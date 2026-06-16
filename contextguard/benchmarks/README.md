@@ -84,3 +84,15 @@ Run `python3 benchmarks/install_acceptance.py` to copy the publishable plugin in
 The June 10 acceptance result in `benchmarks/results/install-acceptance-2026-06-10.json` passed every gate. The hard 130-failure output used 14,581 RAW tokens versus 528 ContextGuard-visible tokens, saving 14,053 tokens or 96.38%. This deterministically guarantees the packaged ContextGuard logic under the simulated hook lifecycle; it does not guarantee that an external Codex host version dispatches hooks or that a stochastic model returns identical prose or code.
 
 The June 12 acceptance additionally begins with uninitialized empty and existing projects and requires the packaged `SessionStart` hook to initialize both automatically while preserving existing instructions. Its result is stored in `benchmarks/results/install-acceptance-2026-06-12.json`.
+## Final Multi-Usecase Output A/B
+
+Run:
+
+```bash
+python3 benchmarks/final_usecase_ab.py --self-check
+python3 benchmarks/final_usecase_ab.py --run
+```
+
+This reproducible local battery covers 19 realistic command-output scenarios across vibecoding, SMB, consulting and enterprise use cases: feature exploration, bug triage, QA failures, database-like output, on-call investigation and production-style noisy reports. It compares raw visible command output against ContextGuard-captured visible output and writes reports under `.contextguard/reports/final-usecase-ab-YYYY-MM-DD/`.
+
+The June 16, 2026 run measured 82,618 RAW visible tokens versus 3,530 ContextGuard visible tokens, saving 79,088 visible tokens or 95.73%. Segment totals were: consulting 1,299 to 125 tokens, enterprise 74,518 to 1,756 tokens, SMB 2,213 to 801 tokens, and vibecoding 4,588 to 848 tokens. This benchmark measures visible tool-output compaction, not server-side Codex billing.

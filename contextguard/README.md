@@ -138,3 +138,50 @@ The first command explains project-local files. The second removes `.contextguar
 ## Disclaimer
 
 Local report token values are estimates. Real A/B result files use exact Codex `turn.completed.usage` values and remain scoped to their controlled samples.
+## Install and update
+
+Install the current plugin from GitHub:
+
+```bash
+codex plugin marketplace add BurliNYC/ContextGuard
+```
+
+Update an existing installation by installing the latest plugin version again, then start a new Codex thread so the refreshed skills, hooks and bundled runner are loaded. ContextGuard 0.9.0 is intended for real-world testing and early production use; token and API savings vary by workflow.
+
+## Initialize a project
+
+For a new or empty project, run:
+
+```bash
+contextguard init --path .
+```
+
+For an existing project, run the same command from the repository root:
+
+```bash
+contextguard init --path .
+```
+
+Existing projects keep user-authored AGENTS.md content. ContextGuard inserts or refreshes only its managed section, keeps prior instructions outside that section, and writes backups when it needs to preserve earlier content. After initialization, start a fresh Codex thread in the project so the managed project instructions are present from the beginning of the session.
+
+## Useful commands
+
+```bash
+contextguard status
+contextguard capture -- python3 -m pytest
+contextguard inspect path/to/file.py path/to/other.py
+contextguard large-file data.json --contains error --limit 10
+contextguard session-cost
+contextguard lifetime-savings
+```
+
+`contextguard capture -- <command>` is the host-independent path for noisy tests, logs, builds, diffs and searches. It stores full stdout and stderr locally, gives Codex a compact evidence summary, and preserves enough information for targeted follow-up inspection. `contextguard inspect` is for bounded source reads. `contextguard session-cost` and `contextguard lifetime-savings` report local token and API-cost estimates; these are not verified Codex server-side billing values.
+
+## Known limitations
+
+- Savings are workload-dependent. ContextGuard helps most when commands produce large logs, repeated failures, big file listings, noisy test output or broad searches.
+- Small commands can cost slightly more than they save because the capture wrapper and summaries add a small fixed overhead.
+- Session pricing and lifetime savings are local estimates based on ContextGuard's ledger and model-price assumptions, not verified Codex server-side billing or usage-limit accounting.
+- ContextGuard preserves raw command output locally, but users still need to inspect the archived evidence when a compact summary is not enough.
+- Hook dispatch varies by Codex host surface and version. The managed `AGENTS.md` runner instructions are the stable fallback for non-interactive and host-independent use.
+- It does not replace tests, code review, security review, migration review or production validation.

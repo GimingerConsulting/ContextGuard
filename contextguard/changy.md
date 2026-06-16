@@ -481,3 +481,13 @@
 - Current assessment: ContextGuard is now clearly useful for noisy command-output sessions; the strongest saving is on uncached input and visible tool output. Total input-token savings are smaller because the protected run shifts more input into cached context.
 - Problem: no code change was required from this benchmark run, so there was nothing meaningful to commit or push to `main`.
 - Solution: recorded the run and kept the repository unchanged apart from this protocol entry.
+# 2026-06-16 - Public Readiness Documentation and Multi-Usecase Benchmark
+
+- Change: ran the reproducible final multi-usecase output A/B battery with `python3 contextguard/benchmarks/final_usecase_ab.py --self-check` and `python3 contextguard/benchmarks/final_usecase_ab.py --run`.
+- Result: the June 16, 2026 report covered 19 realistic command-output scenarios and measured 82,618 RAW visible tokens versus 3,530 ContextGuard visible tokens, saving 79,088 visible tokens or 95.73%.
+- Segment results: consulting reduced 1,299 to 125 visible tokens, enterprise reduced 74,518 to 1,756, SMB reduced 2,213 to 801, and vibecoding reduced 4,588 to 848.
+- Change: documented GitHub installation, update flow, initialization for empty and existing repositories, common commands, `session-cost`, `lifetime-savings`, and known limitations in the public README.
+- Change: documented the final multi-usecase benchmark and its June 16, 2026 result in the benchmark README.
+- Change: added a documentation safety regression requiring the public README to keep install, initialization, pricing-estimate and limitation language.
+- Problem: these benchmark savings measure visible local tool-output compaction and local token estimates; they are not verified Codex server-side billing or usage-limit accounting.
+- Solution: README and benchmark documentation now state that limitation explicitly while still advertising the realistic savings where ContextGuard is strongest.
