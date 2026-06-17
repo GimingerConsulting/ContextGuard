@@ -30,7 +30,7 @@ ContextGuard supports empty projects and existing repositories. It preserves use
 
 
 ```bash
-codex plugin marketplace add BurliNYC/ContextGuard
+codex plugin marketplace add GimingerConsulting/ContextGuard
 ```
 
    In the Codex app, the equivalent path is:
@@ -61,7 +61,7 @@ A successful smoke test shows:
 
 Hook observations are reported separately. Missing hooks do not disable project-runner protection. Trusting hooks remains optional and ContextGuard never edits hook-trust records.
 
-To update the marketplace, refresh the source in Codex. To update the plugin, pull the repository or update the marketplace source, then reinstall or refresh the plugin in Codex. To disable the plugin, disable it in Codex plugin settings. To remove the marketplace, remove the `BurliNYC/ContextGuard` source from Codex.
+To update the marketplace, refresh the source in Codex. To update the plugin, pull the repository or update the marketplace source, then reinstall or refresh the plugin in Codex. To disable the plugin, disable it in Codex plugin settings. To remove the marketplace, remove the `GimingerConsulting/ContextGuard` source from Codex.
 
 ## Project Initialization
 
@@ -143,7 +143,7 @@ Local report token values are estimates. Real A/B result files use exact Codex `
 Install the current plugin from GitHub:
 
 ```bash
-codex plugin marketplace add BurliNYC/ContextGuard
+codex plugin marketplace add GimingerConsulting/ContextGuard
 ```
 
 Update an existing installation by installing the latest plugin version again, then start a new Codex thread so the refreshed skills, hooks and bundled runner are loaded. ContextGuard 0.9.0 is intended for real-world testing and early production use; token and API savings vary by workflow.

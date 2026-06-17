@@ -45,7 +45,7 @@ def test_hooks_json_uses_current_codex_nested_schema():
 def test_marketplace_readme_documents_complete_safe_onboarding():
     readme = (ROOT / "README.md").read_text()
 
-    assert "codex plugin marketplace add BurliNYC/ContextGuard" in readme
+    assert "codex plugin marketplace add GimingerConsulting/ContextGuard" in readme
     assert "/hooks" in readme
     assert "$contextguard-setup" in readme
     assert "new thread" in readme.lower()
