@@ -90,6 +90,21 @@ def test_managed_policy_requires_host_independent_capture_runner(tmp_path: Path)
     assert "Pipelines do not make output safe" in policy
     assert "Small, bounded source reads" in policy
     assert len(policy.encode()) < 2000
+def test_public_readme_documents_license_terms():
+    readme = (ROOT / "README.md").read_text()
+
+    required = [
+        "## License",
+        "source-available",
+        "PolyForm Noncommercial License 1.0.0",
+        "Commercial Licensing",
+        "commercial license",
+    ]
+
+    for phrase in required:
+        assert phrase in readme
+
+
 def test_public_readme_documents_install_usage_costs_and_limits():
     readme = (ROOT / "README.md").read_text()
 

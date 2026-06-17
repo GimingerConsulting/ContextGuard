@@ -1,5 +1,9 @@
 # ContextGuard
 
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](../LICENSE)
+
+> **License notice:** Free for personal and noncommercial use. A commercial license is required for company, professional, client, and revenue-related use.
+
 ContextGuard helps Codex produce the same correct result with less wasted input, less unnecessary output and faster task completion.
 
 Developer: Giminger Consulting
@@ -23,6 +27,23 @@ The output-efficiency engine suppresses routine narration, request restatement, 
 ## Privacy
 
 ContextGuard sends no repository content or telemetry to external services. It supports Python 3.9 and newer and uses standard-library modules plus SQLite. Local state is stored under `.contextguard/` inside the project.
+
+## License
+
+ContextGuard is source-available software.
+
+It is free to use for personal and genuinely noncommercial purposes under the [PolyForm Noncommercial License 1.0.0](../LICENSE).
+
+Commercial, professional, organizational, and internal company use requires a separate commercial license from Giminger Consulting.
+
+Using ContextGuard within a company, for client work, as part of a paid professional activity, or to obtain a commercial advantage is considered commercial use.
+
+For details, see:
+
+- [LICENSE](../LICENSE)
+- [Commercial Licensing](../COMMERCIAL-LICENSE.md)
+
+Commercial licensing contact: **https://www.giminger.com**
 
 ## Fast Setup From The Codex Marketplace
 
