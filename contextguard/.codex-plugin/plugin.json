@@ -1,13 +1,13 @@
 {
   "name": "contextguard",
-  "version": "0.5.1+codex.20260615082846",
-  "description": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
+  "version": "0.9.0+codex.20260615194755",
+  "description": "Codex-native context optimization: capture runner, session gate, family codecs, lifetime savings, worker-risk lock, and adaptive evidence compaction.",
   "author": {
     "name": "Giminger Consulting",
-    "url": "https://github.com/BurliNYC"
+    "url": "https://www.giminger.com"
   },
-  "homepage": "https://github.com/BurliNYC/ContextGuard",
-  "repository": "https://github.com/BurliNYC/ContextGuard",
+  "homepage": "https://context-guard-plugin.vercel.app",
+  "repository": "https://github.com/GimingerConsulting/ContextGuard",
   "license": "MIT",
   "keywords": [
     "context",
@@ -19,8 +19,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "ContextGuard",
-    "shortDescription": "Autonomous context savings for Codex projects",
-    "longDescription": "Reduce unnecessary Codex context usage through local project intelligence, output protection and adaptive context retrieval.",
+    "shortDescription": "Codex context savings with lifetime reporting",
+    "longDescription": "Reduce unnecessary Codex context usage through local project intelligence, bounded inspect, capture-runner protection, session gate, doc-family codecs, lifetime/session cost reporting, and adaptive evidence compaction for noisy tool output.",
     "developerName": "Giminger Consulting",
     "category": "Productivity",
     "capabilities": [
@@ -28,12 +28,13 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/BurliNYC/ContextGuard",
-    "privacyPolicyURL": "https://github.com/BurliNYC/ContextGuard/blob/main/SECURITY.md",
-    "termsOfServiceURL": "https://github.com/BurliNYC/ContextGuard/blob/main/LICENSE",
+    "websiteURL": "https://context-guard-plugin.vercel.app",
+    "privacyPolicyURL": "https://github.com/GimingerConsulting/ContextGuard/blob/main/SECURITY.md",
+    "termsOfServiceURL": "https://github.com/GimingerConsulting/ContextGuard/blob/main/LICENSE",
     "defaultPrompt": [
       "Run ContextGuard setup and verify this project.",
-      "Show my ContextGuard savings report."
+      "Show my ContextGuard lifetime savings.",
+      "Show my ContextGuard session cost for this thread."
     ],
     "brandColor": "#C9A24A",
     "composerIcon": "./assets/icon.png",

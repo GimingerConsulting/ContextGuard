@@ -4,6 +4,8 @@ ContextGuard helps Codex produce the same correct result with less wasted input,
 
 Developer: Giminger Consulting
 
+Further information, benchmarks and setup guide: [context-guard-plugin.vercel.app](https://context-guard-plugin.vercel.app)
+
 It optimizes repository input context, repeated session context, terminal and test output, large structured data, model-generated explanations, final responses, and repeated code or diff output. It automatically expands context when correctness requires it.
 
 ## What It Does
